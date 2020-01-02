@@ -10,6 +10,9 @@ local STATE_TITLE = 0
 local STATE_PLAY = 1
 local STATE_GAME_OVER = 2
 
+local playerX = 2
+local playerY = 2
+local playerZ = 1
 local state
 
 function love.load()
@@ -36,6 +39,8 @@ function switchToState(newState)
 		log.addEntry("You enter the dungeon.",log.TEXT_COLOR_DEFAULT)
 
 		world.init(layout.DRAWING_AREA_WORLD)
+		world.addLevel()
+		world.setCamera(playerX,playerY,playerZ)
 
 		-- ...
 	elseif (state == STATE_GAME_OVER) then
@@ -62,6 +67,30 @@ function love.keypressed(key)
 		if (key == "escape") then
 			switchToState(STATE_TITLE)
 		end
+
+		local playerMoved = false
+
+		if (key == "up") then
+			playerY = playerY - 1
+			playerMoved = true
+		end
+		if (key == "down") then
+			playerY = playerY + 1
+			playerMoved = true
+		end
+		if (key == "left") then
+			playerX = playerX - 1
+			playerMoved = true
+		end
+		if (key == "right") then
+			playerX = playerX + 1
+			playerMoved = true
+		end
+
+		if (playerMoved) then
+			world.setCamera(playerX,playerY,playerZ)
+		end
+
 		--if (key == "l") then
 		--	log.addEntry("Adding an extra log entry.",log.TEXT_COLOR_DEFAULT)
 		--end

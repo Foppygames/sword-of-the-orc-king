@@ -2,6 +2,7 @@
 
 local aspect = require("modules.aspect")
 local layout = require("modules.layout")
+local tiles = require("modules.tiles")
 
 local world = {}
 
@@ -37,29 +38,21 @@ local function drawWall(x,y)
 	love.graphics.rectangle("fill",x,y+TILE_SIZE-WALL_HEIGHT,TILE_SIZE,WALL_HEIGHT)
 end
 
-local function scroll()
-	-- ...
-end
+function world.addLevel()
+	-- add empty level to state
+	table.insert(state,{
+		layout = {},
+		creatures = {},
+		items = {}
+	})
 
-function world.init(drawingAreaIndex)
-	cameraTileX = 2
-	cameraTileY = 2
-	cameraTileZ = 1
-
-	rect = layout.getRect(drawingAreaIndex)
-	rectWidthTiles = math.floor(rect.width / TILE_SIZE) + 2
-	rectHeightTiles = math.floor(rect.height / TILE_SIZE) + 2
-	
-	-- reset state
-	state = {}
-
-	-- add first level to state
-	table.insert(state,{})
-
-	-- add tile map to first level
-	state[1].tiles = {}
+	-- create level layout
+	local level = #state
+	local firstFloorColor = TILE_COLOR_FLOOR_1
 	for y = 1, WORLD_HEIGHT do
+		local floorColor = firstFloorColor
 		for x = 1, WORLD_WIDTH do
+			-- decide if position has wall
 			local wall = 0
 			if ((y - 1) % 8 == 0) or ((x - 1) % 8 == 0) then
 				-- door north/south
@@ -73,13 +66,39 @@ function world.init(drawingAreaIndex)
 					wall = 1
 				end
 			end
-			table.insert(state[1].tiles,wall)
+
+			-- add item for position
+			table.insert(state[level].layout,{
+				wall = wall,
+				floorColor = floorColor
+			})
+
+			if (floorColor == TILE_COLOR_FLOOR_1) then
+				floorColor = TILE_COLOR_FLOOR_2
+			else
+				floorColor = TILE_COLOR_FLOOR_1
+			end
+		end
+
+		if (firstFloorColor == TILE_COLOR_FLOOR_1) then
+			firstFloorColor = TILE_COLOR_FLOOR_2
+		else
+			firstFloorColor = TILE_COLOR_FLOOR_1
 		end
 	end
 
 	--for i = 1, #state[1].tiles do
 	--	print(state[1].tiles[i]..", ")
 	--end
+end
+
+function world.init(drawingAreaIndex)
+	rect = layout.getRect(drawingAreaIndex)
+	rectWidthTiles = math.floor(rect.width / TILE_SIZE) + 2
+	rectHeightTiles = math.floor(rect.height / TILE_SIZE) + 2
+	
+	-- reset state
+	state = {}
 end
 
 function world.draw()
@@ -103,19 +122,16 @@ function world.draw()
 	local lastTileX = math.min(firstTileX + rectWidthTiles - 1, WORLD_WIDTH)
 	local lastTileY = math.min(firstTileY + rectHeightTiles - 1, WORLD_HEIGHT)
 	
-	local firstFloorColor = TILE_COLOR_FLOOR_1
-
 	local tileY = -offsetY
 	for verTile = firstTileY, lastTileY do
-		local floorColor = firstFloorColor
 		local tileX = -offsetX
 		for horTile = firstTileX, lastTileX do
 			if ((horTile >= 1) and (verTile >= 1)) then
 				local posIndex = (verTile - 1) * WORLD_WIDTH + horTile
-				local wall = (state[1].tiles[posIndex] == 1)
+				local wall = (state[cameraTileZ].layout[posIndex].wall == 1)
 
 				if (not wall) then
-					drawFloor(floorColor,rect.x+tileX,rect.y+tileY)
+					drawFloor(state[cameraTileZ].layout[posIndex].floorColor,rect.x+tileX,rect.y+tileY)
 
 					-- draw objects and creatures
 					-- ...
@@ -123,26 +139,18 @@ function world.draw()
 					drawWall(rect.x+tileX,rect.y+tileY)
 				end
 			end
-
-			if (floorColor == TILE_COLOR_FLOOR_1) then
-				floorColor = TILE_COLOR_FLOOR_2
-			else
-				floorColor = TILE_COLOR_FLOOR_1
-			end
-
 			tileX = tileX + TILE_SIZE	
 		end
-
-		if (firstFloorColor == TILE_COLOR_FLOOR_1) then
-			firstFloorColor = TILE_COLOR_FLOOR_2
-		else
-			firstFloorColor = TILE_COLOR_FLOOR_1
-		end
-
 		tileY = tileY + TILE_SIZE
 	end
 
 	layout.disableClipping()
+end
+
+function world.setCamera(x,y,z)
+	cameraTileX = x
+	cameraTileY = y
+	cameraTileZ = z
 end
 
 return world
