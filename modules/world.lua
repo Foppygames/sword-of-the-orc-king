@@ -1,123 +1,185 @@
 -- world is a module that manages and displays the current game world
 
 local aspect = require("modules.aspect")
+local Hero = require("modules.actors.hero")
 local layout = require("modules.layout")
 local tiles = require("modules.tiles")
 
 local world = {}
 
-local BACKGROUND_COLOR = {0.3,0.3,0.3}
-local TILE_COLOR_FLOOR_1 = {0.12,0.12,0.12}
-local TILE_COLOR_FLOOR_2 = {0.14,0.14,0.14}
+local BACKGROUND_COLOR = {0,0,0}
+local TILE_COLOR_FLOOR = {0.12,0.12,0.12}
 local TILE_COLOR_WALL_FRONT = {0.2,0.2,0.2}
 local TILE_COLOR_WALL_TOP = {0.3,0.3,0.3}
-local TILE_PERSPECTIVE_FACTOR = 0.5
-local TILE_SIZE = 26
-local WALL_HEIGHT = TILE_SIZE * TILE_PERSPECTIVE_FACTOR
+local TILE_WIDTH = 18
+local TILE_HEIGHT = 28
+local WALL_HEIGHT = TILE_HEIGHT / 2
 local WORLD_WIDTH = 50
 local WORLD_HEIGHT = 50
 local WORLD_DEPTH = 10
 
-local cameraTileX
-local cameraTileY
-local cameraTileZ
+--world.hero = nil
+
+local cameraTileX = nil
+local cameraTileY = nil
+local cameraTileZ = nil
 local state = {}
 local rect
 local rectHeightTiles
 local rectWidthTiles
 
-local function drawFloor(color,x,y)
-	love.graphics.setColor(color)
-	love.graphics.rectangle("fill",x,y,TILE_SIZE,TILE_SIZE)
+local function drawFloor(x,y)
+	love.graphics.setColor(TILE_COLOR_FLOOR)
+	love.graphics.rectangle("fill",x+TILE_WIDTH/2-1,y+TILE_HEIGHT/2-1,2,2)
 end
 
-local function drawWall(x,y)
+local function drawWall(x,y,wallBelow)
 	love.graphics.setColor(TILE_COLOR_WALL_TOP)
-	love.graphics.rectangle("fill",x,y-WALL_HEIGHT,TILE_SIZE,TILE_SIZE)
-	love.graphics.setColor(TILE_COLOR_WALL_FRONT)
-	love.graphics.rectangle("fill",x,y+TILE_SIZE-WALL_HEIGHT,TILE_SIZE,WALL_HEIGHT)
+	love.graphics.rectangle("fill",x,y,TILE_WIDTH,TILE_HEIGHT)
+	if (not wallBelow) then
+		love.graphics.setColor(TILE_COLOR_WALL_FRONT)
+		love.graphics.rectangle("fill",x,y+TILE_HEIGHT-WALL_HEIGHT,TILE_WIDTH,WALL_HEIGHT)
+	end	
 end
 
-function world.addLevel()
-	-- add empty level to state
-	table.insert(state,{
-		layout = {},
-		creatures = {},
-		items = {}
-	})
+-- turn active actors into stored actors
+local function storeActors(level)
+	-- ...
+end
 
-	-- create level layout
-	local level = #state
-	local firstFloorColor = TILE_COLOR_FLOOR_1
+-- turn stored actors into active actors
+local function createActors(level)
 	for y = 1, WORLD_HEIGHT do
-		local floorColor = firstFloorColor
 		for x = 1, WORLD_WIDTH do
-			-- decide if position has wall
-			local wall = 0
-			if ((y - 1) % 8 == 0) or ((x - 1) % 8 == 0) then
-				-- door north/south
-				if ((y > 1) and (y < WORLD_HEIGHT) and ((y - 1) % 8 == 0) and (((x - 5) % 8 == 0))) then
-					wall = 0
-				-- door east/west	
-				elseif ((x > 1) and (x < WORLD_WIDTH) and ((x - 1) % 8 == 0) and (((y - 5) % 8 == 0))) then
-						wall = 0
-				-- wall
-				else
-					wall = 1
+			local posIndex = (y - 1) * WORLD_WIDTH + x
+			local actor = state[level].layout[posIndex].actor
+			if (actor ~= nil) then
+				if (actor.type == "hero") then
+					-- create actor
+					local hero = Hero.create("Conan",x,y,level)
+					table.insert(state[level].actors,hero)
+
+					-- test and use name component
+					if (hero.name ~= nil) then
+						print(hero.name.getName().."!")
+					end
+
+					-- delete stored actor
+					state[level].layout[posIndex].actor = nil
 				end
 			end
-
-			-- add item for position
-			table.insert(state[level].layout,{
-				wall = wall,
-				floorColor = floorColor
-			})
-
-			if (floorColor == TILE_COLOR_FLOOR_1) then
-				floorColor = TILE_COLOR_FLOOR_2
-			else
-				floorColor = TILE_COLOR_FLOOR_1
-			end
-		end
-
-		if (firstFloorColor == TILE_COLOR_FLOOR_1) then
-			firstFloorColor = TILE_COLOR_FLOOR_2
-		else
-			firstFloorColor = TILE_COLOR_FLOOR_1
 		end
 	end
-
-	--for i = 1, #state[1].tiles do
-	--	print(state[1].tiles[i]..", ")
-	--end
 end
 
 function world.init(drawingAreaIndex)
 	rect = layout.getRect(drawingAreaIndex)
-	rectWidthTiles = math.floor(rect.width / TILE_SIZE) + 2
-	rectHeightTiles = math.floor(rect.height / TILE_SIZE) + 2
-	
-	-- reset state
+	rectWidthTiles = math.floor(rect.width / TILE_WIDTH) + 2
+	rectHeightTiles = math.floor(rect.height / TILE_HEIGHT) + 2
+end
+
+function world.create(levels,startingLevel)		
 	state = {}
+	for i = 1, levels do
+		local addHero = (i == startingLevel)
+		world.addLevel(addHero)
+	end
+end
+
+function world.addLevel(addHero)
+	-- add empty level to state
+	table.insert(state,{
+		layout = {}, -- contains map and stored actors per location
+		actors = {}  -- contains active actors for whole level
+	})
+
+	local tempRoomWidth = #state * 10
+	local tempRoomHeight = #state * 10
+
+	-- create level layout
+	local level = #state
+	for y = 1, WORLD_HEIGHT do
+		for x = 1, WORLD_WIDTH do
+			-- decide if position has wall, floor, or neither
+			local wall = 0
+			local floor = 0
+			
+			if (((x == 1 ) or (x == tempRoomWidth)) and (y <= tempRoomHeight)) then
+				wall = 1
+			end
+			if (((y == 1) or (y == tempRoomHeight)) and (x <= tempRoomWidth)) then
+				wall = 1
+			end
+			if ((x == tempRoomWidth/2) and (y == tempRoomHeight/2)) then
+				wall = 1
+			end
+			if ((x > 1 ) and (x < tempRoomWidth) and (y > 1 ) and (y < tempRoomHeight)) then
+				floor = 1
+			end
+			
+			-- add item for position
+			table.insert(state[level].layout,{
+				wall = wall,
+				floor = floor,
+				actor = nil
+			})
+		end
+	end
+
+	-- add hero
+	if (addHero) then
+		local x = 2
+		local y = 2
+		local posIndex = (y - 1) * WORLD_WIDTH + x
+
+		state[level].layout[posIndex].actor = {
+			type = "hero"
+		}
+	end
+end
+
+function world.setCamera(x,y,z)
+	if (x ~= nil) then
+		cameraTileX = x
+	end
+	if (y ~= nil) then
+		cameraTileY = y
+	end
+	if (z ~= nil) then
+		-- leaving current level
+		if ((cameraTileZ ~= nil) and (cameraTileZ ~= z)) then
+			storeActors(cameraTileZ)
+		end
+
+		-- set new level
+		cameraTileZ = z
+		createActors(cameraTileZ)
+
+		-- set camera position to hero coordinates
+		-- ...
+		-- temp:
+		cameraTileX = 2
+		cameraTileY = 2
+	end
 end
 
 function world.draw()
 	layout.drawBackground(rect,BACKGROUND_COLOR)
 	layout.enableClipping(rect)
 	
-	local cameraX = cameraTileX * TILE_SIZE - TILE_SIZE / 2
-	local cameraY = cameraTileY * TILE_SIZE - TILE_SIZE / 2
+	local cameraX = cameraTileX * TILE_WIDTH - TILE_WIDTH / 2
+	local cameraY = cameraTileY * TILE_HEIGHT - TILE_HEIGHT / 2
 
 	local viewPortX1 = cameraX - rect.width / 2
 	local viewPortY1 = cameraY - rect.height / 2
 
 	-- get first tile to draw, and on-screen offset, horizontally
-	local firstTileX = 1 + math.floor(viewPortX1 / TILE_SIZE)
-	local offsetX = viewPortX1 % TILE_SIZE
+	local firstTileX = 1 + math.floor(viewPortX1 / TILE_WIDTH)
+	local offsetX = viewPortX1 % TILE_WIDTH
 	
 	-- get first tile to draw, and on-screen offset, vertically
-	local firstTileY = 1 + math.floor(viewPortY1 / TILE_SIZE)
-	local offsetY = viewPortY1 % TILE_SIZE
+	local firstTileY = 1 + math.floor(viewPortY1 / TILE_HEIGHT)
+	local offsetY = viewPortY1 % TILE_HEIGHT
 	
 	local lastTileX = math.min(firstTileX + rectWidthTiles - 1, WORLD_WIDTH)
 	local lastTileY = math.min(firstTileY + rectHeightTiles - 1, WORLD_HEIGHT)
@@ -129,28 +191,47 @@ function world.draw()
 			if ((horTile >= 1) and (verTile >= 1)) then
 				local posIndex = (verTile - 1) * WORLD_WIDTH + horTile
 				local wall = (state[cameraTileZ].layout[posIndex].wall == 1)
+				local floor = (state[cameraTileZ].layout[posIndex].floor == 1)
 
-				if (not wall) then
-					drawFloor(state[cameraTileZ].layout[posIndex].floorColor,rect.x+tileX,rect.y+tileY)
-
-					-- draw objects and creatures
-					-- ...
-				else
-					drawWall(rect.x+tileX,rect.y+tileY)
+				if (wall) then
+					local wallBelow = false
+					if (verTile < WORLD_HEIGHT) then
+						if (state[cameraTileZ].layout[posIndex+WORLD_WIDTH].wall == 1) then
+							wallBelow = true
+						end
+					end
+					drawWall(rect.x+tileX,rect.y+tileY,wallBelow)
+				elseif (floor) then
+					drawFloor(rect.x+tileX,rect.y+tileY)
 				end
 			end
-			tileX = tileX + TILE_SIZE	
+			tileX = tileX + TILE_WIDTH
 		end
-		tileY = tileY + TILE_SIZE
+		-- draw actors on row
+		for i = 1, #state[cameraTileZ].actors do
+			local actor = state[cameraTileZ].actors[i]
+			if (actor.y == verTile) then
+				local cX = rect.x - offsetX + (actor.x - firstTileX) * TILE_WIDTH + TILE_WIDTH / 2
+				local cY = rect.y + tileY + TILE_HEIGHT / 2
+
+				-- test and use appearance component
+				if (actor.appearance ~= nil) then
+					actor.appearance.draw(cX,cY)
+				end
+			end
+		end
+		tileY = tileY + TILE_HEIGHT
 	end
 
 	layout.disableClipping()
 end
 
-function world.setCamera(x,y,z)
-	cameraTileX = x
-	cameraTileY = y
-	cameraTileZ = z
+function world.load()
+	-- ...
+end
+
+function world.save()
+	-- ...
 end
 
 return world

@@ -26,11 +26,6 @@ local function scroll()
 	end
 end
 
-function log.init(drawingAreaIndex)
-	entries = {}
-	rect = layout.getRect(drawingAreaIndex)
-end
-
 function log.addEntry(text,color)
 	width, lines = love.graphics.getFont():getWrap(text,rect.width-PADDING_LEFT)
 	for i = 1, #lines do
@@ -50,6 +45,14 @@ function log.draw()
 		love.graphics.print(entries[i].text,rect.x+PADDING_LEFT,rect.y+LINE_HEIGHT*(i-1))
 	end
 	layout.disableClipping()
+end
+
+function log.clear()
+	entries = {}
+end
+
+function log.init(drawingAreaIndex)
+	rect = layout.getRect(drawingAreaIndex)
 end
 
 return log
