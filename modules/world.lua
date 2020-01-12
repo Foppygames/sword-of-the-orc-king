@@ -1,7 +1,7 @@
 -- world is a module that manages and displays the current game world
 
 local aspect = require("modules.aspect")
-local Hero = require("modules.actors.hero")
+local entityManager = require("modules.ecs.managers.entitymanager")
 local layout = require("modules.layout")
 local tiles = require("modules.tiles")
 
@@ -17,8 +17,6 @@ local WALL_HEIGHT = TILE_HEIGHT / 2
 local WORLD_WIDTH = 50
 local WORLD_HEIGHT = 50
 local WORLD_DEPTH = 10
-
---world.hero = nil
 
 local cameraTileX = nil
 local cameraTileY = nil
@@ -54,19 +52,7 @@ local function createActors(level)
 			local posIndex = (y - 1) * WORLD_WIDTH + x
 			local actor = state[level].layout[posIndex].actor
 			if (actor ~= nil) then
-				if (actor.type == "hero") then
-					-- create actor
-					local hero = Hero.create("Conan",x,y,level)
-					table.insert(state[level].actors,hero)
-
-					-- test and use name component
-					if (hero.name ~= nil) then
-						print(hero.name.getName().."!")
-					end
-
-					-- delete stored actor
-					state[level].layout[posIndex].actor = nil
-				end
+				entityManager.addEntity(actor.type,actor.data)
 			end
 		end
 	end
@@ -78,7 +64,7 @@ function world.init(drawingAreaIndex)
 	rectHeightTiles = math.floor(rect.height / TILE_HEIGHT) + 2
 end
 
-function world.create(levels,startingLevel)		
+function world.createNew(levels,startingLevel)		
 	state = {}
 	for i = 1, levels do
 		local addHero = (i == startingLevel)
@@ -126,14 +112,39 @@ function world.addLevel(addHero)
 		end
 	end
 
-	-- add hero
+	-- add hero and at
 	if (addHero) then
-		local x = 2
-		local y = 2
+		local x = 3
+		local y = 3
 		local posIndex = (y - 1) * WORLD_WIDTH + x
 
 		state[level].layout[posIndex].actor = {
-			type = "hero"
+			type = "hero",
+			data = {
+				appearance = {
+					color = {0,1,0}
+				},
+				position = {
+					x = x,
+					y = y,
+					z = level
+				}
+			}
+		}
+
+		x = 5
+		y = 3
+		posIndex = (y - 1) * WORLD_WIDTH + x
+
+		state[level].layout[posIndex].actor = {
+			type = "bat",
+			data = {
+				position = {
+					x = x,
+					y = y,
+					z = level
+				}
+			}
 		}
 	end
 end
@@ -166,33 +177,17 @@ end
 function world.draw()
 	layout.drawBackground(rect,BACKGROUND_COLOR)
 	layout.enableClipping(rect)
-	
-	local cameraX = cameraTileX * TILE_WIDTH - TILE_WIDTH / 2
-	local cameraY = cameraTileY * TILE_HEIGHT - TILE_HEIGHT / 2
 
-	local viewPortX1 = cameraX - rect.width / 2
-	local viewPortY1 = cameraY - rect.height / 2
-
-	-- get first tile to draw, and on-screen offset, horizontally
-	local firstTileX = 1 + math.floor(viewPortX1 / TILE_WIDTH)
-	local offsetX = viewPortX1 % TILE_WIDTH
+	local viewPortData = world.getViewPortData()
 	
-	-- get first tile to draw, and on-screen offset, vertically
-	local firstTileY = 1 + math.floor(viewPortY1 / TILE_HEIGHT)
-	local offsetY = viewPortY1 % TILE_HEIGHT
-	
-	local lastTileX = math.min(firstTileX + rectWidthTiles - 1, WORLD_WIDTH)
-	local lastTileY = math.min(firstTileY + rectHeightTiles - 1, WORLD_HEIGHT)
-	
-	local tileY = -offsetY
-	for verTile = firstTileY, lastTileY do
-		local tileX = -offsetX
-		for horTile = firstTileX, lastTileX do
+	local tileY = viewPortData.screenY1
+	for verTile = viewPortData.firstTileY, viewPortData.lastTileY do
+		local tileX = viewPortData.screenX1
+		for horTile = viewPortData.firstTileX, viewPortData.lastTileX do
 			if ((horTile >= 1) and (verTile >= 1)) then
 				local posIndex = (verTile - 1) * WORLD_WIDTH + horTile
 				local wall = (state[cameraTileZ].layout[posIndex].wall == 1)
 				local floor = (state[cameraTileZ].layout[posIndex].floor == 1)
-
 				if (wall) then
 					local wallBelow = false
 					if (verTile < WORLD_HEIGHT) then
@@ -200,30 +195,51 @@ function world.draw()
 							wallBelow = true
 						end
 					end
-					drawWall(rect.x+tileX,rect.y+tileY,wallBelow)
+					drawWall(tileX,tileY,wallBelow)
 				elseif (floor) then
-					drawFloor(rect.x+tileX,rect.y+tileY)
+					drawFloor(tileX,tileY)
 				end
 			end
 			tileX = tileX + TILE_WIDTH
-		end
-		-- draw actors on row
-		for i = 1, #state[cameraTileZ].actors do
-			local actor = state[cameraTileZ].actors[i]
-			if (actor.y == verTile) then
-				local cX = rect.x - offsetX + (actor.x - firstTileX) * TILE_WIDTH + TILE_WIDTH / 2
-				local cY = rect.y + tileY + TILE_HEIGHT / 2
-
-				-- test and use appearance component
-				if (actor.appearance ~= nil) then
-					actor.appearance.draw(cX,cY)
-				end
-			end
 		end
 		tileY = tileY + TILE_HEIGHT
 	end
 
 	layout.disableClipping()
+end
+
+-- returns data for drawing world and entities within viewport
+function world.getViewPortData()
+	-- pixel location of camera in world
+	local cameraX = cameraTileX * TILE_WIDTH - TILE_WIDTH / 2
+	local cameraY = cameraTileY * TILE_HEIGHT - TILE_HEIGHT / 2
+
+	-- upper left corner pixel location of viewport centered around camera
+	local viewPortX1 = cameraX - rect.width / 2
+	local viewPortY1 = cameraY - rect.height / 2
+
+	-- top left viewport tile
+	local firstTileX = 1 + math.floor(viewPortX1 / TILE_WIDTH)
+	local firstTileY = 1 + math.floor(viewPortY1 / TILE_HEIGHT)
+	
+	-- pixel offset of upper left tile from viewport
+	local offsetX = -viewPortX1 % TILE_WIDTH
+	local offsetY = -viewPortY1 % TILE_HEIGHT
+	
+	-- bottom right viewport tile
+	local lastTileX = math.min(firstTileX + rectWidthTiles - 1, WORLD_WIDTH)
+	local lastTileY = math.min(firstTileY + rectHeightTiles - 1, WORLD_HEIGHT)
+	
+	return {
+		screenX1 = rect.x + offsetX,
+		screenY1 = rect.y + offsetY,
+		firstTileX = firstTileX,
+		firstTileY = firstTileY,
+		lastTileX = lastTileX,
+		lastTileY = lastTileY,
+		tileWidth = TILE_WIDTH,
+		tileHeight = TILE_HEIGHT
+	}
 end
 
 function world.load()

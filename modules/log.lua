@@ -9,7 +9,7 @@ log.TEXT_COLOR_DEFAULT = {1,1,1}
 log.TEXT_COLOR_DANGER = {1,0,0}
 
 local BACKGROUND_COLOR = {0.1,0.1,0.3}
-local LINE_HEIGHT = 14
+local LINE_HEIGHT = 22
 local PADDING_LEFT = 5
 
 local entries

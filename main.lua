@@ -1,6 +1,8 @@
 local aspect = require("modules.aspect")
+local entityManager = require("modules.ecs.managers.entitymanager")
 local layout = require("modules.layout")
 local log = require("modules.log")
+local renderSystem = require("modules.ecs.systems.rendersystem")
 local utils = require("modules.utils")
 local world = require("modules.world")
 
@@ -15,22 +17,16 @@ local STATE_GAME_OVER = 2
 local state
 
 function love.load()
-	-- initialize modules for program session
 	aspect.init()
 	layout.init(aspect.getGameWidth(),aspect.getGameHeight())
 	log.init(layout.DRAWING_AREA_LOG)
 	world.init(layout.DRAWING_AREA_WORLD)
 	
-	-- initialize global settings for program session
-	setupGame()
-
-	switchToState(STATE_TITLE)
-end
-
-function setupGame()
 	love.window.setTitle(GAME_NAME)
 	love.graphics.setDefaultFilter("nearest","nearest",1)
 	love.graphics.setLineStyle("rough")
+
+	switchToState(STATE_TITLE)
 end
 
 function switchToState(newState)
@@ -38,16 +34,15 @@ function switchToState(newState)
 	
 	love.graphics.setFont(love.graphics.newFont("Retroville_NC.ttf",20))
 	
-	if (state == STATE_TITLE) then
-		-- ...
-	elseif (state == STATE_PLAY) then
-		world.create(LEVELS,STARTING_LEVEL)
+	if (state == STATE_PLAY) then
+		entityManager.reset()
+
+		world.createNew(LEVELS,STARTING_LEVEL)
 		world.setCamera(nil,nil,STARTING_LEVEL)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.",log.TEXT_COLOR_DEFAULT)
-	elseif (state == STATE_GAME_OVER) then
-		-- ...
+		log.addEntry("You see a bat.",log.TEXT_COLOR_DEFAULT)
 	end
 end
 
@@ -71,23 +66,17 @@ function love.draw()
 	aspect.apply()
 	
 	if (state == STATE_TITLE) then
-		for i = 2, 5 do
-			local color = 1-(5-i)*0.2
-			love.graphics.setColor(color,color,color)
-			love.graphics.printf(GAME_NAME,0,30+i*1,aspect.getGameWidth(),"center")	
-		end
-		
 		love.graphics.setColor(0.470,0.902,1)
+		love.graphics.printf(GAME_NAME,0,30,aspect.getGameWidth(),"center")	
 		love.graphics.printf("W = windowed / full screen",0,120,aspect.getGameWidth(),"center")
-		
-		love.graphics.setColor(1,1,1)
 		love.graphics.printf("Click to start",0,170,aspect.getGameWidth(),"center")
 	end
 	
 	if (state == STATE_PLAY) then
 		log.draw()
 		world.draw()
-
+		renderSystem.render(world.getViewPortData())
+		
 		-- ...
 	end
 	
