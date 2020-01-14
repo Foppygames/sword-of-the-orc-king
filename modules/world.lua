@@ -250,4 +250,24 @@ function world.save()
 	-- ...
 end
 
+function world.locationIsPassable(x,y,z)
+	-- location is outside of world bounds
+	if ((x < 1) or (x > WORLD_WIDTH)) then
+		return false
+	end
+	if ((y < 1) or (y > WORLD_HEIGHT)) then
+		return false
+	end
+
+	local posIndex = (y - 1) * WORLD_WIDTH + x
+
+	-- location has wall
+	if (state[z].layout[posIndex].wall == 1) then
+		return false
+	end
+
+	-- passable if floor present
+	return (state[z].layout[posIndex].floor == 1)
+end
+
 return world

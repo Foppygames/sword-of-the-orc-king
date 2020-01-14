@@ -2,7 +2,7 @@ local entityManager = require("modules.ecs.managers.entitymanager")
 
 local renderSystem = {}
 
-function renderSystem.render(viewPortData)
+function renderSystem.update(viewPortData)
 	local entities = entityManager.getEntitiesHaving({"appearance","position"})
 	for i = 1, #entities do
 		local tileX = entities[i].position.x

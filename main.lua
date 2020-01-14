@@ -1,5 +1,7 @@
+local actionSystem = require("modules.ecs.systems.actionSystem")
 local aspect = require("modules.aspect")
 local entityManager = require("modules.ecs.managers.entitymanager")
+local energySystem = require("modules.ecs.systems.energySystem")
 local layout = require("modules.layout")
 local log = require("modules.log")
 local renderSystem = require("modules.ecs.systems.rendersystem")
@@ -9,12 +11,14 @@ local world = require("modules.world")
 local GAME_NAME = "Adventure Game"
 local LEVELS = 3
 local STARTING_LEVEL = 1
+local TURN_PAUSE_TIME = 0.1
 
 local STATE_TITLE = 0
 local STATE_PLAY = 1
 local STATE_GAME_OVER = 2
 
 local state
+local turnPauseTime
 
 function love.load()
 	aspect.init()
@@ -43,6 +47,8 @@ function switchToState(newState)
 		log.clear()
 		log.addEntry("You enter the dungeon.",log.TEXT_COLOR_DEFAULT)
 		log.addEntry("You see a bat.",log.TEXT_COLOR_DEFAULT)
+
+		turnPauseTime = TURN_PAUSE_TIME
 	end
 end
 
@@ -75,7 +81,7 @@ function love.draw()
 	if (state == STATE_PLAY) then
 		log.draw()
 		world.draw()
-		renderSystem.render(world.getViewPortData())
+		renderSystem.update(world.getViewPortData())
 		
 		-- ...
 	end
@@ -90,7 +96,16 @@ end
 
 function love.update(dt)
 	if (state == STATE_PLAY) then
-		-- ...
+		turnPauseTime = turnPauseTime - dt
+		if (turnPauseTime <= 0) then
+			energySystem.update()
+			actionSystem.update()
+
+			turnPauseTime = turnPauseTime + TURN_PAUSE_TIME
+			-- note: turn pause time is a delay so we can see what is going on
+			-- in a stage of development when no player input pause is present
+			-- (player input will add a natural break in game time progress)
+		end
 	end
 end
 

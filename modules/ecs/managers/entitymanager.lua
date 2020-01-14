@@ -5,9 +5,9 @@ local entityManager = {}
 -- available components
 local components = {
 	appearance = require("modules.ecs.components.appearance"),
+	energy = require("modules.ecs.components.energy"),
 	movement = require("modules.ecs.components.movement"),
 	position = require("modules.ecs.components.position"),
-	speed = require("modules.ecs.components.speed")
 	-- vision = ... (component allowing entity to see tiles and entities on tiles, to help decide next action)
 }
 
@@ -18,18 +18,22 @@ local configs = {
 			size = 8,
 			color = {0,0,1}
 		},
+		energy = {
+			increment = 10
+		},
 		movement = {},
-		position = {},
-		speed = {}
+		position = {}
 	},
 	hero = {
 		appearance = {
 			size = 16,
 			color = {0,1,0}
 		},
+		energy = {
+			increment = 5
+		},
 		movement = {},
-		position = {},
-		speed = {}
+		position = {}
 	}
 }
 
