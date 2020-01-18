@@ -8,7 +8,7 @@ local renderSystem = require("modules.ecs.systems.rendersystem")
 local utils = require("modules.utils")
 local world = require("modules.world")
 
-local GAME_NAME = "Adventure Game"
+local GAME_NAME = "Sword of the Orc King"
 local LEVELS = 3
 local STARTING_LEVEL = 1
 local TURN_PAUSE_TIME = 0.1
@@ -17,6 +17,11 @@ local STATE_TITLE = 0
 local STATE_PLAY = 1
 local STATE_GAME_OVER = 2
 
+local cameraPosition = {
+	x = 1,
+	y = 1,
+	z = STARTING_LEVEL
+}
 local state
 local turnPauseTime
 
@@ -42,13 +47,23 @@ function switchToState(newState)
 		entityManager.reset()
 
 		world.createNew(LEVELS,STARTING_LEVEL)
-		world.setCamera(nil,nil,STARTING_LEVEL)
+		updateCameraPosition()
+		world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.",log.TEXT_COLOR_DEFAULT)
 		log.addEntry("You see a bat.",log.TEXT_COLOR_DEFAULT)
 
 		turnPauseTime = TURN_PAUSE_TIME
+	end
+end
+
+function updateCameraPosition()
+	local cameraEntityPosition = entityManager.getFirstCameraEntityPosition()
+	if (cameraEntityPosition ~= nil) then
+		cameraPosition.x = cameraEntityPosition.x
+		cameraPosition.y = cameraEntityPosition.y
+		cameraPosition.z = cameraEntityPosition.z
 	end
 end
 
@@ -79,6 +94,8 @@ function love.draw()
 	end
 	
 	if (state == STATE_PLAY) then
+		love.graphics.clear(0.2,0.2,0.2)
+
 		log.draw()
 		world.draw()
 		renderSystem.update(world.getViewPortData())
@@ -105,6 +122,9 @@ function love.update(dt)
 			-- note: turn pause time is a delay so we can see what is going on
 			-- in a stage of development when no player input pause is present
 			-- (player input will add a natural break in game time progress)
+
+			updateCameraPosition()
+			world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
 		end
 	end
 end

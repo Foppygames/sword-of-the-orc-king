@@ -5,6 +5,7 @@ local entityManager = {}
 -- available components
 local components = {
 	appearance = require("modules.ecs.components.appearance"),
+	camera = require("modules.ecs.components.camera"),
 	energy = require("modules.ecs.components.energy"),
 	movement = require("modules.ecs.components.movement"),
 	position = require("modules.ecs.components.position"),
@@ -29,6 +30,7 @@ local configs = {
 			size = 16,
 			color = {0,1,0}
 		},
+		camera = {},
 		energy = {
 			increment = 5
 		},
@@ -72,6 +74,14 @@ function entityManager.getEntitiesHaving(componentIds)
 		end
 	end
 	return result
+end
+
+function entityManager.getFirstCameraEntityPosition()
+	local entities = entityManager.getEntitiesHaving({"camera","position"})
+	if (#entities > 0) then
+		return entities[1].position
+	end
+	return nil
 end
 
 return entityManager

@@ -6,10 +6,18 @@ local utils = require("modules.utils")
 
 local mod = 0.38
 
-local WINDOW_WIDTH = 854 --960
-local WINDOW_HEIGHT = 480 --540
-local GAME_WIDTH = 854 --480
-local GAME_HEIGHT = 480 -- 270
+local WINDOW_WIDTH = 1280 --854 --960
+local WINDOW_HEIGHT = 720 --480 --540
+local GAME_WIDTH = 1280 --854 --480
+local GAME_HEIGHT = 720 --480 -- 270
+
+--[[
+local WINDOW_WIDTH = 854
+local WINDOW_HEIGHT = 480
+local GAME_WIDTH = 854
+local GAME_HEIGHT = 480
+]]
+
 local BAR_COLOR = {0,0,0}
 
 local fullScreen = false

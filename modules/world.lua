@@ -70,6 +70,9 @@ function world.createNew(levels,startingLevel)
 		local addHero = (i == startingLevel)
 		world.addLevel(addHero)
 	end
+	cameraTileX = nil
+	cameraTileY = nil
+	cameraTileZ = nil
 end
 
 function world.addLevel(addHero)
@@ -157,20 +160,14 @@ function world.setCamera(x,y,z)
 		cameraTileY = y
 	end
 	if (z ~= nil) then
-		-- leaving current level
-		if ((cameraTileZ ~= nil) and (cameraTileZ ~= z)) then
-			storeActors(cameraTileZ)
+		local oldZ = cameraTileZ
+		if ((oldZ ~= nil) and (oldZ ~= z)) then
+			storeActors(oldZ)
 		end
-
-		-- set new level
+		if (oldZ ~= z) then
+			createActors(z)
+		end
 		cameraTileZ = z
-		createActors(cameraTileZ)
-
-		-- set camera position to hero coordinates
-		-- ...
-		-- temp:
-		cameraTileX = 2
-		cameraTileY = 2
 	end
 end
 

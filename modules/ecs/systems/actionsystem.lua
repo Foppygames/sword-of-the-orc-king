@@ -30,8 +30,6 @@ function actionSystem.update()
 			-- use energy
 			entities[i].energy.useForAction = true
 		end
-
-		
 	end
 end
 
