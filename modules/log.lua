@@ -1,14 +1,15 @@
 -- log is a module that manages and displays the most recent game messages
 
 local aspect = require("modules.aspect")
+local colors = require("modules.colors")
 local layout = require("modules.layout")
 
 local log = {}
 
-log.TEXT_COLOR_DEFAULT = {0.9,0.9,0.9}
-log.TEXT_COLOR_DANGER = {1,0,0}
+log.TEXT_COLOR_DEFAULT = colors.get("LIGHT_BLUE")
+log.TEXT_COLOR_DANGER = colors.get("RED")
 
-local BACKGROUND_COLOR = {0.1,0.1,0.1}
+local BACKGROUND_COLOR = colors.get("BLUE")
 local LINE_HEIGHT = 24
 local PADDING_LEFT = 5
 

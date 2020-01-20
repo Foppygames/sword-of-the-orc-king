@@ -12,8 +12,13 @@ function renderSystem.update(viewPortData)
 			local cX = viewPortData.screenX1 + (tileX - viewPortData.firstTileX) * viewPortData.tileWidth + viewPortData.tileWidth / 2
 			local cY = viewPortData.screenY1 + (tileY - viewPortData.firstTileY) * viewPortData.tileHeight + viewPortData.tileHeight / 2
 			local size = entities[i].appearance.size
-			love.graphics.setColor(entities[i].appearance.color)
-			love.graphics.rectangle("fill",cX-size/2,cY-size/2,size,size)
+			--love.graphics.setColor(entities[i].appearance.color)
+			--love.graphics.rectangle("fill",cX-size/2,cY-size/2,size,size)
+
+			local orc = love.graphics.newImage("images/entities/orc.png")
+
+			love.graphics.setColor(1,1,1)
+			love.graphics.draw(orc,cX-orc:getWidth()/2,cY-orc:getHeight()/2)
 		end
 	end
 end

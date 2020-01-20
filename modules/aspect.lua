@@ -6,10 +6,10 @@ local utils = require("modules.utils")
 
 local mod = 0.38
 
-local WINDOW_WIDTH = 1280 --854 --960
-local WINDOW_HEIGHT = 720 --480 --540
-local GAME_WIDTH = 1280 --854 --480
-local GAME_HEIGHT = 720 --480 -- 270
+local WINDOW_WIDTH = 1280 --854 --960   -- 1280 / 4 = 320
+local WINDOW_HEIGHT = 720 --480 --540   -- 720 / 4 = 180
+local GAME_WIDTH = 640 --854 --480
+local GAME_HEIGHT = 360 --480 -- 270
 
 --[[
 local WINDOW_WIDTH = 854

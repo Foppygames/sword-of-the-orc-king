@@ -1,18 +1,19 @@
 -- world is a module that manages and displays the current game world
 
 local aspect = require("modules.aspect")
+local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local layout = require("modules.layout")
 local tiles = require("modules.tiles")
 
 local world = {}
 
-local BACKGROUND_COLOR = {0,0,0}
-local TILE_COLOR_FLOOR = {0.12,0.12,0.12}
-local TILE_COLOR_WALL_FRONT = {0.2,0.2,0.2}
-local TILE_COLOR_WALL_TOP = {0.3,0.3,0.3}
-local TILE_WIDTH = 18
-local TILE_HEIGHT = 28
+local BACKGROUND_COLOR = colors.get("BLACK")
+local TILE_COLOR_FLOOR = colors.get("DARK_GREY")
+local TILE_COLOR_WALL_FRONT = colors.get("BROWN")
+local TILE_COLOR_WALL_TOP = colors.get("ORANGE")
+local TILE_WIDTH = 16 --18
+local TILE_HEIGHT = 24 --28
 local WALL_HEIGHT = TILE_HEIGHT / 2
 local WORLD_WIDTH = 50
 local WORLD_HEIGHT = 50

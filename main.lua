@@ -1,5 +1,6 @@
 local actionSystem = require("modules.ecs.systems.actionSystem")
 local aspect = require("modules.aspect")
+local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local energySystem = require("modules.ecs.systems.energySystem")
 local layout = require("modules.layout")
@@ -11,7 +12,7 @@ local world = require("modules.world")
 local GAME_NAME = "Sword of the Orc King"
 local LEVELS = 3
 local STARTING_LEVEL = 1
-local TURN_PAUSE_TIME = 0.1
+local TURN_PAUSE_TIME = 2
 
 local STATE_TITLE = 0
 local STATE_PLAY = 1
@@ -27,6 +28,7 @@ local turnPauseTime
 
 function love.load()
 	aspect.init()
+	colors.init()
 	layout.init(aspect.getGameWidth(),aspect.getGameHeight())
 	log.init(layout.DRAWING_AREA_LOG)
 	world.init(layout.DRAWING_AREA_WORLD)
@@ -41,8 +43,8 @@ end
 function switchToState(newState)
 	state = newState
 	
-	love.graphics.setFont(love.graphics.newFont("Retroville_NC.ttf",20))
-	
+	love.graphics.setFont(love.graphics.newFont("Retroville_NC.ttf",10))
+
 	if (state == STATE_PLAY) then
 		entityManager.reset()
 
@@ -94,7 +96,7 @@ function love.draw()
 	end
 	
 	if (state == STATE_PLAY) then
-		love.graphics.clear(0.2,0.2,0.2)
+		love.graphics.clear(colors.get("LIGHT_BLUE"))
 
 		log.draw()
 		world.draw()
