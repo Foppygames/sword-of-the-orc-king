@@ -10,8 +10,8 @@ log.TEXT_COLOR_DEFAULT = colors.get("LIGHT_BLUE")
 log.TEXT_COLOR_DANGER = colors.get("RED")
 
 local BACKGROUND_COLOR = colors.get("BLUE")
-local LINE_HEIGHT = 24
-local PADDING_LEFT = 5
+local LINE_HEIGHT = 16
+local PADDING_LEFT = 4
 
 local entries
 local font

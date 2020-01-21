@@ -16,8 +16,7 @@ local components = {
 local configs = {
 	bat = {
 		appearance = {
-			size = 8,
-			color = {0,0,1}
+			imageId = "bat"
 		},
 		energy = {
 			increment = 10
@@ -27,8 +26,7 @@ local configs = {
 	},
 	hero = {
 		appearance = {
-			size = 16,
-			color = {0,1,0}
+			imageId = "orc"
 		},
 		camera = {},
 		energy = {

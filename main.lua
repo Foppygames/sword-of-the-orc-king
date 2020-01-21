@@ -3,6 +3,7 @@ local aspect = require("modules.aspect")
 local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local energySystem = require("modules.ecs.systems.energySystem")
+local images = require("modules.images")
 local layout = require("modules.layout")
 local log = require("modules.log")
 local renderSystem = require("modules.ecs.systems.rendersystem")
@@ -29,6 +30,7 @@ local turnPauseTime
 function love.load()
 	aspect.init()
 	colors.init()
+	images.init()
 	layout.init(aspect.getGameWidth(),aspect.getGameHeight())
 	log.init(layout.DRAWING_AREA_LOG)
 	world.init(layout.DRAWING_AREA_WORLD)
@@ -49,14 +51,12 @@ function switchToState(newState)
 		entityManager.reset()
 
 		world.createNew(LEVELS,STARTING_LEVEL)
-		updateCameraPosition()
 		world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.",log.TEXT_COLOR_DEFAULT)
-		log.addEntry("You see a bat.",log.TEXT_COLOR_DEFAULT)
-
-		turnPauseTime = TURN_PAUSE_TIME
+		
+		turnPauseTime = 0
 	end
 end
 

@@ -4,8 +4,7 @@ local Appearance = {}
 
 function Appearance.create(entityDefaults,entityData)
     local self = Component.create({
-        size = 0,
-        color = {0,0,0}
+        imageId = nil
     })
 
     self.setValues(entityDefaults,entityData)
