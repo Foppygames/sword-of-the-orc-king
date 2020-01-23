@@ -1,9 +1,10 @@
 local actionSystem = require("modules.ecs.systems.actionSystem")
 local aspect = require("modules.aspect")
 local colors = require("modules.colors")
-local entityManager = require("modules.ecs.managers.entitymanager")
 local energySystem = require("modules.ecs.systems.energySystem")
+local entityManager = require("modules.ecs.managers.entitymanager")
 local images = require("modules.images")
+local input = require("modules.input")
 local layout = require("modules.layout")
 local log = require("modules.log")
 local renderSystem = require("modules.ecs.systems.rendersystem")
@@ -13,7 +14,7 @@ local world = require("modules.world")
 local GAME_NAME = "Sword of the Orc King"
 local LEVELS = 3
 local STARTING_LEVEL = 1
-local TURN_PAUSE_TIME = 2
+local TURN_PAUSE_TIME = 0
 
 local STATE_TITLE = 0
 local STATE_PLAY = 1
@@ -49,6 +50,7 @@ function switchToState(newState)
 
 	if (state == STATE_PLAY) then
 		entityManager.reset()
+		input.reset()
 
 		world.createNew(LEVELS,STARTING_LEVEL)
 		world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
@@ -73,6 +75,7 @@ function love.mousepressed(x,y,button,istouch,presses)
 	if (state == STATE_TITLE) then
 		if (button == 1) then
 			switchToState(STATE_PLAY)
+			return
 		end
 	end
 	if (state == STATE_PLAY) then
@@ -81,6 +84,7 @@ function love.mousepressed(x,y,button,istouch,presses)
 	if (state == STATE_GAME_OVER) then
 		if (button == 1) then
 			switchToState(STATE_TITLE)
+			return
 		end
 	end
 end
@@ -115,18 +119,23 @@ end
 
 function love.update(dt)
 	if (state == STATE_PLAY) then
-		turnPauseTime = turnPauseTime - dt
-		if (turnPauseTime <= 0) then
-			energySystem.update()
-			actionSystem.update()
+		if (turnPauseTime > 0) then
+			turnPauseTime = turnPauseTime - dt
+		else
+			local entityTurnCompleted, allCompleted = actionSystem.update(input.get())
 
-			turnPauseTime = turnPauseTime + TURN_PAUSE_TIME
-			-- note: turn pause time is a delay so we can see what is going on
-			-- in a stage of development when no player input pause is present
-			-- (player input will add a natural break in game time progress)
+			input.reset()
 
 			updateCameraPosition()
 			world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
+
+			if (entityTurnCompleted) then
+				turnPauseTime = turnPauseTime + TURN_PAUSE_TIME
+			end
+
+			if (allCompleted) then
+				energySystem.update()
+			end
 		end
 	end
 end
@@ -139,8 +148,8 @@ function love.keypressed(key)
 		if (key == "space") then
 			-- load saved game state if available
 			-- ...
-
 			switchToState(STATE_PLAY)
+			return
 		end
 		if (key == "escape") then
 			love.event.quit()
@@ -150,13 +159,29 @@ function love.keypressed(key)
 		if (key == "escape") then
 			-- save game state to continue play later
 			-- ...
-
 			switchToState(STATE_TITLE)
+			return
+		end
+		if (key == "up") then
+			input.set(input.KEY_UP_HIT)
+		end
+		if (key == "down") then
+			input.set(input.KEY_DOWN_HIT)
+		end
+		if (key == "left") then
+			input.set(input.KEY_LEFT_HIT)
+		end
+		if (key == "right") then
+			input.set(input.KEY_RIGHT_HIT)
+		end
+		if (key == "space") then
+			input.set(input.KEY_SPACE_HIT)
 		end
 	end
 	if (state == STATE_GAME_OVER) then
 		if (key == "space") then
 			switchToState(STATE_TITLE)
+			return
 		end
 	end
 end

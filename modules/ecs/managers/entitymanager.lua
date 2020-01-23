@@ -4,9 +4,11 @@ local entityManager = {}
 
 -- available components
 local components = {
+	action = require("modules.ecs.components.action"),
 	appearance = require("modules.ecs.components.appearance"),
 	camera = require("modules.ecs.components.camera"),
 	energy = require("modules.ecs.components.energy"),
+	input = require("modules.ecs.components.input"),
 	movement = require("modules.ecs.components.movement"),
 	position = require("modules.ecs.components.position"),
 	-- vision = ... (component allowing entity to see tiles and entities on tiles, to help decide next action)
@@ -15,6 +17,7 @@ local components = {
 -- available entity types defined in terms of components and entity default component values
 local configs = {
 	bat = {
+		action = {},
 		appearance = {
 			imageId = "bat"
 		},
@@ -25,6 +28,7 @@ local configs = {
 		position = {}
 	},
 	hero = {
+		action = {},
 		appearance = {
 			imageId = "orc"
 		},
@@ -32,6 +36,7 @@ local configs = {
 		energy = {
 			increment = 5
 		},
+		input = {},
 		movement = {},
 		position = {}
 	}
@@ -72,6 +77,16 @@ function entityManager.getEntitiesHaving(componentIds)
 		end
 	end
 	return result
+end
+
+function entityManager.entityHas(entity,componentIds)
+	for j = 1, #componentIds do
+		local componentId = componentIds[j]
+		if (entity[componentId] == nil) then
+			return false
+		end
+	end
+	return true
 end
 
 function entityManager.getFirstCameraEntityPosition()
