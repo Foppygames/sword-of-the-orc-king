@@ -2,9 +2,9 @@
 
 local Component = {}
 
-function Component.create(defaults)
+function Component.create(systemDefaults)
     -- set system defaults
-    local self = defaults
+    local self = systemDefaults
     
     function self.setValues(entityDefaults,entityData)
         if (entityDefaults ~= nil) then

@@ -1,45 +1,10 @@
--- entitymanager is a module managing the collection of active entities
+-- entitymanager is a module managing entity definitions and the collection of active entities
 
 local entityManager = {}
 
--- available components
-local components = {
-	action = require("modules.ecs.components.action"),
-	appearance = require("modules.ecs.components.appearance"),
-	camera = require("modules.ecs.components.camera"),
-	energy = require("modules.ecs.components.energy"),
-	input = require("modules.ecs.components.input"),
-	movement = require("modules.ecs.components.movement"),
-	position = require("modules.ecs.components.position"),
-	-- vision = ... (component allowing entity to see tiles and entities on tiles, to help decide next action)
-}
-
--- available entity types defined in terms of components and entity default component values
-local configs = {
-	bat = {
-		action = {},
-		appearance = {
-			imageId = "bat"
-		},
-		energy = {
-			increment = 10
-		},
-		movement = {},
-		position = {}
-	},
-	hero = {
-		action = {},
-		appearance = {
-			imageId = "orc"
-		},
-		camera = {},
-		energy = {
-			increment = 5
-		},
-		input = {},
-		movement = {},
-		position = {}
-	}
+local definitions = {
+	bat = require("modules.ecs.entities.bat"),
+	hero = require("modules.ecs.entities.hero")
 }
 
 local entities = {}
@@ -48,17 +13,8 @@ function entityManager.reset()
 	entities = {}
 end
 
-function entityManager.addEntity(id,entityData)
-	local entity = {}
-	local config = configs[id]
-	for componentId,entityDefaults in pairs(config) do
-		entity[componentId] = entityManager.createComponent(componentId,entityDefaults,entityData[componentId])
-	end
-	table.insert(entities,entity)
-end
-
-function entityManager.createComponent(id,entityDefaults,entityData)
-	return components[id].create(entityDefaults,entityData)
+function entityManager.addEntity(id,data)
+	table.insert(entities,definitions[id].create(data))
 end
 
 function entityManager.getEntitiesHaving(componentIds)

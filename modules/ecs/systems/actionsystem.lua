@@ -57,6 +57,14 @@ function actionSystem.update(inputEvent)
 					elseif (inputEvent == input.KEY_RIGHT_HIT) then
 						dX = 1
 					end
+
+					--[[
+						Note: this seems to be the wrong approach. Maybe we want to talk about actions
+						here instead of keyboard events. Just a single keyboard event as input to actionsystem
+						update function is too low level? Player uses interface to construct (in one step or
+						more steps) an action. This is then provided to this function. Computer entities
+						construct an action using the actionsystem. (?)
+					]]
 				else
 					continue = false
 				end
