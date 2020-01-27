@@ -14,7 +14,7 @@ function actionSystem.reset()
 	entities = {}
 end
 
--- updates the next entity and returns two booleans: pause needed, all entities updated
+-- updates the next entity and returns true if all entities updated, false otherwise
 function actionSystem.update(inputAction)
 	-- set of entities needs to be fetched
 	if (index == nil) then
@@ -25,13 +25,13 @@ function actionSystem.update(inputAction)
 	-- no entities found
 	if (index == 0) then
 		index = nil
-		return false,true
+		return true
 	end
 
 	-- all entities updated
 	if (index > #entities) then
 		index = nil
-		return false,true
+		return true
 	end
 
 	local acted = false
@@ -41,15 +41,13 @@ function actionSystem.update(inputAction)
 	local energyForActionAvailable = (entities[index].energy.level >= energySystem.ENERGY_FOR_ACTION)
 
 	if (energyForActionAvailable) then
+		-- entity is controlled by input
 		if (entityManager.entityHas(entities[index],{"input"})) then
-			-- testing: simulating player input
-			inputAction = actionManager.createAction("move",{
-				dX = math.random(-1,1),
-				dY = math.random(-1,1)
-			})
-			
+			-- use provided action
 			action = inputAction
+		-- entity is controlled by computer
 		else
+			-- move in random direction
 			action = actionManager.createAction("move",{
 				dX = math.random(-1,1),
 				dY = math.random(-1,1)
@@ -59,7 +57,7 @@ function actionSystem.update(inputAction)
 		
 	-- action selected
 	if (action ~= nil) then
-		acted = action.run(entities[index])
+		acted = action.perform(entities[index])
 	end
 
 	-- action performed with success
@@ -69,14 +67,14 @@ function actionSystem.update(inputAction)
 	elseif (energyForActionAvailable) then
 		-- stay in this entity's turn
 		continue = false
-		-- Note: an explicit skip action will have to be be added so a turn can be successully skipped
+		-- Todo: add explicit skip action so turn can be completed even though energy for action is available
 	end
 	
 	if (continue) then
 		index = index + 1
 	end
 
-	return acted,false
+	return false
 end
 
 return actionSystem

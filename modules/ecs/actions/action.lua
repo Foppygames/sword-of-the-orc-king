@@ -2,6 +2,8 @@
 
 local Action = {}
 
+-- Todo: make number of energy points used property of action component
+
 function Action.create(defaults)
     local self = defaults
     

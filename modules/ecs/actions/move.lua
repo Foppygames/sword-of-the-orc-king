@@ -1,5 +1,6 @@
 local Action = require("modules.ecs.actions.action")
 local entityManager = require("modules.ecs.managers.entityManager")
+local log = require("modules.log")
 local world = require("modules.world")
 
 local Move = {}
@@ -12,7 +13,7 @@ function Move.create(data)
 
     self.setValues(data)
 
-    function self.run(entity)
+    function self.perform(entity)
         local success = false
         if (entityManager.entityHas(entity,{"movement","position"})) then
             -- target location is not entity location
@@ -22,7 +23,8 @@ function Move.create(data)
 				local newY = entity.position.y + self.dY
 
                 if (world.locationIsPassable(newX,newY,entity.position.z)) then
-					-- also check if no entity at location, using entityManager and world
+                    -- also check if no entity at location, using entityManager and world;
+                    -- note that moving into enemy should probably lead to attack action
 					-- ...
 
 					entity.position.x = newX
@@ -33,6 +35,9 @@ function Move.create(data)
                     -- skip turn if not controlled by player
                     if (not entityManager.entityHas(entity,{"input"})) then
                         success = true
+                    -- show message to player
+                    else
+                        log.addEntry("Your path is blocked.")
                     end
                 end
             -- target location is entity location

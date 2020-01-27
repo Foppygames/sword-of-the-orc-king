@@ -14,7 +14,7 @@ function Hero.create(data)
 		energy = {
 			increment = 5
 		},
-		--input = {},
+		input = {},
 		movement = {},
 		position = {}
     },data)

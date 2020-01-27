@@ -14,7 +14,6 @@ local world = require("modules.world")
 local GAME_NAME = "Sword of the Orc King"
 local LEVELS = 3
 local STARTING_LEVEL = 1
-local TURN_PAUSE_TIME = 0
 
 local STATE_TITLE = 0
 local STATE_PLAY = 1
@@ -26,7 +25,6 @@ local cameraPosition = {
 	z = STARTING_LEVEL
 }
 local state
-local turnPauseTime
 
 function love.load()
 	aspect.init()
@@ -50,15 +48,13 @@ function switchToState(newState)
 
 	if (state == STATE_PLAY) then
 		entityManager.reset()
-		input.reset()
+		input.resetAction()
 
 		world.createNew(LEVELS,STARTING_LEVEL)
 		world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
 
 		log.clear()
-		log.addEntry("You enter the dungeon.",log.TEXT_COLOR_DEFAULT)
-		
-		turnPauseTime = 0
+		log.addEntry("You enter the dungeon.")
 	end
 end
 
@@ -119,23 +115,15 @@ end
 
 function love.update(dt)
 	if (state == STATE_PLAY) then
-		if (turnPauseTime > 0) then
-			turnPauseTime = turnPauseTime - dt
-		else
-			local entityTurnCompleted, allCompleted = actionSystem.update(input.get())
+		local allUpdated = actionSystem.update(input.getAction())
 
-			input.reset()
+		input.resetAction()
 
-			updateCameraPosition()
-			world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
+		updateCameraPosition()
+		world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
 
-			if (entityTurnCompleted) then
-				turnPauseTime = turnPauseTime + TURN_PAUSE_TIME
-			end
-
-			if (allCompleted) then
-				energySystem.update()
-			end
+		if (allUpdated) then
+			energySystem.update()
 		end
 	end
 end
@@ -161,21 +149,8 @@ function love.keypressed(key)
 			-- ...
 			switchToState(STATE_TITLE)
 			return
-		end
-		if (key == "up") then
-			input.set(input.KEY_UP_HIT)
-		end
-		if (key == "down") then
-			input.set(input.KEY_DOWN_HIT)
-		end
-		if (key == "left") then
-			input.set(input.KEY_LEFT_HIT)
-		end
-		if (key == "right") then
-			input.set(input.KEY_RIGHT_HIT)
-		end
-		if (key == "space") then
-			input.set(input.KEY_SPACE_HIT)
+		else
+			input.registerKeyPressed(key)
 		end
 	end
 	if (state == STATE_GAME_OVER) then
