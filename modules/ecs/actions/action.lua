@@ -15,8 +15,8 @@ function Action.create(defaults)
         end
     end
 
-    function self.run(entity)
-        print "Error: action run function not implemented for derived class"
+    function self.perform(entity)
+        print "Error: action.perform() not implemented for derived class"
         return false
     end
 

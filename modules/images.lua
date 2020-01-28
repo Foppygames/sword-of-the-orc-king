@@ -7,7 +7,7 @@ images.items = {
 		path = "images/entities/bat.png"
 	},
 	orc = {
-		path = "images/entities/orc.png"
+		path = "images/entities/orc_green.png"
 	}
 }
 

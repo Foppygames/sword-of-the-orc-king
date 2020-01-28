@@ -4,6 +4,49 @@ local actionManager = require("modules.ecs.managers.actionmanager")
 
 local input = {}
 
+local DIRECTIONS = {
+	up = {
+		dY = -1
+	},
+	down = {
+		dY = 1
+	},
+	left = {
+		dX = -1
+	},
+	right = {
+		dX = 1
+	},
+	kp8 = {
+		dY = -1
+	},
+	kp9 = {
+		dX = 1,
+		dY = -1
+	},
+	kp6 = {
+		dX = 1
+	},
+	kp3 = {
+		dX = 1,
+		dY = 1
+	},
+	kp2 = {
+		dY = 1
+	},
+	kp1 = {
+		dX = -1,
+		dY = 1
+	},
+	kp4 = {
+		dX = -1
+	},
+	kp7 = {
+		dX = -1,
+		dY = -1
+	}
+}
+
 local action = nil
 
 function input.resetAction()
@@ -15,24 +58,8 @@ function input.getAction()
 end
 
 function input.registerKeyPressed(key)
-	-- Todo: create key equivalence groups leading to actions (via specialized functions)
-	-- Todo: allow player to move diagonally, options: num keypad, mouse
-	if (key == "up") then
-		action = actionManager.createAction("move",{
-			dY = -1
-		})
-	elseif (key == "down") then
-		action = actionManager.createAction("move",{
-			dY = 1
-		})
-	elseif (key == "left") then
-		action = actionManager.createAction("move",{
-			dX = -1
-		})
-	elseif (key == "right") then
-		action = actionManager.createAction("move",{
-			dX = 1
-		})
+	if (DIRECTIONS[key] ~= nil) then
+		action = actionManager.createAction("move",DIRECTIONS[key])
 	end
 end
 
