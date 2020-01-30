@@ -11,6 +11,7 @@ function Bat.create(data)
 		energy = {
 			increment = 10
 		},
+		ai = {},
 		movement = {},
 		position = {}
     },data)

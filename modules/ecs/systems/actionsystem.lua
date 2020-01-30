@@ -43,15 +43,13 @@ function actionSystem.update(inputAction)
 	if (energyForActionAvailable) then
 		-- entity is controlled by input
 		if (entityManager.entityHas(entities[index],{"input"})) then
-			-- use provided action
 			action = inputAction
-		-- entity is controlled by computer
+		-- entity is controlled by ai
+		elseif (entityManager.entityHas(entities[index],{"ai"})) then
+			action = actionSystem.getAiAction(entity)
+		-- entity is not controlled
 		else
-			-- move in random direction
-			action = actionManager.createAction("move",{
-				dX = math.random(-1,1),
-				dY = math.random(-1,1)
-			})
+			acted = true
 		end
 	end
 		
@@ -75,6 +73,22 @@ function actionSystem.update(inputAction)
 	end
 
 	return false
+end
+
+function actionSystem.getAiAction(entity)
+	local action = nil
+
+	-- move in random direction
+	action = actionManager.createAction("move",{
+		dX = math.random(-1,1),
+		dY = math.random(-1,1)
+	})
+
+	if (action == nil) then
+		action = actionManager.createAction("skip",{})
+	end
+
+	return action
 end
 
 return actionSystem

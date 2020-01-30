@@ -1,8 +1,8 @@
 local Component = require("modules.ecs.components.component")
 
-local Input = {}
+local Ai = {}
 
-function Input.create(entityDefaults,entityData)
+function Ai.create(entityDefaults,entityData)
     local self = Component.create({
     })
 
@@ -11,4 +11,4 @@ function Input.create(entityDefaults,entityData)
     return self
 end
 
-return Input
+return Ai

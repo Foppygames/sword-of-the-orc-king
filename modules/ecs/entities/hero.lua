@@ -8,7 +8,7 @@ function Hero.create(data)
     return Entity.create({
         action = {},
 		appearance = {
-			imageId = "orc"
+			imageId = "hero"
 		},
 		camera = {},
 		energy = {

@@ -4,6 +4,7 @@ local componentManager = {}
 
 local definitions = {
 	action = require("modules.ecs.components.action"),
+	ai = require("modules.ecs.components.ai"),
 	appearance = require("modules.ecs.components.appearance"),
 	camera = require("modules.ecs.components.camera"),
 	energy = require("modules.ecs.components.energy"),

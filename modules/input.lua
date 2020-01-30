@@ -60,6 +60,8 @@ end
 function input.registerKeyPressed(key)
 	if (DIRECTIONS[key] ~= nil) then
 		action = actionManager.createAction("move",DIRECTIONS[key])
+	elseif (key == "space") then
+		action = actionManager.createAction("skip")
 	end
 end
 
