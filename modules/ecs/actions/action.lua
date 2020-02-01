@@ -2,8 +2,6 @@
 
 local Action = {}
 
--- Todo: make number of energy points used property of action component
-
 function Action.create(defaults)
     local self = defaults
     
@@ -15,9 +13,25 @@ function Action.create(defaults)
         end
     end
 
+    function self.getPerformResult(success,newActionId,newActionData)
+        local result = {
+            success = success,
+            newAction = nil
+        }    
+        if (newActionId ~= nil) then
+            result.newAction = {
+                id = newActionId
+            }
+            if (newActionData ~= nil) then
+                result.newAction.data = newActionData
+            end
+        end
+        return result
+    end
+
     function self.perform(entity)
         print "Error: action.perform() not implemented for derived class"
-        return false
+        return self.getDefaultPerformResult(false)
     end
 
     return self

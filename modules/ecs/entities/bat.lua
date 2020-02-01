@@ -5,13 +5,13 @@ local Bat = {}
 function Bat.create(data)
     return Entity.create({
         action = {},
+		ai = {},
 		appearance = {
 			imageId = "bat"
 		},
 		energy = {
 			increment = 10
 		},
-		ai = {},
 		movement = {},
 		position = {}
     },data)

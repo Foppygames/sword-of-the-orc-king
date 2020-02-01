@@ -116,7 +116,7 @@ function world.addLevel(addHero)
 		end
 	end
 
-	-- add hero and at
+	-- add hero and bat
 	if (addHero) then
 		local x = 3
 		local y = 3
@@ -125,9 +125,6 @@ function world.addLevel(addHero)
 		state[level].layout[posIndex].actor = {
 			type = "hero",
 			data = {
-				appearance = {
-					color = {0,1,0}
-				},
 				position = {
 					x = x,
 					y = y,

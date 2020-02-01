@@ -34,9 +34,12 @@ function actionSystem.update(inputAction)
 		return true
 	end
 
-	local acted = false
 	local continue = true
 	local action = nil
+	local result = {
+		success = false,
+		newAction = nil
+	}
 	
 	local energyForActionAvailable = (entities[index].energy.level >= energySystem.ENERGY_FOR_ACTION)
 
@@ -46,26 +49,30 @@ function actionSystem.update(inputAction)
 			action = inputAction
 		-- entity is controlled by ai
 		elseif (entityManager.entityHas(entities[index],{"ai"})) then
-			action = actionSystem.getAiAction(entity)
+			action = actionSystem.getAiAction(entities[index])
 		-- entity is not controlled
 		else
-			acted = true
+			action = actionManager.createAction("skip")
 		end
 	end
 		
 	-- action selected
 	if (action ~= nil) then
-		acted = action.perform(entities[index])
+		result = action.perform(entities[index])
+
+		while (result.newAction ~= nil) do
+			local newAction = actionManager.createAction(result.newAction.id,result.newAction.data)
+			result = newAction.perform(entities[index])
+		end
 	end
 
 	-- action performed with success
-	if (acted) then
+	if (result.success) then
 		entities[index].energy.useForAction = true
 	-- no successful action, while energy available
 	elseif (energyForActionAvailable) then
 		-- stay in this entity's turn
 		continue = false
-		-- Todo: add explicit skip action so turn can be completed even though energy for action is available
 	end
 	
 	if (continue) then
@@ -76,19 +83,19 @@ function actionSystem.update(inputAction)
 end
 
 function actionSystem.getAiAction(entity)
-	local action = nil
+	-- consider attacking
+	-- ...
 
-	-- move in random direction
-	action = actionManager.createAction("move",{
-		dX = math.random(-1,1),
-		dY = math.random(-1,1)
-	})
-
-	if (action == nil) then
-		action = actionManager.createAction("skip",{})
+	-- consider moving
+	if (entityManager.entityHas(entity,{"movement"})) then
+		-- move in random direction
+		return actionManager.createAction("move",{
+			dX = math.random(-1,1),
+			dY = math.random(-1,1)
+		})
 	end
 
-	return action
+	return actionManager.createAction("skip")
 end
 
 return actionSystem

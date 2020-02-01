@@ -3,8 +3,7 @@ local Component = require("modules.ecs.components.component")
 local Ai = {}
 
 function Ai.create(entityDefaults,entityData)
-    local self = Component.create({
-    })
+    local self = Component.create({})
 
     self.setValues(entityDefaults,entityData)
 

@@ -1,8 +1,8 @@
 -- layout is a module that manages rectangular drawing areas and some drawing operations on them
 
-local layout = {}
-
 local aspect = require("modules.aspect")
+
+local layout = {}
 
 layout.DRAWING_AREA_WORLD = 1
 layout.DRAWING_AREA_STATUS = 2
@@ -20,13 +20,14 @@ function layout.init(gameWidth,gameHeight)
 		width = gameHeight - AREA_PADDING * 2,
 		height = gameHeight - AREA_PADDING * 2
 	}
-	-- column 2 row 1
+	-- column 2, row 1
 	rects[layout.DRAWING_AREA_STATUS] = {
 		x = rects[layout.DRAWING_AREA_WORLD].width+AREA_PADDING*2,
 		y = AREA_PADDING,
 		width = gameWidth - rects[layout.DRAWING_AREA_WORLD].width - AREA_PADDING * 3,
 		height = (gameHeight - AREA_PADDING * 2) / 2
 	}
+	-- column 2, row 2
 	rects[layout.DRAWING_AREA_LOG] = {
 		x = rects[layout.DRAWING_AREA_STATUS].x,
 		y = rects[layout.DRAWING_AREA_STATUS].y + rects[layout.DRAWING_AREA_STATUS].height + AREA_PADDING,

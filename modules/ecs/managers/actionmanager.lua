@@ -3,6 +3,7 @@
 local actionManager = {}
 
 local definitions = {
+	attack = require("modules.ecs.actions.attack"),
 	move = require("modules.ecs.actions.move"),
 	skip = require("modules.ecs.actions.skip")
 }

@@ -1,8 +1,8 @@
 local Component = require("modules.ecs.components.component")
 
-local Movement = {}
+local Attack = {}
 
-function Movement.create(entityDefaults,entityData)
+function Attack.create(entityDefaults,entityData)
     local self = Component.create({})
 
     self.setValues(entityDefaults,entityData)
@@ -10,4 +10,4 @@ function Movement.create(entityDefaults,entityData)
     return self
 end
 
-return Movement
+return Attack

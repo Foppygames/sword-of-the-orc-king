@@ -1,5 +1,5 @@
 local Action = require("modules.ecs.actions.action")
-local entityManager = require("modules.ecs.managers.entityManager")
+local entityManager = require("modules.ecs.managers.entitymanager")
 local log = require("modules.log")
 
 local Skip = {}
@@ -15,7 +15,7 @@ function Skip.create(data)
             log.addEntry("You rest for a moment.")
         end
 
-        return true
+        return self.getPerformResult(true)
     end
 
     return self

@@ -15,7 +15,7 @@ function renderSystem.update(viewPortData)
 			local y = viewPortData.screenY1 + (tileY - viewPortData.firstTileY) * viewPortData.tileHeight
 			local image = images.get(entities[i].appearance.imageId)
 
-			-- note: assuming all images are of same size as tiles
+			-- Note: assuming all images are of same size as tiles
 			love.graphics.draw(image,x,y)
 		end
 	end

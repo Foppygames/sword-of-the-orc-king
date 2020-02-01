@@ -17,6 +17,10 @@ local entries
 local font
 local rect
 
+function log.init(drawingAreaIndex)
+	rect = layout.getRect(drawingAreaIndex)
+end
+
 local function scroll()
 	-- scrolling currently removes old log entries - this is a simple implementation,
 	-- a more complex approach could involve retaining all entries but displaying a
@@ -53,10 +57,6 @@ end
 
 function log.clear()
 	entries = {}
-end
-
-function log.init(drawingAreaIndex)
-	rect = layout.getRect(drawingAreaIndex)
 end
 
 return log
