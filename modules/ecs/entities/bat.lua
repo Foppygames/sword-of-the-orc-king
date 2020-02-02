@@ -9,10 +9,14 @@ function Bat.create(data)
 		appearance = {
 			imageId = "bat"
 		},
+		attack = {},
 		energy = {
 			increment = 10
 		},
 		movement = {},
+		name = {
+			genericName = "bat"
+		},
 		position = {}
     },data)
 end

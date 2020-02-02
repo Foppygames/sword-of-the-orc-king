@@ -16,10 +16,18 @@ function Attack.create(data)
     function self.perform(entity)
         local success = false
         if (entityManager.entityHas(entity,{"attack","position"})) then
-            -- ...
+            local target = entityManager.getEntityAtLocation(self.x,self.y)
+            if (target ~= nil) then
+                -- ...
 
-            if (entityManager.entityHas(entity,{"input"})) then
-                log.addEntry("You attack!")
+                if (entityManager.entityHas(entity,{"input"})) then
+
+                    -- Todo: "You" should also be the result of interpolation in log module
+
+                    log.addEntry("You attack <1>.",{target})
+                else
+                    log.addEntry("Something attacks something.")
+                end
             end
 
             success = true

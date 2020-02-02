@@ -26,9 +26,9 @@ function Move.create(data)
 				local newY = entity.position.y + self.dY
 
                 local noWall = world.locationIsPassable(newX,newY,entity.position.z)
-                local noEntity = (entityManager.getEntityAtLocation(newX,newY) == nil)
+                local target = entityManager.getEntityAtLocation(newX,newY)
 
-                if (noWall and noEntity) then
+                if (noWall and (target == nil)) then
                     entity.position.x = newX
 					entity.position.y = newY
                     success = true
@@ -41,13 +41,17 @@ function Move.create(data)
                     -- show message to player
                     else
                         if (not noWall) then
-                            log.addEntry("Your path is blocked.")
-                        elseif (not noEntity) then
-                            newActionId = "attack"
-                            newActionData = {
-                                x = newX,
-                                y = newY
-                            }
+                            log.addEntry("Your path is blocked by a wall.")
+                        elseif (target ~= nil) then
+                            if (entityManager.entityHas(entity,{"attack"})) then
+                                newActionId = "attack"
+                                newActionData = {
+                                    x = newX,
+                                    y = newY
+                                }
+                            else
+                                log.addEntry("Your path is blocked by <1>.",{target})
+                            end
                         end
                     end
                 end

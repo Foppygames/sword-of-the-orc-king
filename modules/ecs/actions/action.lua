@@ -31,7 +31,7 @@ function Action.create(defaults)
 
     function self.perform(entity)
         print "Error: action.perform() not implemented for derived class"
-        return self.getDefaultPerformResult(false)
+        return self.getPerformResult(false)
     end
 
     return self

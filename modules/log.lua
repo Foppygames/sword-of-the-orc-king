@@ -2,6 +2,7 @@
 
 local aspect = require("modules.aspect")
 local colors = require("modules.colors")
+local entityManager = require("modules.ecs.managers.entitymanager")
 local layout = require("modules.layout")
 
 local log = {}
@@ -31,7 +32,25 @@ local function scroll()
 	end
 end
 
-function log.addEntry(text,color)
+local function interpolate(text,entities)
+	for i = 1, #entities do
+		if entityManager.entityHas(entities[i],{"name"}) then
+			local article = "the "
+			local name = entities[i].name.genericName
+			if (entities[i].name.specificName ~= nil) then
+				article = ""
+				name = entities[i].name.specificName
+			end
+			text = string.gsub(text,"<"..i..">",article..name)
+		end
+	end
+	return text
+end
+
+function log.addEntry(text,entities,color)
+	if (entities ~= nil) then
+		text = interpolate(text,entities)
+	end
 	if (color == nil) then
 		color = log.TEXT_COLOR_DEFAULT
 	end
