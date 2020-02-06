@@ -1,5 +1,6 @@
 local Action = require("modules.ecs.actions.action")
 local entityManager = require("modules.ecs.managers.entitymanager")
+local grammar = require("modules.grammar")
 local log = require("modules.log")
 local world = require("modules.world")
 
@@ -20,14 +21,7 @@ function Attack.create(data)
             if (target ~= nil) then
                 -- ...
 
-                if (entityManager.entityHas(entity,{"input"})) then
-
-                    -- Todo: "You" should also be the result of interpolation in log module
-
-                    log.addEntry("You attack <1>.",{target})
-                else
-                    log.addEntry("Something attacks something.")
-                end
+                log.addEntry(grammar.interpolate(grammar.STRUCT_E1_ATTACK_E2,{entity,target}))
             end
 
             success = true
