@@ -27,6 +27,8 @@ local cameraPosition = {
 local state
 
 function love.load()
+	math.randomseed(os.time())
+	
 	aspect.init()
 	colors.init()
 	images.init()

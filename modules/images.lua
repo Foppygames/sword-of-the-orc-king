@@ -9,6 +9,9 @@ images.items = {
 	hero = {
 		path = "images/entities/hero.png"
 	},
+	human = {
+		path = "images/entities/human.png"
+	},
 	orc = {
 		path = "images/entities/orc_green.png"
 	}

@@ -6,7 +6,7 @@ function Hero.create(data)
     return Entity.create({
         action = {},
 		appearance = {
-			imageId = "hero"
+			imageId = "human"
 		},
 		attack = {},
 		camera = {},

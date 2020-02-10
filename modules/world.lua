@@ -15,8 +15,8 @@ local TILE_COLOR_WALL_TOP = colors.get("ORANGE")
 local TILE_WIDTH = 16
 local TILE_HEIGHT = 24
 local WALL_HEIGHT = TILE_HEIGHT / 2
-local WORLD_WIDTH = 50
-local WORLD_HEIGHT = 50
+local WORLD_WIDTH = 20
+local WORLD_HEIGHT = 20
 local WORLD_DEPTH = 10
 
 local cameraTileX = nil
@@ -83,8 +83,8 @@ function world.addLevel(addHero)
 		actors = {}  -- contains active actors for whole level
 	})
 
-	local tempRoomWidth = #state * 10
-	local tempRoomHeight = #state * 10
+	local tempRoomWidth = WORLD_WIDTH --#state * 30
+	local tempRoomHeight = WORLD_HEIGHT --#state * 10
 
 	-- create level layout
 	local level = #state
@@ -218,16 +218,16 @@ function world.getViewPortData()
 	local firstTileY = 1 + math.floor(viewPortY1 / TILE_HEIGHT)
 	
 	-- pixel offset of upper left tile from viewport
-	local offsetX = -viewPortX1 % TILE_WIDTH
-	local offsetY = -viewPortY1 % TILE_HEIGHT
+	local offsetX = viewPortX1 % TILE_WIDTH
+	local offsetY = viewPortY1 % TILE_HEIGHT
 	
 	-- bottom right viewport tile
 	local lastTileX = math.min(firstTileX + rectWidthTiles - 1, WORLD_WIDTH)
 	local lastTileY = math.min(firstTileY + rectHeightTiles - 1, WORLD_HEIGHT)
 	
 	return {
-		screenX1 = rect.x + offsetX,
-		screenY1 = rect.y + offsetY,
+		screenX1 = rect.x - offsetX,
+		screenY1 = rect.y - offsetY,
 		firstTileX = firstTileX,
 		firstTileY = firstTileY,
 		lastTileX = lastTileX,
