@@ -1,3 +1,5 @@
+-- entity has movement: entity can move
+
 local Component = require("modules.ecs.components.component")
 
 local Movement = {}

@@ -1,3 +1,5 @@
+-- entity has ai: ai routines determine entity actions
+
 local Component = require("modules.ecs.components.component")
 
 local Ai = {}

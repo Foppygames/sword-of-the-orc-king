@@ -1,3 +1,5 @@
+-- entity has appearance: entity can be rendered
+
 local Component = require("modules.ecs.components.component")
 
 local Appearance = {}

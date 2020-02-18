@@ -1,3 +1,5 @@
+-- entity has action: entity has the potential to perform actions
+
 local Component = require("modules.ecs.components.component")
 
 local Action = {}

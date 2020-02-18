@@ -12,7 +12,8 @@ local definitions = {
 	input = require("modules.ecs.components.input"),
 	movement = require("modules.ecs.components.movement"),
 	name = require("modules.ecs.components.name"),
-	position = require("modules.ecs.components.position")
+	position = require("modules.ecs.components.position"),
+	vision = require("modules.ecs.components.vision")
 }
 
 function componentManager.createComponent(id,entityDefaults,entityData)

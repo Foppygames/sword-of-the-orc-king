@@ -1,3 +1,5 @@
+-- entity has camera: world is displayed as seen by entity
+
 local Component = require("modules.ecs.components.component")
 
 local Camera = {}

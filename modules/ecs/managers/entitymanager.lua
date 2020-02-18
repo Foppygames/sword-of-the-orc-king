@@ -45,14 +45,6 @@ function entityManager.entityHas(entity,componentIds)
 	return true
 end
 
-function entityManager.getFirstCameraEntityPosition()
-	local matches = entityManager.getEntitiesHaving({"camera","position"})
-	if (#matches > 0) then
-		return matches[1].position
-	end
-	return nil
-end
-
 function entityManager.getEntityAtLocation(x,y)
 	local matches = entityManager.getEntitiesHaving({"position"})
 	for i = 1, #matches do

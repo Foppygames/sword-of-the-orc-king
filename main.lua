@@ -9,6 +9,7 @@ local layout = require("modules.layout")
 local log = require("modules.log")
 local renderSystem = require("modules.ecs.systems.rendersystem")
 local utils = require("modules.utils")
+local visionSystem = require("modules.ecs.systems.visionsystem")
 local world = require("modules.world")
 
 local GAME_NAME = "Sword of the Orc King"
@@ -22,7 +23,8 @@ local STATE_GAME_OVER = 2
 local cameraPosition = {
 	x = 1,
 	y = 1,
-	z = STARTING_LEVEL
+	z = STARTING_LEVEL,
+	visibleLocations = {}
 }
 local state
 
@@ -53,19 +55,10 @@ function switchToState(newState)
 		input.resetAction()
 
 		world.createNew(LEVELS,STARTING_LEVEL)
-		world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
+		world.createActors(STARTING_LEVEL)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.")
-	end
-end
-
-function updateCameraPosition()
-	local cameraEntityPosition = entityManager.getFirstCameraEntityPosition()
-	if (cameraEntityPosition ~= nil) then
-		cameraPosition.x = cameraEntityPosition.x
-		cameraPosition.y = cameraEntityPosition.y
-		cameraPosition.z = cameraEntityPosition.z
 	end
 end
 
@@ -101,10 +94,8 @@ function love.draw()
 		love.graphics.clear(colors.get("LIGHT_BLUE"))
 
 		log.draw()
-		world.draw()
-		renderSystem.update(world.getViewPortData())
-		
-		-- ...
+		local viewPortData = world.draw(cameraPosition.x,cameraPosition.y,cameraPosition.z,cameraPosition.visibleLocations)
+		renderSystem.update(viewPortData,cameraPosition.visibleLocations)
 	end
 	
 	if (state == STATE_GAME_OVER) then
@@ -115,17 +106,33 @@ function love.draw()
 	aspect.letterbox()
 end
 
+function processCameraEntityZ(cameraEntity)
+	if ((cameraPosition.z ~= nil) and (cameraPosition.z ~= cameraEntity.position.z)) then
+		world.storeActors(cameraPosition.z)
+	end
+	if (cameraPosition.z ~= cameraEntity.position.z) then
+		world.createActors(cameraEntity.position.z)
+	end
+	return cameraEntity.position.z
+end
+
 function love.update(dt)
 	if (state == STATE_PLAY) then
 		local allUpdated = actionSystem.update(input.getAction())
 
 		input.resetAction()
 
-		updateCameraPosition()
-		world.setCamera(cameraPosition.x,cameraPosition.y,cameraPosition.z)
-
 		if (allUpdated) then
 			energySystem.update()
+		end
+
+		local cameraEntity = visionSystem.update()
+
+		if (cameraEntity ~= nil) then
+			cameraPosition.x = cameraEntity.position.x
+			cameraPosition.y = cameraEntity.position.y
+			cameraPosition.z = processCameraEntityZ(cameraEntity)
+			cameraPosition.visibleLocations = cameraEntity.vision.visible
 		end
 	end
 end

@@ -1,3 +1,5 @@
+-- entity has energy: entity can take part in the turn system
+
 local Component = require("modules.ecs.components.component")
 
 local Energy = {}

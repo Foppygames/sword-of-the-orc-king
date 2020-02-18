@@ -1,3 +1,5 @@
+-- entity has name: entity name can be used in messages involving entity
+
 local Component = require("modules.ecs.components.component")
 
 local Name = {}

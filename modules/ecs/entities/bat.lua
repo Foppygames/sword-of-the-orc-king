@@ -17,7 +17,8 @@ function Bat.create(data)
 		name = {
 			genericName = "bat"
 		},
-		position = {}
+		position = {},
+		vision = {}
     },data)
 end
 

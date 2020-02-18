@@ -1,3 +1,5 @@
+-- entity has attack: entity can attack other entities
+
 local Component = require("modules.ecs.components.component")
 
 local Attack = {}

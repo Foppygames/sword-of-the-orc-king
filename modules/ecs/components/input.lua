@@ -1,3 +1,5 @@
+-- entity has input: input devices determine entity actions
+
 local Component = require("modules.ecs.components.component")
 
 local Input = {}

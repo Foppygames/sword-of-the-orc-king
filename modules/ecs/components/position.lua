@@ -1,3 +1,5 @@
+-- entity has position: entity is located somewhere in the world
+
 local Component = require("modules.ecs.components.component")
 
 local Position = {}

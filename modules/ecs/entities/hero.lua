@@ -15,7 +15,8 @@ function Hero.create(data)
 		},
 		input = {},
 		movement = {},
-		position = {}
+		position = {},
+		vision = {}
     },data)
 end
 
