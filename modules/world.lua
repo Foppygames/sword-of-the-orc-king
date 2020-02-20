@@ -9,12 +9,8 @@ local tiles = require("modules.tiles")
 local world = {}
 
 local BACKGROUND_COLOR = colors.get("BLACK")
-local TILE_COLOR_FLOOR = colors.get("GREEN")
-local TILE_COLOR_WALL_FRONT = colors.get("BROWN")
-local TILE_COLOR_WALL_TOP = colors.get("ORANGE")
 local TILE_WIDTH = 16
 local TILE_HEIGHT = 24
-local WALL_HEIGHT = TILE_HEIGHT / 2
 local WORLD_WIDTH = 20
 local WORLD_HEIGHT = 20
 local WORLD_DEPTH = 10
@@ -23,30 +19,6 @@ local state = {}
 local rect
 local rectHeightTiles
 local rectWidthTiles
-
-local function drawFloor(x,y,visible)
-	if (visible) then
-		love.graphics.setColor(TILE_COLOR_FLOOR)
-		love.graphics.rectangle("fill",x+TILE_WIDTH/2-1,y+TILE_HEIGHT/2-1,2,2)
-	end
-end
-
-local function drawWall(x,y,wallBelow,visible)
-	if (visible) then
-		love.graphics.setColor(TILE_COLOR_WALL_TOP)
-	else
-		love.graphics.setColor(colors.get("GREY"))
-	end
-	love.graphics.rectangle("fill",x,y,TILE_WIDTH,TILE_HEIGHT)
-	if (not wallBelow) then
-		if (visible) then
-			love.graphics.setColor(TILE_COLOR_WALL_FRONT)
-		else
-			love.graphics.setColor(colors.get("DARK_GREY"))
-		end
-		love.graphics.rectangle("fill",x,y+TILE_HEIGHT-WALL_HEIGHT,TILE_WIDTH,WALL_HEIGHT)
-	end	
-end
 
 -- turn active actors into stored actors
 function world.storeActors(level)
@@ -121,17 +93,17 @@ function world.addLevel(addHero)
 		actors = {}  -- contains active actors for whole level
 	})
 
-	local tempRoomWidth = WORLD_WIDTH --#state * 30
-	local tempRoomHeight = WORLD_HEIGHT --#state * 10
+	local tempRoomWidth = WORLD_WIDTH
+	local tempRoomHeight = WORLD_HEIGHT
 
 	-- create level layout
 	local level = #state
 	for y = 1, WORLD_HEIGHT do
 		for x = 1, WORLD_WIDTH do
-			-- decide if position has wall, floor, or neither
 			local wall = 0
 			local floor = 0
-			
+			local tile = nil
+
 			if (((x == 1 ) or (x == tempRoomWidth)) and (y <= tempRoomHeight)) then
 				wall = 1
 			end
@@ -146,13 +118,33 @@ function world.addLevel(addHero)
 			if ((x > 1 ) and (x < tempRoomWidth) and (y > 1 ) and (y < tempRoomHeight)) then
 				floor = 1
 			end
-			
+
+			if (wall == 1) then
+				tile = "wallFront"
+			elseif (floor == 1) then
+				tile = "floor"
+			end
+
 			-- add item for position
 			table.insert(state[level].layout,{
 				wall = wall,
 				floor = floor,
-				actor = nil
+				actor = nil,
+				tile = tile
 			})
+
+			-- convert wall tiles if front blocked from view
+			if (tile == "wallFront") then
+				if (y > 1) then
+					local posAboveIndex = (y - 2) * WORLD_WIDTH + x
+					local item = state[level].layout[posAboveIndex]
+					if (item ~= nil) then
+						if (item.tile == "wallFront") then
+							state[level].layout[posAboveIndex].tile = "wallTop"
+						end
+					end
+				end
+			end
 		end
 	end
 
@@ -210,18 +202,9 @@ function world.draw(cameraTileX,cameraTileY,cameraTileZ,visibleLocations)
 					end
 				end
 				local posIndex = (verTile - 1) * WORLD_WIDTH + horTile
-				local wall = (state[cameraTileZ].layout[posIndex].wall == 1)
-				local floor = (state[cameraTileZ].layout[posIndex].floor == 1)
-				if (wall) then
-					local wallBelow = false
-					if (verTile < WORLD_HEIGHT) then
-						if (state[cameraTileZ].layout[posIndex+WORLD_WIDTH].wall == 1) then
-							wallBelow = true
-						end
-					end
-					drawWall(tileX,tileY,wallBelow,visible)
-				elseif (floor) then
-					drawFloor(tileX,tileY,visible)
+				local tile = state[cameraTileZ].layout[posIndex].tile
+				if (tile ~= nil) then
+					tiles.draw(tile,tileX,tileY,visible)
 				end
 			end
 			tileX = tileX + TILE_WIDTH
