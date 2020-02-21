@@ -14,19 +14,11 @@ local visionSystem = require("modules.ecs.systems.visionsystem")
 local world = require("modules.world")
 
 local GAME_NAME = "Sword of the Orc King"
-local LEVELS = 3
-local STARTING_LEVEL = 1
 
 local STATE_TITLE = 0
 local STATE_PLAY = 1
 local STATE_GAME_OVER = 2
 
-local cameraPosition = {
-	x = 1,
-	y = 1,
-	z = STARTING_LEVEL,
-	visibleLocations = {}
-}
 local state
 
 function love.load()
@@ -56,8 +48,8 @@ function switchToState(newState)
 		entityManager.reset()
 		input.resetAction()
 
-		world.createNew(LEVELS,STARTING_LEVEL)
-		world.createActors(STARTING_LEVEL)
+		world.createNew()
+		world.createActors(nil)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.")
@@ -96,8 +88,7 @@ function love.draw()
 		love.graphics.clear(colors.get("LIGHT_BLUE"))
 
 		log.draw()
-		local viewPortData = world.draw(cameraPosition.x,cameraPosition.y,cameraPosition.z,cameraPosition.visibleLocations)
-		renderSystem.update(viewPortData,cameraPosition.visibleLocations)
+		world.draw()
 	end
 	
 	if (state == STATE_GAME_OVER) then
@@ -106,16 +97,6 @@ function love.draw()
 	end
 	
 	aspect.letterbox()
-end
-
-function processCameraEntityZ(cameraEntity)
-	if ((cameraPosition.z ~= nil) and (cameraPosition.z ~= cameraEntity.position.z)) then
-		world.storeActors(cameraPosition.z)
-	end
-	if (cameraPosition.z ~= cameraEntity.position.z) then
-		world.createActors(cameraEntity.position.z)
-	end
-	return cameraEntity.position.z
 end
 
 function love.update(dt)
@@ -130,12 +111,7 @@ function love.update(dt)
 
 		local cameraEntity = visionSystem.update()
 
-		if (cameraEntity ~= nil) then
-			cameraPosition.x = cameraEntity.position.x
-			cameraPosition.y = cameraEntity.position.y
-			cameraPosition.z = processCameraEntityZ(cameraEntity)
-			cameraPosition.visibleLocations = cameraEntity.vision.visible
-		end
+		world.updateViewport(cameraEntity)
 	end
 end
 
