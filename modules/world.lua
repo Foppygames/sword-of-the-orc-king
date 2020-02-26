@@ -13,7 +13,7 @@ local BACKGROUND_COLOR = colors.get("BLACK")
 local LEVELS = 3
 local STARTING_LEVEL = 1
 local TILE_WIDTH = 16
-local TILE_HEIGHT = 24
+local TILE_HEIGHT = 16 --24
 local WORLD_WIDTH = 20
 local WORLD_HEIGHT = 20
 local WORLD_DEPTH = 10
@@ -130,7 +130,7 @@ function world.addLevel(addHero)
 			end
 
 			if (wall == 1) then
-				tile = "wallFront"
+				tile = "wall"
 			elseif (floor == 1) then
 				tile = "floor"
 			end
@@ -142,19 +142,6 @@ function world.addLevel(addHero)
 				actor = nil,
 				tile = tile
 			})
-
-			-- convert wall tiles if front blocked from view
-			if (tile == "wallFront") then
-				if (y > 1) then
-					local posAboveIndex = (y - 2) * WORLD_WIDTH + x
-					local item = state[level].layout[posAboveIndex]
-					if (item ~= nil) then
-						if (item.tile == "wallFront") then
-							state[level].layout[posAboveIndex].tile = "wallTop"
-						end
-					end
-				end
-			end
 		end
 	end
 

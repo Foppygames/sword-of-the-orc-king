@@ -6,11 +6,8 @@ local items = {
 	floor = {
 		path = "images/tiles/floor.png"
 	},
-	wallFront = {
-		path = "images/tiles/wall_front.png"
-	},
-	wallTop = {
-		path = "images/tiles/wall_top.png"
+	wall = {
+		path = "images/tiles/wall.png"
 	}
 }
 
@@ -18,13 +15,6 @@ function tiles.init()
 	for id,data in pairs(items) do
 		items[id].image = nil
 	end
-end
-
-function tiles.get(id)
-	if (items[id].image == nil) then
-		items[id].image = love.graphics.newImage(items[id].path)
-	end
-	return items[id].image
 end
 
 function tiles.draw(id,x,y,visible)

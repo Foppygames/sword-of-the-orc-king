@@ -6,7 +6,7 @@ local Vision = {}
 
 function Vision.create(entityDefaults,entityData)
     local self = Component.create({
-        range = 7,
+        range = 9,
         visible = {}
     })
 

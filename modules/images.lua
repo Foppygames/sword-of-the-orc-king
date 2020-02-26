@@ -6,9 +6,6 @@ images.items = {
 	bat = {
 		path = "images/entities/bat.png"
 	},
-	hero = {
-		path = "images/entities/hero.png"
-	},
 	human = {
 		path = "images/entities/human.png"
 	},
