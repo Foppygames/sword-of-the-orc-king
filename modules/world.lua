@@ -4,6 +4,7 @@ local aspect = require("modules.aspect")
 local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local layout = require("modules.layout")
+local map = require("modules.map")
 local renderSystem = require("modules.ecs.systems.rendersystem")
 local tiles = require("modules.tiles")
 
@@ -13,9 +14,9 @@ local BACKGROUND_COLOR = colors.get("BLACK")
 local LEVELS = 3
 local STARTING_LEVEL = 1
 local TILE_WIDTH = 16
-local TILE_HEIGHT = 16 --24
-local WORLD_WIDTH = 20
-local WORLD_HEIGHT = 20
+local TILE_HEIGHT = 16
+local WORLD_WIDTH = 40
+local WORLD_HEIGHT = 40
 local WORLD_DEPTH = 10
 
 local state = {}
@@ -86,97 +87,21 @@ function world.init(drawingAreaIndex)
 	rectHeightTiles = math.floor(rect.height / TILE_HEIGHT) + 2
 end
 
-function world.createNew(levels,startingLevel)	
+function world.createNew(levels)	
 	local levels = (levels or LEVELS)
-	local startingLevel = (startingLevel or STARTING_LEVEL)
 	state = {}
 	for i = 1, levels do
-		local addHero = (i == startingLevel)
-		world.addLevel(addHero)
+		world.addLevel()
 	end
 end
 
-function world.addLevel(addHero)
-	-- add empty level to state
+function world.addLevel()
+	local level = #state + 1
+	-- each level contains a layout, including stored actors, and a set of active actors
 	table.insert(state,{
-		layout = {}, -- contains map and stored actors per location
-		actors = {}  -- contains active actors for whole level
+		layout = map.createLayout(WORLD_WIDTH,WORLD_HEIGHT,level),
+		actors = {}
 	})
-
-	local tempRoomWidth = WORLD_WIDTH
-	local tempRoomHeight = WORLD_HEIGHT
-
-	-- create level layout
-	local level = #state
-	for y = 1, WORLD_HEIGHT do
-		for x = 1, WORLD_WIDTH do
-			local wall = 0
-			local floor = 0
-			local tile = nil
-
-			if (((x == 1 ) or (x == tempRoomWidth)) and (y <= tempRoomHeight)) then
-				wall = 1
-			end
-			if (((y == 1) or (y == tempRoomHeight)) and (x <= tempRoomWidth)) then
-				wall = 1
-			end
-			if ((x > tempRoomWidth*0.25) and (x < tempRoomWidth*0.75)) then
-				if ((y > tempRoomHeight*0.25) and (y < tempRoomHeight*0.75)) then
-					wall = 1
-				end
-			end
-			if ((x > 1 ) and (x < tempRoomWidth) and (y > 1 ) and (y < tempRoomHeight)) then
-				floor = 1
-			end
-
-			if (wall == 1) then
-				tile = "wall"
-			elseif (floor == 1) then
-				tile = "floor"
-			end
-
-			-- add item for position
-			table.insert(state[level].layout,{
-				wall = wall,
-				floor = floor,
-				actor = nil,
-				tile = tile
-			})
-		end
-	end
-
-	-- add hero and bat
-	if (addHero) then
-		local x = 3
-		local y = 3
-		local posIndex = (y - 1) * WORLD_WIDTH + x
-
-		state[level].layout[posIndex].actor = {
-			type = "hero",
-			data = {
-				position = {
-					x = x,
-					y = y,
-					z = level
-				}
-			}
-		}
-
-		x = 5
-		y = 3
-		posIndex = (y - 1) * WORLD_WIDTH + x
-
-		state[level].layout[posIndex].actor = {
-			type = "bat",
-			data = {
-				position = {
-					x = x,
-					y = y,
-					z = level
-				}
-			}
-		}
-	end
 end
 
 -- renders world layout and entities in viewport
