@@ -15,8 +15,6 @@ local LEVELS = 3
 local STARTING_LEVEL = 1
 local TILE_WIDTH = 16
 local TILE_HEIGHT = 16
-local WORLD_WIDTH = 40
-local WORLD_HEIGHT = 40
 local WORLD_DEPTH = 10
 
 local state = {}
@@ -36,9 +34,9 @@ end
 -- turn stored actors into active actors
 function world.createActors(level)
 	local level = (level or STARTING_LEVEL)
-	for y = 1, WORLD_HEIGHT do
-		for x = 1, WORLD_WIDTH do
-			local posIndex = (y - 1) * WORLD_WIDTH + x
+	for y = 1, map.WORLD_HEIGHT do
+		for x = 1, map.WORLD_WIDTH do
+			local posIndex = (y - 1) * map.WORLD_WIDTH + x
 			local actor = state[level].layout[posIndex].actor
 			if (actor ~= nil) then
 				entityManager.addEntity(actor.type,actor.data)
@@ -65,8 +63,8 @@ local function getViewportData()
 	local offsetY = viewportY1 % TILE_HEIGHT
 	
 	-- bottom right viewport tile
-	local lastTileX = math.min(firstTileX + rectWidthTiles - 1, WORLD_WIDTH)
-	local lastTileY = math.min(firstTileY + rectHeightTiles - 1, WORLD_HEIGHT)
+	local lastTileX = math.min(firstTileX + rectWidthTiles - 1, map.WORLD_WIDTH)
+	local lastTileY = math.min(firstTileY + rectHeightTiles - 1, map.WORLD_HEIGHT)
 	
 	return {
 		screenX1 = rect.x - offsetX,
@@ -99,7 +97,7 @@ function world.addLevel()
 	local level = #state + 1
 	-- each level contains a layout, including stored actors, and a set of active actors
 	table.insert(state,{
-		layout = map.createLayout(WORLD_WIDTH,WORLD_HEIGHT,level),
+		layout = map.createLayout(level),
 		actors = {}
 	})
 end
@@ -124,7 +122,7 @@ function world.draw()
 						end
 					end
 				end
-				local posIndex = (verTile - 1) * WORLD_WIDTH + horTile
+				local posIndex = (verTile - 1) * map.WORLD_WIDTH + horTile
 				local tile = state[viewportZ].layout[posIndex].tile
 				if (tile ~= nil) then
 					tiles.draw(tile,tileX,tileY,visible)
@@ -141,10 +139,10 @@ function world.draw()
 end
 
 function world.locationExists(x,y,z)
-	if ((x < 1) or (x > WORLD_WIDTH)) then
+	if ((x < 1) or (x > map.WORLD_WIDTH)) then
 		return false
 	end
-	if ((y < 1) or (y > WORLD_HEIGHT)) then
+	if ((y < 1) or (y > map.WORLD_HEIGHT)) then
 		return false
 	end
 	return true
@@ -156,7 +154,7 @@ function world.locationIsPassable(x,y,z)
 		return false
 	end
 
-	local posIndex = (y - 1) * WORLD_WIDTH + x
+	local posIndex = (y - 1) * map.WORLD_WIDTH + x
 
 	-- location has wall
 	if (state[z].layout[posIndex].wall == 1) then

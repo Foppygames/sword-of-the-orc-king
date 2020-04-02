@@ -35,6 +35,7 @@ function love.load()
 	love.window.setTitle(GAME_NAME)
 	love.graphics.setDefaultFilter("nearest","nearest",1)
 	love.graphics.setLineStyle("rough")
+	love.graphics.setFont(love.graphics.newFont("Retroville_NC.ttf",10))
 
 	switchToState(STATE_TITLE)
 end
@@ -42,9 +43,8 @@ end
 function switchToState(newState)
 	state = newState
 	
-	love.graphics.setFont(love.graphics.newFont("Retroville_NC.ttf",10))
-
 	if (state == STATE_PLAY) then
+		actionSystem.reset()
 		entityManager.reset()
 		input.resetAction()
 

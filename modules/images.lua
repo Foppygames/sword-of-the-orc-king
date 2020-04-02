@@ -2,7 +2,7 @@
 
 local images = {}
 
-images.items = {
+local items = {
 	bat = {
 		path = "images/entities/bat.png"
 	},
@@ -15,16 +15,16 @@ images.items = {
 }
 
 function images.init()
-	for id,data in pairs(images.items) do
-		images.items[id].image = nil
+	for id,data in pairs(items) do
+		items[id].image = nil
 	end
 end
 
 function images.get(id)
-	if (images.items[id].image == nil) then
-		images.items[id].image = love.graphics.newImage(images.items[id].path)
+	if (items[id].image == nil) then
+		items[id].image = love.graphics.newImage(items[id].path)
 	end
-	return images.items[id].image
+	return items[id].image
 end
 
 return images

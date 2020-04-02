@@ -2,7 +2,7 @@
 
 local colors = {}
 
-colors.palette = {
+local palette = {
 	BLACK = {0,0,0},
 	WHITE = {255,255,255},
 	RED = {137,64,54},
@@ -22,15 +22,15 @@ colors.palette = {
 }
 
 function colors.init()
-	for label,color in pairs(colors.palette) do
+	for label,color in pairs(palette) do
 		for i = 1,3 do
-			colors.palette[label][i] = colors.palette[label][i] / 255
+			palette[label][i] = palette[label][i] / 255
 		end
 	end
 end
 
 function colors.get(color)
-	return colors.palette[color]
+	return palette[color]
 end
 
 return colors
