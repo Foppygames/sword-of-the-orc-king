@@ -3,35 +3,29 @@
 local map = {}
 
 -- Note: room dimensions do not include walls
+-- Note: margin is to allow for corridors parallel to room walls with one tile inbetween
 local ROOM_GRID_WIDTH = 4
 local ROOM_GRID_HEIGHT = 4
-local ROOM_GRID_MARGIN = 1
+local ROOM_GRID_MARGIN = 6
 local MIN_ROOM_WIDTH = 8
 local MIN_ROOM_HEIGHT = 8
 local MAX_ROOM_WIDTH = 20
 local MAX_ROOM_HEIGHT = 20
 
+-- clockwise directions, starting with up
 local DIRECTIONS = {
-	{
-		dX = 0,
-		dY = -1
-	},
-	{
-		dX = 1,
-		dY = 0
-	},
-	{
-		dX = 0,
-		dY = 1
-	},
-	{
-		dX = -1,
-		dY = 0
-	}
+	{dX = 0, dY = -1},
+	{dX = 1, dY = -1},
+	{dX = 1, dY = 0},
+	{dX = 1, dY = 1},
+	{dX = 0, dY = 1},
+	{dX = -1, dY = 1},
+	{dX = -1, dY = 0},
+	{dX = -1, dY = -1}
 }
 
 -- connect each room to only its east and south neighbour to avoid double corridors
-local CONNECTION_DIRECTION_INDEXES = {2,3}
+local CONNECTION_DIRECTION_INDEXES = {3,5}
 
 -- number of rooms * (max room width + 2 walls) + margins between rooms
 map.WORLD_WIDTH = ROOM_GRID_WIDTH * (MAX_ROOM_WIDTH + 2) + (ROOM_GRID_WIDTH - 1) * ROOM_GRID_MARGIN
@@ -102,7 +96,8 @@ local function createConnections(rooms)
 							-- bend needed
 							if (source.x ~= dest.x) then
 								-- bend is understood to be defined as its vertical location along corridor
-								bend = math.random(source.y + dir.dY, dest.y - dir.dY)
+								-- Note: always have at least 3 tiles of margin to avoid double layers of wall
+								bend = math.random(source.y + dir.dY * 3, dest.y - dir.dY * 3)
 							end
 						-- horizontal
 						else
@@ -122,7 +117,8 @@ local function createConnections(rooms)
 							-- bend needed
 							if (source.y ~= dest.y) then
 								-- bend is understood to be defined as its horizontal location along corridor
-								bend = math.random(source.x + dir.dX, dest.x - dir.dX)
+								-- Note: always have at least 3 tiles of margin to avoid double layers of wall
+								bend = math.random(source.x + dir.dX * 3, dest.x - dir.dX * 3)
 							end
 						end
 
@@ -259,7 +255,36 @@ function map.createLayout(level)
 			end
 		end
 	end
-	
+
+	-- add walls
+	for y = 1, map.WORLD_HEIGHT do
+		for x = 1, map.WORLD_WIDTH do
+			local posIndex = (y - 1) * map.WORLD_WIDTH + x
+			-- location is empty
+			if ((layout[posIndex].wall == 0) and (layout[posIndex].floor == 0)) then
+				local foundFloor = false
+				for i = 1, #DIRECTIONS do
+					local checkX = x + DIRECTIONS[i].dX
+					local checkY = y + DIRECTIONS[i].dY
+					-- check location is within layout
+					if ((checkX >= 1) and (checkX <= map.WORLD_WIDTH)) then
+						if ((checkY >= 1) and (checkY <= map.WORLD_HEIGHT)) then
+							-- check location contains floor
+							if (layout[(checkY - 1) * map.WORLD_WIDTH + checkX].floor == 1) then
+								foundFloor = true
+								break
+							end
+						end
+					end
+				end
+				if (foundFloor) then
+					layout[posIndex].wall = 1
+					layout[posIndex].tile = "wall"
+				end
+			end
+		end
+	end
+
 	local posIndex = (heroY - 1) * map.WORLD_WIDTH + heroX
 
 	layout[posIndex].actor = {

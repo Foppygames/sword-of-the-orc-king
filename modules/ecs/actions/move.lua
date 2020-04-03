@@ -25,6 +25,9 @@ function Move.create(data)
 				local newX = entity.position.x + self.dX
 				local newY = entity.position.y + self.dY
 
+                -- todo: for diagonals, also check two tiles entity partly traverses
+                -- ...
+
                 local noWall = world.locationIsPassable(newX,newY,entity.position.z)
                 local target = entityManager.getEntityAtLocation(newX,newY)
 
