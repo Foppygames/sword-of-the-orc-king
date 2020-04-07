@@ -39,7 +39,7 @@ function world.createActors(level)
 			local posIndex = (y - 1) * map.WORLD_WIDTH + x
 			local actor = state[level].layout[posIndex].actor
 			if (actor ~= nil) then
-				entityManager.addEntity(actor.type,actor.data)
+				entityManager.addEntity(actor.id,actor.data)
 			end
 		end
 	end

@@ -34,6 +34,7 @@ function actionSystem.update(inputAction)
 		return true
 	end
 
+	local entity = entities[index]
 	local continue = true
 	local action = nil
 	local result = {
@@ -41,15 +42,15 @@ function actionSystem.update(inputAction)
 		newAction = nil
 	}
 	
-	local energyForActionAvailable = (entities[index].energy.level >= energySystem.ENERGY_FOR_ACTION)
+	local energyForActionAvailable = (entity.energy.level >= energySystem.ENERGY_FOR_ACTION)
 
 	if (energyForActionAvailable) then
-		-- entity is controlled by input
-		if (entityManager.entityHas(entities[index],{"input"})) then
-			action = inputAction
 		-- entity is controlled by ai
-		elseif (entityManager.entityHas(entities[index],{"ai"})) then
-			action = actionSystem.getAiAction(entities[index])
+		if (entityManager.entityHas(entity,{"ai"})) then
+			action = actionSystem.getAiAction(entity)
+		-- entity is controlled by input
+		elseif (entityManager.entityHas(entity,{"input"})) then
+			action = inputAction
 		-- entity is not controlled
 		else
 			action = actionManager.createAction("skip")
@@ -58,17 +59,17 @@ function actionSystem.update(inputAction)
 		
 	-- action selected
 	if (action ~= nil) then
-		result = action.perform(entities[index])
+		result = action.perform(entity)
 
 		while (result.newAction ~= nil) do
 			local newAction = actionManager.createAction(result.newAction.id,result.newAction.data)
-			result = newAction.perform(entities[index])
+			result = newAction.perform(entity)
 		end
 	end
 
 	-- action performed with success
 	if (result.success) then
-		entities[index].energy.useForAction = true
+		entity.energy.useForAction = true
 	-- no successful action, while energy available
 	elseif (energyForActionAvailable) then
 		-- stay in this entity's turn

@@ -1,4 +1,4 @@
--- map is a module for creating dungeon layouts
+-- map is a module for creating dungeon layouts with initial entity locations
 
 local map = {}
 
@@ -6,7 +6,7 @@ local map = {}
 -- Note: margin is to allow for corridors parallel to room walls with one tile inbetween
 local ROOM_GRID_WIDTH = 4
 local ROOM_GRID_HEIGHT = 4
-local ROOM_GRID_MARGIN = 6
+local ROOM_GRID_MARGIN = 5
 local MIN_ROOM_WIDTH = 8
 local MIN_ROOM_HEIGHT = 8
 local MAX_ROOM_WIDTH = 20
@@ -31,7 +31,16 @@ local CONNECTION_DIRECTION_INDEXES = {3,5}
 map.WORLD_WIDTH = ROOM_GRID_WIDTH * (MAX_ROOM_WIDTH + 2) + (ROOM_GRID_WIDTH - 1) * ROOM_GRID_MARGIN
 map.WORLD_HEIGHT = ROOM_GRID_HEIGHT * (MAX_ROOM_HEIGHT + 2) + (ROOM_GRID_HEIGHT - 1) * ROOM_GRID_MARGIN
 
--- returns location and dimensions of rooms
+-- returns table containing id and random location within room
+local function getEntityData(id,x1,y1,width,height)
+	return {
+		id = id,
+		x = math.random(x1,x1 + width - 1),
+		y = math.random(y1,y1 + height - 1)
+	}
+end
+
+-- returns location and dimensions of rooms and the entities in them
 local function createRooms()
 	local rooms = {}
 	for gridY = 1, ROOM_GRID_HEIGHT do
@@ -46,8 +55,29 @@ local function createRooms()
 				x1 = x1,
 				y1 = y1,
 				width = width,
-				height = height
+				height = height,
+				entities = {}
 			}
+
+			-- each room contains 0-3 bats
+			for i = 1, 3 do
+				if (math.random(3) == 1) then
+					table.insert(rooms[gridY][gridX].entities,getEntityData("bat",x1,y1,width,height))
+				end
+			end
+
+			-- each room contains 0-2 orcs
+			for i = 1, 2 do
+				if (math.random(5) == 1) then
+					table.insert(rooms[gridY][gridX].entities,getEntityData("orc",x1,y1,width,height))
+				end
+			end
+
+			-- upper left room contains hero
+			-- Note: later entity planned at same location will overwrite previous entity, therefore hero planned last
+			if ((gridY == 1) and (gridX == 1)) then
+				table.insert(rooms[gridY][gridX].entities,getEntityData("hero",x1,y1,width,height))
+			end
 		end
 	end
 	return rooms
@@ -159,19 +189,10 @@ function map.createLayout(level)
 	local connections = createConnections(rooms)
 	local layout = createEmptyLayout()
 
-	local heroX = nil
-	local heroY = nil
-
 	-- add rooms
 	for gridX = 1, ROOM_GRID_WIDTH do
 		for gridY = 1, ROOM_GRID_HEIGHT do
 			local room = rooms[gridY][gridX]
-
-			-- hero starts in center of upper left corner room
-			if (gridX == 1) and (gridY == 1) and (heroX == nil) then
-				heroX = room.x1 + math.floor(room.width / 2)
-				heroY = room.y1 + math.floor(room.height / 2)
-			end
 
 			for x = room.x1, room.x1 + room.width - 1 do
 				for y = room.y1, room.y1 + room.height - 1 do
@@ -179,6 +200,24 @@ function map.createLayout(level)
 					layout[posIndex].floor = 1
 					layout[posIndex].tile = "floor"
 				end
+			end
+
+			-- add entities
+			-- Note: later entity planned at same location will overwrite previous entity
+			for i = 1, #room.entities do
+				local entity = room.entities[i]
+				local posIndex = (entity.y - 1) * map.WORLD_WIDTH + entity.x
+
+				layout[posIndex].actor = {
+					id = entity.id,
+					data = {
+						position = {
+							x = entity.x,
+							y = entity.y,
+							z = level
+						}
+					}
+				}
 			end
 		end
 	end
@@ -284,19 +323,6 @@ function map.createLayout(level)
 			end
 		end
 	end
-
-	local posIndex = (heroY - 1) * map.WORLD_WIDTH + heroX
-
-	layout[posIndex].actor = {
-		type = "hero",
-		data = {
-			position = {
-				x = heroX,
-				y = heroY,
-				z = level
-			}
-		}
-	}
 
 	return layout
 end
