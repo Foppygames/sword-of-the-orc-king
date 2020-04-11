@@ -11,7 +11,7 @@ function Hero.create(data)
 		attack = {},
 		camera = {},
 		energy = {
-			increment = 5
+			increment = 1
 		},
 		input = {},
 		movement = {},

@@ -11,7 +11,7 @@ function Bat.create(data)
 		},
 		attack = {},
 		energy = {
-			increment = 10
+			increment = 2
 		},
 		movement = {},
 		name = {

@@ -11,7 +11,7 @@ function Orc.create(data)
 		},
 		attack = {},
 		energy = {
-			increment = 5
+			increment = 1
 		},
 		movement = {},
 		name = {
