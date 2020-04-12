@@ -11,6 +11,9 @@ local items = {
 	},
 	orc = {
 		path = "images/entities/orc_green.png"
+	},
+	sword = {
+		path = "images/entities/sword.png"
 	}
 }
 

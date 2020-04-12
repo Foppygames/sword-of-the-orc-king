@@ -26,20 +26,20 @@ local viewportCenterTileY = 1
 local viewportZ = STARTING_LEVEL
 local viewportVisibleLocations = {}
 
--- turn active actors into stored actors
-function world.storeActors(level)
+-- turn active entities into stored entities
+function world.storeEntities(level)
 	-- ...
 end
 
--- turn stored actors into active actors
-function world.createActors(level)
+-- turn stored entities into active entities
+function world.createEntities(level)
 	local level = (level or STARTING_LEVEL)
 	for y = 1, map.WORLD_HEIGHT do
 		for x = 1, map.WORLD_WIDTH do
 			local posIndex = (y - 1) * map.WORLD_WIDTH + x
-			local actor = state[level].layout[posIndex].actor
-			if (actor ~= nil) then
-				entityManager.addEntity(actor.id,actor.data)
+			local entity = state[level].layout[posIndex].entity
+			if (entity ~= nil) then
+				entityManager.addEntity(entity.id,entity.data)
 			end
 		end
 	end
@@ -95,10 +95,10 @@ end
 
 function world.addLevel()
 	local level = #state + 1
-	-- each level contains a layout, including stored actors, and a set of active actors
+	-- each level contains a layout, including stored entities, and a set of active entities
 	table.insert(state,{
 		layout = map.createLayout(level),
-		actors = {}
+		entities = {}
 	})
 end
 
@@ -165,13 +165,13 @@ function world.locationIsPassable(x,y,z)
 	return (state[z].layout[posIndex].floor == 1)
 end
 
--- stores and creates actors if level change dictates it
+-- stores and creates entities if level change dictates it
 local function processCameraEntityZ(cameraEntity)
 	if ((viewportZ ~= nil) and (viewportZ ~= cameraEntity.position.z)) then
-		world.storeActors(viewportZ)
+		world.storeEntities(viewportZ)
 	end
 	if (viewportZ ~= cameraEntity.position.z) then
-		world.createActors(cameraEntity.position.z)
+		world.createEntities(cameraEntity.position.z)
 	end
 	return cameraEntity.position.z
 end

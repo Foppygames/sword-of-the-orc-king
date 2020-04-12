@@ -49,7 +49,7 @@ function switchToState(newState)
 		input.resetAction()
 
 		world.createNew()
-		world.createActors(nil)
+		world.createEntities(nil)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.")

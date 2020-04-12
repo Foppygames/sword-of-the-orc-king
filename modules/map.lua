@@ -73,6 +73,12 @@ local function createRooms()
 				end
 			end
 
+			-- upper left room contains two swords
+			if ((gridY == 1) and (gridX == 1)) then
+				table.insert(rooms[gridY][gridX].entities,getEntityData("sword",x1,y1,width,height))
+				table.insert(rooms[gridY][gridX].entities,getEntityData("sword",x1,y1,width,height))
+			end
+
 			-- upper left room contains hero
 			-- Note: later entity planned at same location will overwrite previous entity, therefore hero planned last
 			if ((gridY == 1) and (gridX == 1)) then
@@ -176,7 +182,7 @@ local function createEmptyLayout()
 				wall = 0,
 				floor = 0,
 				tile = nil,
-				actor = nil
+				entity = nil
 			}
 		end
 	end
@@ -208,7 +214,7 @@ function map.createLayout(level)
 				local entity = room.entities[i]
 				local posIndex = (entity.y - 1) * map.WORLD_WIDTH + entity.x
 
-				layout[posIndex].actor = {
+				layout[posIndex].entity = {
 					id = entity.id,
 					data = {
 						position = {

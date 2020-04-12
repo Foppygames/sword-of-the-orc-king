@@ -5,7 +5,8 @@ local entityManager = {}
 local definitions = {
 	bat = require("modules.ecs.entities.bat"),
 	hero = require("modules.ecs.entities.hero"),
-	orc = require("modules.ecs.entities.orc")
+	orc = require("modules.ecs.entities.orc"),
+	sword = require("modules.ecs.entities.sword")
 }
 
 local entities = {}
