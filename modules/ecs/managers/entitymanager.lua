@@ -47,6 +47,18 @@ function entityManager.entityHas(entity,componentIds)
 	return true
 end
 
+function entityManager.getEntityAtLocationHaving(x,y,z,componentIds)
+	local matches = entityManager.getEntitiesHaving({"position"})
+	for i = 1, #matches do
+		if (matches[i].position.x == x) and (matches[i].position.y == y) and (matches[i].position.z == z) then
+			if (entityManager.entityHas(matches[i],componentIds)) then
+				return matches[i]
+			end
+		end
+	end
+	return nil
+end
+
 function entityManager.getEntityAtLocationNotHaving(x,y,z,componentIds)
 	local matches = entityManager.getEntitiesHaving({"position"})
 	for i = 1, #matches do

@@ -8,6 +8,7 @@ local input = require("modules.input")
 local layout = require("modules.layout")
 local log = require("modules.log")
 local renderSystem = require("modules.ecs.systems.rendersystem")
+local status = require("modules.status")
 local tiles = require("modules.tiles")
 local utils = require("modules.utils")
 local visionSystem = require("modules.ecs.systems.visionsystem")
@@ -29,6 +30,7 @@ function love.load()
 	images.init()
 	layout.init(aspect.getGameWidth(),aspect.getGameHeight())
 	log.init(layout.DRAWING_AREA_LOG)
+	status.init(layout.DRAWING_AREA_STATUS)
 	tiles.init()
 	world.init(layout.DRAWING_AREA_WORLD)
 	
@@ -53,6 +55,8 @@ function switchToState(newState)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.")
+
+		status.reset()
 	end
 end
 
@@ -88,6 +92,7 @@ function love.draw()
 		love.graphics.clear(colors.get("LIGHT_BLUE"))
 
 		log.draw()
+		status.draw()
 		world.draw()
 	end
 	
@@ -110,7 +115,8 @@ function love.update(dt)
 		end
 
 		local cameraEntity = visionSystem.update()
-
+		
+		status.update(cameraEntity)
 		world.updateViewport(cameraEntity)
 	end
 end

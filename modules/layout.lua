@@ -7,6 +7,7 @@ local layout = {}
 layout.DRAWING_AREA_WORLD = 1
 layout.DRAWING_AREA_STATUS = 2
 layout.DRAWING_AREA_LOG = 3
+layout.DRAWING_AREA_GROUND = 4
 
 local AREA_PADDING = 4
 

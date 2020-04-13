@@ -1,6 +1,5 @@
 -- log is a module that manages and displays the most recent game messages
 
-local aspect = require("modules.aspect")
 local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local layout = require("modules.layout")
@@ -15,7 +14,6 @@ local LINE_HEIGHT = 16
 local PADDING_LEFT = 4
 
 local entries
-local font
 local rect
 
 function log.init(drawingAreaIndex)

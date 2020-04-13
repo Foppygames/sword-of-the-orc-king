@@ -1,6 +1,5 @@
 -- world is a module that manages and displays the current game world
 
-local aspect = require("modules.aspect")
 local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local layout = require("modules.layout")
