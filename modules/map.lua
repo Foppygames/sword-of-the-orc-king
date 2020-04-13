@@ -182,7 +182,7 @@ local function createEmptyLayout()
 				wall = 0,
 				floor = 0,
 				tile = nil,
-				entity = nil
+				entities = {}
 			}
 		end
 	end
@@ -214,7 +214,7 @@ function map.createLayout(level)
 				local entity = room.entities[i]
 				local posIndex = (entity.y - 1) * map.WORLD_WIDTH + entity.x
 
-				layout[posIndex].entity = {
+				table.insert(layout[posIndex].entities,{
 					id = entity.id,
 					data = {
 						position = {
@@ -223,7 +223,7 @@ function map.createLayout(level)
 							z = level
 						}
 					}
-				}
+				})
 			end
 		end
 	end

@@ -29,7 +29,7 @@ function Move.create(data)
                 -- ...
 
                 local noWall = world.locationIsPassable(newX,newY,entity.position.z)
-                local target = entityManager.getEntityAtLocation(newX,newY)
+                local target = entityManager.getEntityAtLocationNotHaving(newX,newY,entity.position.z,{"item"})
 
                 if (noWall and (target == nil)) then
                     entity.position.x = newX
@@ -50,7 +50,8 @@ function Move.create(data)
                                 newActionId = "attack"
                                 newActionData = {
                                     x = newX,
-                                    y = newY
+                                    y = newY,
+                                    z = entity.position.z
                                 }
                             else
                                 log.addEntry("Your path is blocked by <1>.",{target})

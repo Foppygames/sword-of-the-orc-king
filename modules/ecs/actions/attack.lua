@@ -9,7 +9,8 @@ local Attack = {}
 function Attack.create(data)
     local self = Action.create({
         x = 0,
-        y = 0
+        y = 0,
+        z = 0
     })
 
     self.setValues(data)
@@ -17,7 +18,7 @@ function Attack.create(data)
     function self.perform(entity)
         local success = false
         if (entityManager.entityHas(entity,{"attack","position"})) then
-            local target = entityManager.getEntityAtLocation(self.x,self.y)
+            local target = entityManager.getEntityAtLocationNotHaving(self.x,self.y,self.z,{"item"})
             if (target ~= nil) then
                 -- ...
 

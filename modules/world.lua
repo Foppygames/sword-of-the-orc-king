@@ -37,9 +37,9 @@ function world.createEntities(level)
 	for y = 1, map.WORLD_HEIGHT do
 		for x = 1, map.WORLD_WIDTH do
 			local posIndex = (y - 1) * map.WORLD_WIDTH + x
-			local entity = state[level].layout[posIndex].entity
-			if (entity ~= nil) then
-				entityManager.addEntity(entity.id,entity.data)
+			local entities = state[level].layout[posIndex].entities
+			for i = 1, #entities do
+				entityManager.addEntity(entities[i].id,entities[i].data)
 			end
 		end
 	end
@@ -95,10 +95,10 @@ end
 
 function world.addLevel()
 	local level = #state + 1
-	-- each level contains a layout, including stored entities, and a set of active entities
+	-- each level contains a layout, including stored entities [and a set of active entities]
 	table.insert(state,{
-		layout = map.createLayout(level),
-		entities = {}
+		layout = map.createLayout(level)
+		--entities = {}
 	})
 end
 
