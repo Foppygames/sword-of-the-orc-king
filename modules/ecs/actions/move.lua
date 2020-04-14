@@ -54,7 +54,7 @@ function Move.create(data)
                                     z = entity.position.z
                                 }
                             else
-                                log.addEntry("Your path is blocked by <1>.",{target})
+                                log.addEntry("Your path is blocked by [...]")
                             end
                         end
                     end

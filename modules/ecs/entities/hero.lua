@@ -14,6 +14,7 @@ function Hero.create(data)
 			increment = 1
 		},
 		input = {},
+		inventory = {},
 		movement = {},
 		position = {},
 		vision = {}

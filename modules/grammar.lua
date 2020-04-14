@@ -5,6 +5,7 @@ local entityManager = require("modules.ecs.managers.entitymanager")
 local grammar = {}
 
 grammar.STRUCT_E1_ATTACK_E2 = {{"e",1}, {"v",{"attack","attacks"}}, {"e",2}}
+grammar.STRUCT_E1_GET_E2 = {{"e",1}, {"v",{"get","gets"}}, {"e",2}}
 
 local PERSON_INDEX_SECOND_SINGULAR = 1
 local PERSON_INDEX_THIRD_SINGULAR = 2

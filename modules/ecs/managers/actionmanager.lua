@@ -4,6 +4,7 @@ local actionManager = {}
 
 local definitions = {
 	attack = require("modules.ecs.actions.attack"),
+	get = require("modules.ecs.actions.get"),
 	move = require("modules.ecs.actions.move"),
 	skip = require("modules.ecs.actions.skip")
 }
