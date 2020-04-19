@@ -82,7 +82,7 @@ function love.draw()
 	aspect.apply()
 	
 	if (state == STATE_TITLE) then
-		love.graphics.setColor(0.470,0.902,1)
+		love.graphics.setColor(1,1,1)
 		love.graphics.printf(GAME_NAME,0,30,aspect.getGameWidth(),"center")	
 		love.graphics.printf("W = windowed / full screen",0,120,aspect.getGameWidth(),"center")
 		love.graphics.printf("Click to start",0,170,aspect.getGameWidth(),"center")
