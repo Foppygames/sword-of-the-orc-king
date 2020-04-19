@@ -6,8 +6,8 @@ local layout = {}
 
 layout.DRAWING_AREA_WORLD = 1
 layout.DRAWING_AREA_STATUS = 2
-layout.DRAWING_AREA_LOG = 3
-layout.DRAWING_AREA_GROUND = 4
+layout.DRAWING_AREA_ITEMS = 3
+layout.DRAWING_AREA_LOG = 4
 
 local AREA_PADDING = 4
 
@@ -26,14 +26,21 @@ function layout.init(gameWidth,gameHeight)
 		x = rects[layout.DRAWING_AREA_WORLD].width+AREA_PADDING*2,
 		y = AREA_PADDING,
 		width = gameWidth - rects[layout.DRAWING_AREA_WORLD].width - AREA_PADDING * 3,
-		height = (gameHeight - AREA_PADDING * 2) / 2
+		height = (gameHeight - AREA_PADDING * 3) * 0.3
 	}
 	-- column 2, row 2
-	rects[layout.DRAWING_AREA_LOG] = {
+	rects[layout.DRAWING_AREA_ITEMS] = {
 		x = rects[layout.DRAWING_AREA_STATUS].x,
 		y = rects[layout.DRAWING_AREA_STATUS].y + rects[layout.DRAWING_AREA_STATUS].height + AREA_PADDING,
+		width = gameWidth - rects[layout.DRAWING_AREA_WORLD].width - AREA_PADDING * 3,
+		height = (gameHeight - AREA_PADDING * 3) * 0.4
+	}
+	-- column 2, row 3
+	rects[layout.DRAWING_AREA_LOG] = {
+		x = rects[layout.DRAWING_AREA_STATUS].x,
+		y = rects[layout.DRAWING_AREA_ITEMS].y + rects[layout.DRAWING_AREA_ITEMS].height + AREA_PADDING,
 		width = rects[layout.DRAWING_AREA_STATUS].width,
-		height = gameHeight - rects[layout.DRAWING_AREA_STATUS].height - AREA_PADDING * 3
+		height = gameHeight - (rects[layout.DRAWING_AREA_ITEMS].y + rects[layout.DRAWING_AREA_ITEMS].height) - AREA_PADDING * 2
 	}
 end
 
