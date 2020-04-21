@@ -2,28 +2,35 @@
 
 local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
+local grammar = require("modules.grammar")
 local layout = require("modules.layout")
 
 local items = {}
 
+items.STATE_DEFAULT = 0
+items.STATE_INVENTORY = 1
+
 local BACKGROUND_COLOR = colors.get("BLUE")
 local TEXT_COLOR_DEFAULT = colors.get("LIGHT_BLUE")
 local TEXT_COLOR_KEY = colors.get("YELLOW")
-local TEXT_COLOR_GROUND_ITEM = colors.get("WHITE")
+local TEXT_COLOR_ITEM = colors.get("WHITE")
 local TEXT_COLOR_INVENTORY_COUNT = colors.get("WHITE")
 
 local LINE_HEIGHT = 16
 local PADDING_LEFT = 4
 
-local GROUND_ITEM_LABEL = "Ground: "
+local GROUND_ITEM_LABEL = "On ground: "
 local GROUND_ITEM_TEXT_NONE = "nothing"
 
 local INVENTORY_COUNT_LABEL = "Inventory: "
 local INVENTORY_COUNT_TEXT_NONE = "empty"
 
+local entity
 local groundItemName
 local inventoryCount
+local inventoryIndex
 local rect
+local state
 
 function items.init(drawingAreaIndex)
 	rect = layout.getRect(drawingAreaIndex)
@@ -36,13 +43,56 @@ local function displayGroundItem()
 	else
 		local groundItemPrintTable = {
 			TEXT_COLOR_DEFAULT, GROUND_ITEM_LABEL,
-			TEXT_COLOR_GROUND_ITEM, groundItemName,
+			TEXT_COLOR_ITEM, groundItemName,
 			TEXT_COLOR_DEFAULT, " (",
 			TEXT_COLOR_KEY, "g",
 			TEXT_COLOR_DEFAULT, "et)"
 		}
 		love.graphics.setColor(colors.get("WHITE"))
 		love.graphics.print(groundItemPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
+	end
+end
+
+local function displayInventory()
+	-- display header
+	local headerPrintTable = {
+		TEXT_COLOR_DEFAULT, "Inventory (",
+		TEXT_COLOR_KEY, "up",
+		TEXT_COLOR_DEFAULT, "/",
+		TEXT_COLOR_KEY, "down",
+		TEXT_COLOR_DEFAULT, ", ",
+		TEXT_COLOR_KEY, "esc",
+		TEXT_COLOR_DEFAULT, " to exit)"
+	}
+	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
+	
+	if entityManager.entityHas(entity,{"inventory"}) then
+		if (#entity.inventory.items > 0) then
+			-- display items
+			love.graphics.setColor(TEXT_COLOR_ITEM)
+			for i = 1, #entity.inventory.items do
+				-- current item is selected
+				if (inventoryIndex == i) then
+					love.graphics.setColor(TEXT_COLOR_DEFAULT)
+					love.graphics.rectangle("fill",rect.x+PADDING_LEFT/2,rect.y+LINE_HEIGHT*i-1,rect.width-PADDING_LEFT,LINE_HEIGHT)
+					love.graphics.setColor(TEXT_COLOR_ITEM)
+				end
+				local person, text = grammar.resolveEntity(entity.inventory.items[i],true)
+				love.graphics.print(text,rect.x+PADDING_LEFT,rect.y+LINE_HEIGHT*i-1)
+			end
+
+			-- display available actions for selected item
+			local actionsPrintTable = {
+				TEXT_COLOR_DEFAULT, "(",
+				TEXT_COLOR_KEY, "d",
+				TEXT_COLOR_DEFAULT, "rop, ",
+				TEXT_COLOR_KEY, "e",
+				TEXT_COLOR_DEFAULT, "quip)"
+			}
+			love.graphics.setColor(colors.get("WHITE"))
+			love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
+		end
 	end
 end
 
@@ -72,17 +122,55 @@ end
 function items.draw()
 	layout.drawBackground(rect,BACKGROUND_COLOR)
 	layout.enableClipping(rect)
-	displayGroundItem()
-	displayInventoryCount()
+
+	if (state == items.STATE_DEFAULT) then
+		displayGroundItem()
+		displayInventoryCount()
+	elseif (state == items.STATE_INVENTORY) then
+		displayInventory()
+	end
+	
 	layout.disableClipping()
 end
 
 function items.reset()
+	entity = nil
 	groundItemName = nil
 	inventoryCount = 0
+	inventoryIndex = 1
+	items.switchToState(items.STATE_DEFAULT)
 end
 
-function items.update(entity)
+-- returns action and new key listener to be used in input module 
+function items.keyListenerInventory(key)
+	local action = nil
+	local listener = items.keyListenerInventory
+	if (key == "escape") then
+		listener = items.switchToState(items.STATE_DEFAULT)
+	end
+	if entityManager.entityHas(entity,{"inventory"}) then
+		if ((key == "up") or (key == "kp8")) and (inventoryIndex > 1) then
+			inventoryIndex = inventoryIndex - 1
+		end
+		if ((key == "down") or (key == "kp2")) and (inventoryIndex < #entity.inventory.items) then
+			inventoryIndex = inventoryIndex + 1
+		end
+	end
+	return action, listener
+end
+
+-- returns new key listener to be used in input module
+function items.switchToState(newState)
+	state = newState
+	if (state == items.STATE_INVENTORY) then
+		return items.keyListenerInventory
+	else
+		return nil
+	end
+end
+
+function items.update(targetEntity)
+	entity = targetEntity
 	if (entity ~= nil) then
 		-- update ground item name
 		local groundItem = entityManager.getEntityAtLocationHaving(entity.position.x,entity.position.y,entity.position.z,{"item"})

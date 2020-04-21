@@ -26,14 +26,14 @@ function layout.init(gameWidth,gameHeight)
 		x = rects[layout.DRAWING_AREA_WORLD].width+AREA_PADDING*2,
 		y = AREA_PADDING,
 		width = gameWidth - rects[layout.DRAWING_AREA_WORLD].width - AREA_PADDING * 3,
-		height = (gameHeight - AREA_PADDING * 3) * 0.3
+		height = (gameHeight - AREA_PADDING * 3) * 0.2
 	}
 	-- column 2, row 2
 	rects[layout.DRAWING_AREA_ITEMS] = {
 		x = rects[layout.DRAWING_AREA_STATUS].x,
 		y = rects[layout.DRAWING_AREA_STATUS].y + rects[layout.DRAWING_AREA_STATUS].height + AREA_PADDING,
 		width = gameWidth - rects[layout.DRAWING_AREA_WORLD].width - AREA_PADDING * 3,
-		height = (gameHeight - AREA_PADDING * 3) * 0.4
+		height = (gameHeight - AREA_PADDING * 3) * 0.6
 	}
 	-- column 2, row 3
 	rects[layout.DRAWING_AREA_LOG] = {

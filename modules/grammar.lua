@@ -11,7 +11,7 @@ local PERSON_INDEX_SECOND_SINGULAR = 1
 local PERSON_INDEX_THIRD_SINGULAR = 2
 
 -- given an entity, returns person and text
-local function resolveEntity(entity)
+function grammar.resolveEntity(entity,leaveOutArticle)
 	if (entity == nil) then
 		return PERSON_INDEX_THIRD_SINGULAR,"[Grammar error: missing entity]"
 	end
@@ -21,7 +21,11 @@ local function resolveEntity(entity)
 		if (entity.name.specificName ~= nil) then
 			return PERSON_INDEX_THIRD_SINGULAR,entity.name.specificName
 		end
-		return PERSON_INDEX_THIRD_SINGULAR,"the "..entity.name.genericName
+		if (leaveOutArticle ~= true) then
+			return PERSON_INDEX_THIRD_SINGULAR,"the "..entity.name.genericName
+		else
+			return PERSON_INDEX_THIRD_SINGULAR,entity.name.genericName
+		end
 	end
 	return PERSON_INDEX_THIRD_SINGULAR,"unnamed entity" 
 end
@@ -47,7 +51,7 @@ function grammar.interpolate(struct,parameters)
 	for i = 1, #struct do
 		-- entity expected on this position
 		if (struct[i][1] == "e") then
-			local person, text = resolveEntity(parameters[struct[i][2]])
+			local person, text = grammar.resolveEntity(parameters[struct[i][2]])
 			table.insert(words,text)
 			lastPerson = person
 		-- verb expected on this position

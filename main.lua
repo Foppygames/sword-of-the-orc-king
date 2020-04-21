@@ -49,14 +49,14 @@ function switchToState(newState)
 		actionSystem.reset()
 		entityManager.reset()
 		input.resetAction()
+		input.resetListener()
+		items.reset()
 
 		world.createNew()
 		world.createEntities(nil)
 
 		log.clear()
 		log.addEntry("You enter the dungeon.")
-
-		items.reset()
 	end
 end
 
@@ -137,7 +137,7 @@ function love.keypressed(key)
 		end
 	end
 	if (state == STATE_PLAY) then
-		if (key == "escape") then
+		if (key == "f1") then
 			-- save game state to continue play later
 			-- ...
 			switchToState(STATE_TITLE)
