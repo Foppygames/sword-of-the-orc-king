@@ -5,7 +5,9 @@ local entityManager = require("modules.ecs.managers.entitymanager")
 local grammar = {}
 
 grammar.STRUCT_E1_ATTACK_E2 = {{"e",1}, {"v",{"attack","attacks"}}, {"e",2}}
+grammar.STRUCT_E1_DROP_E2 = {{"e",1}, {"v",{"drop","drops"}}, {"e",2}}
 grammar.STRUCT_E1_GET_E2 = {{"e",1}, {"v",{"get","gets"}}, {"e",2}}
+grammar.STRUCT_NO_PLACE_TO_DROP_E1 = {{"f",{"There is no place to drop"}}, {"e",1}}
 
 local PERSON_INDEX_SECOND_SINGULAR = 1
 local PERSON_INDEX_THIRD_SINGULAR = 2
@@ -57,6 +59,9 @@ function grammar.interpolate(struct,parameters)
 		-- verb expected on this position
 		elseif (struct[i][1] == "v") then
 			table.insert(words,resolveVerb(struct[i][2],lastPerson))
+		-- fixed phrase expected on this position
+		elseif (struct[i][1] == "f") then
+			table.insert(words,struct[i][2])
 		end
 	end
 	local sentence = table.concat(words," ")

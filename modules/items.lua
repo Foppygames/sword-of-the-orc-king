@@ -1,5 +1,6 @@
 -- items is a module that displays information about the camera entity's items in the items area
 
+local actionManager = require("modules.ecs.managers.actionmanager")
 local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local grammar = require("modules.grammar")
@@ -87,8 +88,8 @@ local function displayInventory()
 				TEXT_COLOR_DEFAULT, "(",
 				TEXT_COLOR_KEY, "d",
 				TEXT_COLOR_DEFAULT, "rop, ",
-				TEXT_COLOR_KEY, "e",
-				TEXT_COLOR_DEFAULT, "quip)"
+				TEXT_COLOR_KEY, "w",
+				TEXT_COLOR_DEFAULT, "ield)"
 			}
 			love.graphics.setColor(colors.get("WHITE"))
 			love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
@@ -155,6 +156,19 @@ function items.keyListenerInventory(key)
 		if ((key == "down") or (key == "kp2")) and (inventoryIndex < #entity.inventory.items) then
 			inventoryIndex = inventoryIndex + 1
 		end
+		if (key == "d") then
+			action = actionManager.createAction("drop",{
+				item = entity.inventory.items[inventoryIndex]
+			})
+			-- move pointer up if removing bottom item in list
+			if (inventoryIndex == #entity.inventory.items) then
+				inventoryIndex = inventoryIndex - 1
+			end
+			-- exit inventory if dropping single remaining item
+			if (#entity.inventory.items == 1) then
+				listener = items.switchToState(items.STATE_DEFAULT)
+			end
+		end
 	end
 	return action, listener
 end
@@ -163,6 +177,7 @@ end
 function items.switchToState(newState)
 	state = newState
 	if (state == items.STATE_INVENTORY) then
+		inventoryIndex = 1
 		return items.keyListenerInventory
 	else
 		return nil
