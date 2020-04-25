@@ -18,12 +18,14 @@ function Wield.create(data)
         local success = false
         if (entityManager.entityHas(entity,{"equipment"})) then
             if entityManager.entityHas(self.item,{"item"}) and (self.item.item.wieldable) then
-                -- look for first empty wield slot
+                -- look for first slot of correct type that is empty
                 local emptySlotIndex = nil
-                for i = 1, #entity.equipment.wieldSlots do
-                    if (entity.equipment.items[i] == Equipment.NULL) then
-                        emptySlotIndex = i
-                        break
+                for i = 1, #entity.equipment.slots do
+                    if (entity.equipment.slots[i].type == self.item.item.slotType) then
+                        if (entity.equipment.items[i] == Equipment.NULL) then
+                            emptySlotIndex = i
+                            break
+                        end
                     end
                 end
 

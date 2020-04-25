@@ -1,4 +1,5 @@
 local Entity = require("modules.ecs.entities.entity")
+local Equipment = require("modules.ecs.components.equipment")
 
 local Sword = {}
 
@@ -8,7 +9,8 @@ function Sword.create(data)
 			imageId = "sword"
 		},
 		item = {
-			wieldable = true
+			wieldable = true,
+			slotType = Equipment.SLOT_TYPE_MAIN_HAND
 		},
 		name = {
 			genericName = "sword"

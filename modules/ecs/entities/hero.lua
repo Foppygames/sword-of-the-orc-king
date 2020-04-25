@@ -16,7 +16,12 @@ function Hero.create(data)
 		},
 		equipment = {
 			items = {Equipment.NULL},
-			wieldSlots = {"hand"}
+			slots = {
+				{
+					name = "hand",
+					type = Equipment.SLOT_TYPE_MAIN_HAND
+				}
+			}
 		},
 		input = {},
 		inventory = {},

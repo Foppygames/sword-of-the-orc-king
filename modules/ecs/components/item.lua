@@ -7,7 +7,8 @@ local Item = {}
 function Item.create(entityDefaults,entityData)
     local self = Component.create({
         wieldable = false,
-        wearable = false
+        wearable = false,
+        slotType = nil
     })
 
     self.setValues(entityDefaults,entityData)

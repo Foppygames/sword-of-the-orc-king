@@ -3,6 +3,7 @@
 local actionManager = require("modules.ecs.managers.actionmanager")
 local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
+local Equipment = require("modules.ecs.components.equipment")
 local grammar = require("modules.grammar")
 local layout = require("modules.layout")
 
@@ -15,10 +16,13 @@ local BACKGROUND_COLOR = colors.get("BLUE")
 local TEXT_COLOR_DEFAULT = colors.get("LIGHT_BLUE")
 local TEXT_COLOR_KEY = colors.get("YELLOW")
 local TEXT_COLOR_ITEM = colors.get("WHITE")
-local TEXT_COLOR_INVENTORY_COUNT = colors.get("WHITE")
+local TEXT_COLOR_ITEM_COUNT = colors.get("WHITE")
 
 local LINE_HEIGHT = 16
 local PADDING_LEFT = 4
+
+local EQUIPMENT_COUNT_LABEL = "Equipped: "
+local EQUIPMENT_COUNT_TEXT_NONE = "nothing"
 
 local GROUND_ITEM_LABEL = "On ground: "
 local GROUND_ITEM_TEXT_NONE = "nothing"
@@ -27,6 +31,7 @@ local INVENTORY_COUNT_LABEL = "Inventory: "
 local INVENTORY_COUNT_TEXT_NONE = "empty"
 
 local entity
+local equipmentCount
 local groundItemName
 local inventoryCount
 local inventoryIndex
@@ -35,6 +40,29 @@ local state
 
 function items.init(drawingAreaIndex)
 	rect = layout.getRect(drawingAreaIndex)
+end
+
+local function displayEquipmentCount()
+	if (equipmentCount == 0) then
+		love.graphics.setColor(TEXT_COLOR_DEFAULT)
+		love.graphics.print(EQUIPMENT_COUNT_LABEL..EQUIPMENT_COUNT_TEXT_NONE,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*3)
+	else
+		local itemWord
+		if (equipmentCount ~= 1) then
+			itemWord = "items"
+		else
+			itemWord = "item"
+		end
+		local equipmentCountPrintTable = {
+			TEXT_COLOR_DEFAULT, EQUIPMENT_COUNT_LABEL,
+			TEXT_COLOR_ITEM_COUNT, equipmentCount.." "..itemWord,
+			TEXT_COLOR_DEFAULT, " (",
+			TEXT_COLOR_KEY, "e",
+			TEXT_COLOR_DEFAULT, "quipment)"
+		}
+		love.graphics.setColor(colors.get("WHITE"))
+		love.graphics.print(equipmentCountPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*3)
+	end
 end
 
 local function displayGroundItem()
@@ -134,7 +162,7 @@ local function displayInventoryCount()
 		end
 		local inventoryCountPrintTable = {
 			TEXT_COLOR_DEFAULT, INVENTORY_COUNT_LABEL,
-			TEXT_COLOR_INVENTORY_COUNT, inventoryCount.." "..itemWord,
+			TEXT_COLOR_ITEM_COUNT, inventoryCount.." "..itemWord,
 			TEXT_COLOR_DEFAULT, " (",
 			TEXT_COLOR_KEY, "i",
 			TEXT_COLOR_DEFAULT, "nventory)"
@@ -149,6 +177,7 @@ function items.draw()
 	layout.enableClipping(rect)
 
 	if (state == items.STATE_DEFAULT) then
+		displayEquipmentCount()
 		displayGroundItem()
 		displayInventoryCount()
 	elseif (state == items.STATE_INVENTORY) then
@@ -160,6 +189,7 @@ end
 
 function items.reset()
 	entity = nil
+	equipmentCount = 0
 	groundItemName = nil
 	inventoryCount = 0
 	inventoryIndex = 1
@@ -239,6 +269,20 @@ function items.update(targetEntity)
 			inventoryCount = #entity.inventory.items
 		else
 			inventoryCount = 0
+		end
+
+		if (inventoryIndex > inventoryCount) then
+			inventoryIndex = inventoryCount
+		end
+
+		-- update equipment count
+		equipmentCount = 0
+		if entityManager.entityHas(entity,{"equipment"}) then
+			for i = 1, #entity.equipment.items do
+				if (entity.equipment.items[i] ~= Equipment.NULL) then
+					equipmentCount = equipmentCount + 1
+				end
+			end
 		end
 	else
 		items.reset()
