@@ -1,4 +1,5 @@
 local Entity = require("modules.ecs.entities.entity")
+local Equipment = require("modules.ecs.components.equipment")
 
 local Hero = {}
 
@@ -12,6 +13,10 @@ function Hero.create(data)
 		camera = {},
 		energy = {
 			increment = 1
+		},
+		equipment = {
+			items = {Equipment.NULL},
+			wieldSlots = {"hand"}
 		},
 		input = {},
 		inventory = {},

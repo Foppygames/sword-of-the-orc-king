@@ -137,13 +137,13 @@ function love.keypressed(key)
 		end
 	end
 	if (state == STATE_PLAY) then
-		if (key == "f1") then
-			-- save game state to continue play later
-			-- ...
-			switchToState(STATE_TITLE)
-			return
-		else
-			input.registerKeyPressed(key)
+		if (not input.registerKeyPressed(key)) then
+			if (key == "escape") then
+				-- save game state to continue play later
+				-- ...
+				switchToState(STATE_TITLE)
+				return
+			end
 		end
 	end
 	if (state == STATE_GAME_OVER) then

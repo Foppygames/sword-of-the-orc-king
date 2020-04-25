@@ -70,11 +70,14 @@ local function displayInventory()
 	
 	if entityManager.entityHas(entity,{"inventory"}) then
 		if (#entity.inventory.items > 0) then
+			local selectedItem = nil
+
 			-- display items
 			love.graphics.setColor(TEXT_COLOR_ITEM)
 			for i = 1, #entity.inventory.items do
 				-- current item is selected
 				if (inventoryIndex == i) then
+					selectedItem = entity.inventory.items[i]
 					love.graphics.setColor(TEXT_COLOR_DEFAULT)
 					love.graphics.rectangle("fill",rect.x+PADDING_LEFT/2,rect.y+LINE_HEIGHT*i-1,rect.width-PADDING_LEFT,LINE_HEIGHT)
 					love.graphics.setColor(TEXT_COLOR_ITEM)
@@ -84,15 +87,36 @@ local function displayInventory()
 			end
 
 			-- display available actions for selected item
-			local actionsPrintTable = {
-				TEXT_COLOR_DEFAULT, "(",
-				TEXT_COLOR_KEY, "d",
-				TEXT_COLOR_DEFAULT, "rop, ",
-				TEXT_COLOR_KEY, "w",
-				TEXT_COLOR_DEFAULT, "ield)"
-			}
-			love.graphics.setColor(colors.get("WHITE"))
-			love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
+			if (selectedItem ~= nil) then
+				local actions = {"drop"}
+				if entityManager.entityHas(selectedItem,{"item"}) then
+					if (selectedItem.item.wieldable) then
+						table.insert(actions,"wield")
+					end
+					if (selectedItem.item.wearable) then
+						table.insert(actions,"wear")
+					end	
+				end
+				if (#actions > 0) then
+					-- create print table out of available actions
+					local actionsPrintTable = {
+						TEXT_COLOR_DEFAULT, "("
+					}
+					for i = 1, #actions do
+						if (i < #actions) then
+							actions[i] = actions[i]..", "
+						else
+							actions[i] = actions[i]..")"
+						end
+						table.insert(actionsPrintTable,TEXT_COLOR_KEY)
+						table.insert(actionsPrintTable,string.sub(actions[i],1,1))
+						table.insert(actionsPrintTable,TEXT_COLOR_DEFAULT)
+						table.insert(actionsPrintTable,string.sub(actions[i],2))
+					end
+					love.graphics.setColor(colors.get("WHITE"))
+					love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
+				end
+			end
 		end
 	end
 end
@@ -142,21 +166,22 @@ function items.reset()
 	items.switchToState(items.STATE_DEFAULT)
 end
 
--- returns action and new key listener to be used in input module 
+-- returns whether key was processed, resulting action, and new key listener
 function items.keyListenerInventory(key)
+	local processed = false
 	local action = nil
 	local listener = items.keyListenerInventory
 	if (key == "escape") then
 		listener = items.switchToState(items.STATE_DEFAULT)
-	end
-	if entityManager.entityHas(entity,{"inventory"}) then
+		processed = true
+	elseif entityManager.entityHas(entity,{"inventory"}) then
 		if ((key == "up") or (key == "kp8")) and (inventoryIndex > 1) then
 			inventoryIndex = inventoryIndex - 1
-		end
-		if ((key == "down") or (key == "kp2")) and (inventoryIndex < #entity.inventory.items) then
+			processed = true
+		elseif ((key == "down") or (key == "kp2")) and (inventoryIndex < #entity.inventory.items) then
 			inventoryIndex = inventoryIndex + 1
-		end
-		if (key == "d") then
+			processed = true
+		elseif (key == "d") then
 			action = actionManager.createAction("drop",{
 				item = entity.inventory.items[inventoryIndex]
 			})
@@ -168,9 +193,15 @@ function items.keyListenerInventory(key)
 			if (#entity.inventory.items == 1) then
 				listener = items.switchToState(items.STATE_DEFAULT)
 			end
+			processed = true
+		elseif (key == "w") then
+			action = actionManager.createAction("wield",{
+				item = entity.inventory.items[inventoryIndex]
+			})
+			processed = true
 		end
 	end
-	return action, listener
+	return processed, action, listener
 end
 
 -- returns new key listener to be used in input module

@@ -51,22 +51,27 @@ local DIRECTIONS = {
 local action = nil
 local listener = nil
 
--- returns action and new key listener
+-- returns whether key was processed, resulting action, and new key listener
 function input.defaultListener(key)
+	local processed = false
 	local action = nil
 	local newListener = nil
 	
 	if (DIRECTIONS[key] ~= nil) then
 		action = actionManager.createAction("move",DIRECTIONS[key])
+		processed = true
 	elseif (key == "g") then
 		action = actionManager.createAction("get")
+		processed = true
 	elseif (key == "i") then
 		newListener = items.switchToState(items.STATE_INVENTORY)
+		processed = true
 	elseif (key == "space") then
 		action = actionManager.createAction("skip")
+		processed = true
 	end
 	
-	return action, newListener
+	return processed, action, newListener
 end
 
 function input.getAction()
@@ -81,8 +86,9 @@ function input.resetListener()
 	listener = input.defaultListener
 end
 
+-- returns whether key was processed
 function input.registerKeyPressed(key)
-	local newAction, newListener = listener(key)
+	local keyProcessed, newAction, newListener = listener(key)
 	if (newAction ~= nil) then
 		action = newAction
 	end
@@ -91,6 +97,7 @@ function input.registerKeyPressed(key)
 	else
 		listener = input.defaultListener
 	end
+	return keyProcessed
 end
 
 return input

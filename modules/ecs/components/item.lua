@@ -5,7 +5,10 @@ local Component = require("modules.ecs.components.component")
 local Item = {}
 
 function Item.create(entityDefaults,entityData)
-    local self = Component.create({})
+    local self = Component.create({
+        wieldable = false,
+        wearable = false
+    })
 
     self.setValues(entityDefaults,entityData)
 

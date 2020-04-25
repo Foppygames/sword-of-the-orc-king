@@ -7,7 +7,9 @@ function Sword.create(data)
         appearance = {
 			imageId = "sword"
 		},
-		item = {},
+		item = {
+			wieldable = true
+		},
 		name = {
 			genericName = "sword"
 		},

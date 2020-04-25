@@ -7,8 +7,7 @@ local Energy = {}
 function Energy.create(entityDefaults,entityData)
     local self = Component.create({
         level = 0,
-        increment = 0,
-        useForAction = false
+        increment = 0
     })
 
     self.setValues(entityDefaults,entityData)
