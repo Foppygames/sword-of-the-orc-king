@@ -60,6 +60,9 @@ function input.defaultListener(key)
 	if (DIRECTIONS[key] ~= nil) then
 		action = actionManager.createAction("move",DIRECTIONS[key])
 		processed = true
+	elseif (key == "e") then
+		newListener = items.switchToState(items.STATE_EQUIPMENT)
+		processed = true
 	elseif (key == "g") then
 		action = actionManager.createAction("get")
 		processed = true

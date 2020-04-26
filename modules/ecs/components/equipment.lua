@@ -9,6 +9,14 @@ Equipment.NULL = "null"
 
 -- constants for slot types
 Equipment.SLOT_TYPE_MAIN_HAND = "main_hand"
+Equipment.SLOT_TYPE_OFF_HAND = "off_hand"
+Equipment.SLOT_TYPE_BODY = "body"
+Equipment.SLOT_TYPE_HEAD = "head"
+Equipment.SLOT_TYPE_BACK = "back"
+Equipment.SLOT_TYPE_FEET = "feet"
+Equipment.SLOT_TYPE_HANDS = "hands"
+Equipment.SLOT_TYPE_FINGER = "finger"
+Equipment.SLOT_TYPE_NECK = "neck"
 
 function Equipment.create(entityDefaults,entityData)
     local self = Component.create({
