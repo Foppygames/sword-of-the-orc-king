@@ -20,6 +20,14 @@ local STATE_TITLE = 0
 local STATE_PLAY = 1
 local STATE_GAME_OVER = 2
 
+local STORY = table.concat({
+	"You stand at the entrance to the ancient underground fortress of the orc king.",
+	"An evil emanates from its depths. Legend tells about the sword of the king, and",
+	"how there will never be peace as long as the sword is in the earth. Many adventurers",
+	"have gone before you but few have ever returned."
+}," ")
+local STORY_WIDTH_FRACTION = 0.7
+
 local state
 
 function love.load()
@@ -38,6 +46,9 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest","nearest",1)
 	love.graphics.setLineStyle("rough")
 	love.graphics.setFont(love.graphics.newFont("Retroville_NC.ttf",10))
+	love.graphics.getFont():setLineHeight(1.4)
+
+	love.mouse.setVisible(false)
 
 	switchToState(STATE_TITLE)
 end
@@ -82,10 +93,15 @@ function love.draw()
 	aspect.apply()
 	
 	if (state == STATE_TITLE) then
-		love.graphics.setColor(1,1,1)
+		love.graphics.setColor(colors.get("WHITE"))
 		love.graphics.printf(GAME_NAME,0,30,aspect.getGameWidth(),"center")	
-		love.graphics.printf("W = windowed / full screen",0,120,aspect.getGameWidth(),"center")
-		love.graphics.printf("Click to start",0,170,aspect.getGameWidth(),"center")
+
+		love.graphics.setColor(colors.get("DARK_GREY"))
+		love.graphics.printf(STORY,aspect.getGameWidth()*(1-STORY_WIDTH_FRACTION)/2,100,aspect.getGameWidth()*STORY_WIDTH_FRACTION)
+
+		love.graphics.setColor(colors.get("WHITE"))
+		love.graphics.printf("W = windowed / full screen",0,aspect.getGameHeight()-100,aspect.getGameWidth(),"center")
+		love.graphics.printf("Press space to start",0,aspect.getGameHeight()-50,aspect.getGameWidth(),"center")
 	end
 	
 	if (state == STATE_PLAY) then
