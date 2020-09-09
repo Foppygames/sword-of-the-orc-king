@@ -17,9 +17,18 @@ function Drop.create(data)
     function self.perform(entity)
         local success = false
         if (entityManager.entityHas(entity,{"inventory","position"})) then
-            -- todo: look for empty floor position
-            -- ...
+            -- intended drop location is entity location
+            local x = entity.position.x
+            local y = entity.position.y
+            local z = entity.position.z
+
             local emptyFloor = true
+            local otherItem = entityManager.getEntityAtLocationHaving(x,y,z,{"item"})
+
+            -- other item already at location
+            if otherItem ~= nil then
+                emptyFloor = false
+            end
 
             if (emptyFloor) then
                 -- todo: refactor entity definition so that entity component defaults can be 
@@ -51,7 +60,7 @@ function Drop.create(data)
                     success = true
                 -- show message to player
                 elseif (not emptyFloor) then
-                    log.addEntry(grammar.interpolate(grammar.STRUCT_NO_PLACE_TO_DROP_E1,{self.item}))
+                    log.addEntry(grammar.interpolate(grammar.STRUCT_E1_CANNOT_DROP_E2_HERE,{entity,self.item}))
                 end
             end
         end    
