@@ -10,6 +10,7 @@ local definitions = {
 	camera = require("modules.ecs.components.camera"),
 	energy = require("modules.ecs.components.energy"),
 	equipment = require("modules.ecs.components.equipment"),
+	health = require("modules.ecs.components.health"),
 	input = require("modules.ecs.components.input"),
 	inventory = require("modules.ecs.components.inventory"),
 	item = require("modules.ecs.components.item"),

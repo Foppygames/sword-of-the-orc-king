@@ -3,12 +3,14 @@ local aspect = require("modules.aspect")
 local colors = require("modules.colors")
 local energySystem = require("modules.ecs.systems.energySystem")
 local entityManager = require("modules.ecs.managers.entitymanager")
+local healthSystem = require("modules.ecs.systems.healthSystem")
 local images = require("modules.images")
 local input = require("modules.input")
 local items = require("modules.items")
 local layout = require("modules.layout")
 local log = require("modules.log")
 local renderSystem = require("modules.ecs.systems.rendersystem")
+local stats = require("modules.stats")
 local tiles = require("modules.tiles")
 local utils = require("modules.utils")
 local visionSystem = require("modules.ecs.systems.visionsystem")
@@ -39,6 +41,7 @@ function love.load()
 	layout.init(aspect.getGameWidth(),aspect.getGameHeight())
 	log.init(layout.DRAWING_AREA_LOG)
 	items.init(layout.DRAWING_AREA_ITEMS)
+	stats.init(layout.DRAWING_AREA_STATS)
 	tiles.init()
 	world.init(layout.DRAWING_AREA_WORLD)
 	
@@ -109,6 +112,7 @@ function love.draw()
 
 		log.draw()
 		items.draw()
+		stats.draw()
 		world.draw()
 	end
 	
@@ -127,12 +131,14 @@ function love.update(dt)
 		input.resetAction()
 
 		if (allUpdated) then
+			healthSystem.update()
 			energySystem.update()
 		end
 
 		local cameraEntity = visionSystem.update()
 		
 		items.update(cameraEntity)
+		stats.update(cameraEntity)
 		world.updateViewport(cameraEntity)
 	end
 end

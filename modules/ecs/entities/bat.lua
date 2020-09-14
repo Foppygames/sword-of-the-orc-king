@@ -13,6 +13,10 @@ function Bat.create(data)
 		energy = {
 			increment = 2
 		},
+		health = {
+			level = 1,
+			max = 1
+		},
 		movement = {},
 		name = {
 			genericName = "bat"

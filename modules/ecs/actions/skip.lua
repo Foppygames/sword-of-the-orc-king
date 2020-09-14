@@ -15,6 +15,11 @@ function Skip.create(data)
             log.addEntry("You rest for a moment.")
         end
 
+        -- resting restores health
+        if (entityManager.entityHas(entity,{"health"})) then
+            entity.health.rest = true
+        end
+
         return self.getPerformResult(true)
     end
 

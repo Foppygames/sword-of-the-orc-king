@@ -13,6 +13,10 @@ function Orc.create(data)
 		energy = {
 			increment = 1
 		},
+		health = {
+			level = 5,
+			max = 5
+		},
 		movement = {},
 		name = {
 			genericName = "orc"

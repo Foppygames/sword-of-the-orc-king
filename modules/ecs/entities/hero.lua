@@ -62,6 +62,10 @@ function Hero.create(data)
 				}
 			}
 		},
+		health = {
+			level = 10,
+			max = 10
+		},
 		input = {},
 		inventory = {},
 		movement = {},
