@@ -198,7 +198,7 @@ local function displayInventory()
 
 			-- display available actions for selected item
 			if (selectedItem ~= nil) then
-				local actions = {"drop"}
+				local actions = {"drop","inspect"}
 				if entityManager.entityHas(selectedItem,{"item"}) then
 					if (selectedItem.item.wieldable) then
 						table.insert(actions,"wield")

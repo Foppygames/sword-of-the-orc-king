@@ -70,6 +70,9 @@ function Hero.create(data)
 		inventory = {},
 		movement = {},
 		position = {},
+		strength = {
+			level = 5
+		},
 		vision = {}
     },data)
 end

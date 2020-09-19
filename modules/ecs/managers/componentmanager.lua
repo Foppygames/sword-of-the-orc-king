@@ -17,6 +17,7 @@ local definitions = {
 	movement = require("modules.ecs.components.movement"),
 	name = require("modules.ecs.components.name"),
 	position = require("modules.ecs.components.position"),
+	strength = require("modules.ecs.components.strength"),
 	vision = require("modules.ecs.components.vision")
 }
 

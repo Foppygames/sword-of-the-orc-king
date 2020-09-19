@@ -15,7 +15,10 @@ function Sword.create(data)
 		name = {
 			genericName = "sword"
 		},
-		position = {}
+		position = {},
+		strength = {
+			level = 1
+		}
 	},data)
 end
 

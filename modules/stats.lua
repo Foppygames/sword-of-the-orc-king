@@ -32,7 +32,21 @@ local function displayHealth(line)
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")
 	end
+	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
+end
 
+local function displayStrength(line)
+	local printTable = {
+		TEXT_COLOR_LABEL, "Strength: "
+	}
+	if entityManager.entityHas(entity,{"strength"}) then
+		table.insert(printTable,TEXT_COLOR_VALUE)
+		table.insert(printTable,entity.strength.level)
+	else
+		table.insert(printTable,TEXT_COLOR_VALUE)
+		table.insert(printTable,"-")
+	end
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
@@ -42,6 +56,7 @@ function stats.draw()
 	layout.enableClipping(rect)
 
 	displayHealth(1)
+	displayStrength(2)
 	-- ...
 
 	layout.disableClipping()
