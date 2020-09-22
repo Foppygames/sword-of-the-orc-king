@@ -8,6 +8,7 @@ local definitions = {
 	appearance = require("modules.ecs.components.appearance"),
 	attack = require("modules.ecs.components.attack"),
 	camera = require("modules.ecs.components.camera"),
+	description = require("modules.ecs.components.description"),
 	energy = require("modules.ecs.components.energy"),
 	equipment = require("modules.ecs.components.equipment"),
 	health = require("modules.ecs.components.health"),

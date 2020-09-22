@@ -8,12 +8,15 @@ function Sword.create(data)
         appearance = {
 			imageId = "sword"
 		},
+		description = {
+			text = "The sword is rusty and blunt but can still be used as a weapon."	
+		},
 		item = {
 			wieldable = true,
 			slotType = Equipment.SLOT_TYPE_MAIN_HAND
 		},
 		name = {
-			genericName = "sword"
+			genericName = "rusty short sword"
 		},
 		position = {},
 		strength = {
