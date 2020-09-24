@@ -177,13 +177,13 @@ local function displayInspection()
 	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
 		
 	if inspectedItem ~= nil then
-		local line = 3
+		local line = 2
 	
 		-- display item name
 		local _, text = grammar.resolveEntity(inspectedItem,true)
 		love.graphics.setColor(TEXT_COLOR_ITEM)
 		love.graphics.print(text,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
-		line = line + 2
+		line = line + 1
 
 		-- display item stats
 		local statsPrintTable = {}
@@ -200,7 +200,7 @@ local function displayInspection()
 		if #statsPrintTable > 0 then
 			love.graphics.setColor(colors.get("WHITE"))
 			love.graphics.print(statsPrintTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
-			line = line + 2
+			line = line + 1
 		end
 
 		-- display description

@@ -241,7 +241,7 @@ function map.createLayout(level)
 				local y = connection.source.y
 				local posIndex = (y - 1) * map.WORLD_WIDTH + x				
 				layout[posIndex].floor = 1
-				layout[posIndex].tile = "floor"
+				layout[posIndex].tile = "floorCorridor"
 				repeat
 					-- corridor is straight
 					if (connection.bend == nil) then
@@ -294,9 +294,8 @@ function map.createLayout(level)
 
 					posIndex = (y - 1) * map.WORLD_WIDTH + x				
 					layout[posIndex].floor = 1
-					layout[posIndex].tile = "floor"
+					layout[posIndex].tile = "floorCorridor"
 				until (x == connection.dest.x) and (y == connection.dest.y)
-
 			end
 		end
 	end
@@ -324,8 +323,31 @@ function map.createLayout(level)
 				end
 				if (foundFloor) then
 					layout[posIndex].wall = 1
-					layout[posIndex].tile = "wall"
 				end
+			end
+		end
+	end
+
+	-- set correct wall tiles
+	for y = 1, map.WORLD_HEIGHT do
+		for x = 1, map.WORLD_WIDTH do
+			local posIndex = (y - 1) * map.WORLD_WIDTH + x
+			-- location is wall
+			if layout[posIndex].wall == 1 then
+				local checkX = x
+				local checkY = y + 1
+
+				-- check location is not within layout
+				if checkY > map.WORLD_HEIGHT then
+					layout[posIndex].tile = "wallTop"
+				else
+					-- check location contains wall
+					if layout[(checkY - 1) * map.WORLD_WIDTH + checkX].wall == 1 then
+						layout[posIndex].tile = "wallTop"
+					else
+						layout[posIndex].tile = "wallFront"
+					end
+				end				
 			end
 		end
 	end

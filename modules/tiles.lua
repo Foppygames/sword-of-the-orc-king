@@ -6,8 +6,14 @@ local items = {
 	floor = {
 		path = "images/tiles/floor.png"
 	},
-	wall = {
-		path = "images/tiles/wall.png"
+	floorCorridor = {
+		path = "images/tiles/floor_corridor.png"
+	},
+	wallFront = {
+		path = "images/tiles/wall_front.png"
+	},
+	wallTop = {
+		path = "images/tiles/wall_top.png"
 	}
 }
 
