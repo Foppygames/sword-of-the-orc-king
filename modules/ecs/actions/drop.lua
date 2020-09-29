@@ -1,6 +1,7 @@
 local Action = require("modules.ecs.actions.action")
 local componentManager = require("modules.ecs.managers.componentmanager")
 local entityManager = require("modules.ecs.managers.entitymanager")
+local Equipment = require("modules.ecs.components.Equipment")
 local grammar = require("modules.grammar")
 local log = require("modules.log")
 local world = require("modules.world")
@@ -42,11 +43,23 @@ function Drop.create(data)
                     z = entity.position.z
                 })
 
-                -- remove from inventory
+                -- remove from inventory...
+                local removed = false
                 for i = 1, #entity.inventory.items do
                     if (entity.inventory.items[i] == self.item) then
                         table.remove(entity.inventory.items,i)
+                        removed = true
                         break
+                    end
+                end
+
+                -- or remove from equipment
+                if not removed then
+                    for i = 1, #entity.equipment.items do
+                        if (entity.equipment.items[i] == self.item) then
+                            entity.equipment.items[i] = Equipment.NULL
+                            break
+                        end
                     end
                 end
             

@@ -8,6 +8,7 @@ local definitions = {
 	get = require("modules.ecs.actions.get"),
 	move = require("modules.ecs.actions.move"),
 	skip = require("modules.ecs.actions.skip"),
+	takeoff = require("modules.ecs.actions.takeoff"),
 	wield = require("modules.ecs.actions.wield")
 }
 

@@ -92,15 +92,10 @@ local function displayEquipment()
 			end
 
 			-- display available actions for selected item
-			--[[if (selectedItem ~= nil) then
-				local actions = {"drop"}
+			if selectedItem ~= nil then
+				local actions = {"drop","inspect"}
 				if entityManager.entityHas(selectedItem,{"item"}) then
-					if (selectedItem.item.wieldable) then
-						table.insert(actions,"wield")
-					end
-					if (selectedItem.item.wearable) then
-						table.insert(actions,"wear")
-					end	
+					table.insert(actions,"take off")
 				end
 				if (#actions > 0) then
 					-- create print table out of available actions
@@ -121,7 +116,7 @@ local function displayEquipment()
 					love.graphics.setColor(colors.get("WHITE"))
 					love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 				end
-			end]]--
+			end
 		end
 	end
 end
@@ -350,6 +345,28 @@ function items.keyListenerEquipment(key)
 		elseif ((key == "down") or (key == "kp2")) and (equipmentIndex < #entity.equipment.items) then
 			equipmentIndex = equipmentIndex + 1
 			processed = true
+		elseif (key == "d") then
+			action = actionManager.createAction("drop",{
+				item = entity.equipment.items[equipmentIndex]
+			})
+			-- exit equipment if dropping single remaining item
+			if (equipmentCount == 1) then
+				listener = items.switchToState(items.STATE_DEFAULT)
+			end
+			processed = true
+		elseif (key == "i") then
+			inspectedItem = entity.equipment.items[equipmentIndex]
+			listener = items.switchToState(items.STATE_INSPECTION)
+			processed = true
+		elseif (key == "t") then
+			action = actionManager.createAction("takeoff",{
+				item = entity.equipment.items[equipmentIndex]
+			})
+			-- exit inventory if taking off single remaining item
+			if (equipmentCount == 1) then
+				listener = items.switchToState(items.STATE_DEFAULT)
+			end
+			processed = true
 		end
 	end
 	return processed, action, listener
@@ -403,6 +420,10 @@ function items.keyListenerInventory(key)
 			action = actionManager.createAction("wield",{
 				item = entity.inventory.items[inventoryIndex]
 			})
+			-- exit inventory if wielding single remaining item
+			if (#entity.inventory.items == 1) then
+				listener = items.switchToState(items.STATE_DEFAULT)
+			end
 			processed = true
 		end
 	end
