@@ -34,11 +34,13 @@ function Takeoff.create(data)
                     -- remove item from equipment
                     entity.equipment.items[slotIndex] = Equipment.NULL
 
+                    -- update stats: strength
+                    if entityManager.entityHas(self.item,{"strength"}) and entityManager.entityHas(entity,{"strength"}) then
+                        entity.strength.level = entity.strength.level - self.item.strength.level
+                    end
+
                     log.addEntry(grammar.interpolate(grammar.STRUCT_E1_TAKE_OFF_E2,{entity,self.item}))
                     success = true
-                else
-                    -- consider swapping with item currently in wield slot
-                    -- ...
                 end
             
                 if (not success) then

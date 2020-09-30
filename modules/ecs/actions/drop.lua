@@ -58,6 +58,12 @@ function Drop.create(data)
                     for i = 1, #entity.equipment.items do
                         if (entity.equipment.items[i] == self.item) then
                             entity.equipment.items[i] = Equipment.NULL
+
+                            -- update stats: strength
+                            if entityManager.entityHas(self.item,{"strength"}) and entityManager.entityHas(entity,{"strength"}) then
+                                entity.strength.level = entity.strength.level - self.item.strength.level
+                            end
+                            
                             break
                         end
                     end

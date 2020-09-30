@@ -41,6 +41,11 @@ function Wield.create(data)
                         end
                     end
 
+                    -- update stats: strength
+                    if entityManager.entityHas(self.item,{"strength"}) and entityManager.entityHas(entity,{"strength"}) then
+                        entity.strength.level = entity.strength.level + self.item.strength.level
+                    end
+
                     log.addEntry(grammar.interpolate(grammar.STRUCT_E1_WIELD_E2,{entity,self.item}))
                     success = true
                 else
