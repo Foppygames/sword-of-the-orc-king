@@ -43,6 +43,7 @@ local inventoryCount
 local inventoryIndex
 local rect
 local state
+local previousState
 
 function items.init(drawingAreaIndex)
 	rect = layout.getRect(drawingAreaIndex)
@@ -327,6 +328,8 @@ function items.reset()
 	inspectedItem = nil
 	inventoryCount = 0
 	inventoryIndex = 1
+	state = nil
+	previousState = nil
 	items.switchToState(items.STATE_DEFAULT)
 end
 
@@ -378,7 +381,7 @@ function items.keyListenerInspection(key)
 	local action = nil
 	local listener = items.keyListenerInspection
 	if (key == "escape") then
-		listener = items.switchToState(items.STATE_INVENTORY)
+		listener = items.switchToState(previousState)
 		processed = true
 	end
 	return processed, action, listener
@@ -432,6 +435,7 @@ end
 
 -- returns new key listener to be used in input module
 function items.switchToState(newState)
+	previousState = state
 	state = newState
 	if (state == items.STATE_EQUIPMENT) then
 		equipmentIndex = 1
