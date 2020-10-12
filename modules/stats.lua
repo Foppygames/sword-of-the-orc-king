@@ -51,13 +51,28 @@ local function displayStrength(line)
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
 
+local function displayAttack(line)
+	local printTable = {
+		TEXT_COLOR_LABEL, "Attack: "
+	}
+	if entityManager.entityHas(entity,{"stats"}) and entity.stats.attack ~= nil then
+		table.insert(printTable,TEXT_COLOR_VALUE)
+		table.insert(printTable,entity.stats.attack)
+	else
+		table.insert(printTable,TEXT_COLOR_VALUE)
+		table.insert(printTable,"-")
+	end
+	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
+end
+
 function stats.draw()
 	layout.drawBackground(rect,BACKGROUND_COLOR)
 	layout.enableClipping(rect)
 
 	displayHealth(1)
 	displayStrength(2)
-	-- ...
+	displayAttack(3)
 
 	layout.disableClipping()
 end

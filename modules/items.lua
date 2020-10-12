@@ -183,15 +183,34 @@ local function displayInspection()
 
 		-- display item stats
 		local statsPrintTable = {}
-		if entityManager.entityHas(inspectedItem,{"strength"}) then
-			local sign = ""
-			if inspectedItem.strength.level > 0 then
-				sign = "+"
+		if entityManager.entityHas(inspectedItem,{"stats"}) then
+			-- strength
+			if inspectedItem.stats.strength ~= nil then
+				local sign = ""
+				if inspectedItem.stats.strength > 0 then
+					sign = "+"
+				end
+				table.insert(statsPrintTable,TEXT_COLOR_ITEM)
+				table.insert(statsPrintTable,sign..inspectedItem.stats.strength)
+				table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
+				table.insert(statsPrintTable," str")
 			end
-			table.insert(statsPrintTable,TEXT_COLOR_ITEM)
-			table.insert(statsPrintTable,sign..inspectedItem.strength.level)
-			table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
-			table.insert(statsPrintTable," str")
+
+			-- attack
+			if inspectedItem.stats.attack ~= nil then
+				local sign = ""
+				if inspectedItem.stats.attack > 0 then
+					sign = "+"
+				end
+				if #statsPrintTable > 0 then
+					table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
+					table.insert(statsPrintTable,", ")
+				end
+				table.insert(statsPrintTable,TEXT_COLOR_ITEM)
+				table.insert(statsPrintTable,sign..inspectedItem.stats.attack)
+				table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
+				table.insert(statsPrintTable," att")
+			end
 		end
 		if #statsPrintTable > 0 then
 			love.graphics.setColor(colors.get("WHITE"))

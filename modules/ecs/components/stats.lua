@@ -6,11 +6,12 @@ local Stats = {}
 
 function Stats.create(entityDefaults,entityData)
     local self = Component.create({
-        health = 1,
-        healthMax = 1,
+        health = nil,
+        healthMax = 0,
         rest = false,
-        healthIncrement = 1,
-        strength = 1
+        healthIncrement = 0,
+        strength = nil,
+        attack = nil
     })
 
     self.setValues(entityDefaults,entityData)

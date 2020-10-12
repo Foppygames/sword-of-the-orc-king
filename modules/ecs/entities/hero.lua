@@ -69,7 +69,8 @@ function Hero.create(data)
 		stats = {
 			health = 50,
 			healthMax = 50,
-			strength = 5
+			strength = 5,
+			attack = 1
 		},
 		vision = {}
     },data)

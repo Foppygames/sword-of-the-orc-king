@@ -62,7 +62,12 @@ function Drop.create(data)
                             if entityManager.entityHas(self.item,{"stats"}) and entityManager.entityHas(entity,{"stats"}) then
                                 -- update stats: strength
                                 if entity.stats.strength ~= nil and self.item.stats.strength ~= nil then
-                                    entity.stats.strength = entity.stats.strength + self.item.stats.strength
+                                    entity.stats.strength = entity.stats.strength - self.item.stats.strength
+                                end
+
+                                -- update stats: attack
+                                if entity.stats.attack ~= nil and self.item.stats.attack ~= nil then
+                                    entity.stats.attack = entity.stats.attack - self.item.stats.attack
                                 end
                             end
         

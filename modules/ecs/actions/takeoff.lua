@@ -39,6 +39,11 @@ function Takeoff.create(data)
                         if entity.stats.strength ~= nil and self.item.stats.strength ~= nil then
                             entity.stats.strength = entity.stats.strength - self.item.stats.strength
                         end
+
+                        -- update stats: attack
+                        if entity.stats.attack ~= nil and self.item.stats.attack ~= nil then
+                            entity.stats.attack = entity.stats.attack - self.item.stats.attack
+                        end
                     end
 
                     log.addEntry(grammar.interpolate(grammar.STRUCT_E1_TAKE_OFF_E2,{entity,self.item}))
