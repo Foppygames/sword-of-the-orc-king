@@ -11,14 +11,13 @@ local definitions = {
 	description = require("modules.ecs.components.description"),
 	energy = require("modules.ecs.components.energy"),
 	equipment = require("modules.ecs.components.equipment"),
-	health = require("modules.ecs.components.health"),
 	input = require("modules.ecs.components.input"),
 	inventory = require("modules.ecs.components.inventory"),
 	item = require("modules.ecs.components.item"),
 	movement = require("modules.ecs.components.movement"),
 	name = require("modules.ecs.components.name"),
 	position = require("modules.ecs.components.position"),
-	strength = require("modules.ecs.components.strength"),
+	stats = require("modules.ecs.components.stats"),
 	vision = require("modules.ecs.components.vision")
 }
 

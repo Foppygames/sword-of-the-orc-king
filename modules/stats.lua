@@ -25,9 +25,9 @@ local function displayHealth(line)
 	local printTable = {
 		TEXT_COLOR_LABEL, "Health: "
 	}
-	if entityManager.entityHas(entity,{"health"}) then
+	if entityManager.entityHas(entity,{"stats"}) and entity.stats.health ~= nil then
 		table.insert(printTable,TEXT_COLOR_VALUE)
-		table.insert(printTable,entity.health.level.."/"..entity.health.max)
+		table.insert(printTable,entity.stats.health.."/"..entity.stats.healthMax)
 	else
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")
@@ -40,9 +40,9 @@ local function displayStrength(line)
 	local printTable = {
 		TEXT_COLOR_LABEL, "Strength: "
 	}
-	if entityManager.entityHas(entity,{"strength"}) then
+	if entityManager.entityHas(entity,{"stats"}) and entity.stats.strength ~= nil then
 		table.insert(printTable,TEXT_COLOR_VALUE)
-		table.insert(printTable,entity.strength.level)
+		table.insert(printTable,entity.stats.strength)
 	else
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")

@@ -19,8 +19,8 @@ function Sword.create(data)
 			genericName = "rusty short sword"
 		},
 		position = {},
-		strength = {
-			level = 1
+		stats = {
+			strength = 1
 		}
 	},data)
 end

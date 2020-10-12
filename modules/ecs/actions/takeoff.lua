@@ -34,9 +34,11 @@ function Takeoff.create(data)
                     -- remove item from equipment
                     entity.equipment.items[slotIndex] = Equipment.NULL
 
-                    -- update stats: strength
-                    if entityManager.entityHas(self.item,{"strength"}) and entityManager.entityHas(entity,{"strength"}) then
-                        entity.strength.level = entity.strength.level - self.item.strength.level
+                    if entityManager.entityHas(self.item,{"stats"}) and entityManager.entityHas(entity,{"stats"}) then
+                        -- update stats: strength
+                        if entity.stats.strength ~= nil and self.item.stats.strength ~= nil then
+                            entity.stats.strength = entity.stats.strength - self.item.stats.strength
+                        end
                     end
 
                     log.addEntry(grammar.interpolate(grammar.STRUCT_E1_TAKE_OFF_E2,{entity,self.item}))
