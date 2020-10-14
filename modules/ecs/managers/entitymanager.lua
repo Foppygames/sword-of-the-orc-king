@@ -19,6 +19,19 @@ function entityManager.addEntity(id,data)
 	table.insert(entities,definitions[id].create(data))
 end
 
+function entityManager.deleteEntity(entity)
+	local index = nil
+	for i = 1, #entities do
+		if entities[i] == entity then
+			index = i
+			break
+		end
+	end
+	if index ~= nil then
+		table.remove(entities,index)
+	end
+end
+
 function entityManager.getEntitiesHaving(componentIds)
 	local result = {}
 	for i = 1, #entities do

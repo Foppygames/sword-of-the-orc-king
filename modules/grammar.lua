@@ -6,8 +6,10 @@ local grammar = {}
 
 grammar.STRUCT_E1_ATTACK_E2 = {{"e",1}, {"v",{"attack","attacks"}}, {"e",2}}
 grammar.STRUCT_E1_CANNOT_DROP_E2_HERE = {{"e",1},{"v",{"cannot drop","cannot drop"}},{"e",2},{"f","here"}}
+grammar.STRUCT_E1_DIE = {{"e",1}, {"v",{"die","dies"}}}
 grammar.STRUCT_E1_DROP_E2 = {{"e",1}, {"v",{"drop","drops"}}, {"e",2}}
 grammar.STRUCT_E1_GET_E2 = {{"e",1}, {"v",{"get","gets"}}, {"e",2}}
+grammar.STRUCT_E1_LOSE_P2_HEALTH = {{"e",1},{"v",{"lose","loses"}},{"p",2},{"f","health"}}
 grammar.STRUCT_E1_TAKE_OFF_E2 = {{"e",1}, {"v",{"take off","takes off"}}, {"e",2}}
 grammar.STRUCT_E1_WIELD_E2 = {{"e",1}, {"v",{"wield","wields"}}, {"e",2}}
 
@@ -64,6 +66,9 @@ function grammar.interpolate(struct,parameters)
 		-- fixed phrase expected on this position
 		elseif (struct[i][1] == "f") then
 			table.insert(words,struct[i][2])
+		-- provided phrase expected on this position
+		elseif (struct[i][1] == "p") then
+			table.insert(words,parameters[struct[i][2]])
 		end
 	end
 	local sentence = table.concat(words," ")
