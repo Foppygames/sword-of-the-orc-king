@@ -51,13 +51,13 @@ local function displayStrength(line)
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
 
-local function displayAttack(line)
+local function displayDamage(line)
 	local printTable = {
-		TEXT_COLOR_LABEL, "Attack: "
+		TEXT_COLOR_LABEL, "Damage: "
 	}
-	if entityManager.entityHas(entity,{"stats"}) and entity.stats.attack ~= nil then
+	if entityManager.entityHas(entity,{"stats"}) and entity.stats.damage ~= nil then
 		table.insert(printTable,TEXT_COLOR_VALUE)
-		table.insert(printTable,entity.stats.attack)
+		table.insert(printTable,entity.stats.damage)
 	else
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")
@@ -72,7 +72,7 @@ function stats.draw()
 
 	displayHealth(1)
 	displayStrength(2)
-	displayAttack(3)
+	displayDamage(3)
 
 	layout.disableClipping()
 end

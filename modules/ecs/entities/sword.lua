@@ -21,7 +21,7 @@ function Sword.create(data)
 		position = {},
 		stats = {
 			strength = 1,
-			attack = 10
+			damage = 10
 		}
 	},data)
 end

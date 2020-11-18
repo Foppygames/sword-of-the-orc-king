@@ -22,7 +22,7 @@ function Orc.create(data)
 			health = 20,
 			healthMax = 20,
 			strength = 3,
-			attack = 1
+			damage = 1
 		},
 		vision = {}
     },data)

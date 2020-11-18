@@ -22,14 +22,14 @@ function Attack.create(data)
             if (target ~= nil) then
                 local logEntry = ""
 
-                -- damage is strength plus attack
+                -- damage is strength plus damage
                 local damage = 0
                 if entityManager.entityHas(entity,{"stats"}) then
                     if entity.stats.strength ~= nil then
                         damage = damage + entity.stats.strength
                     end
-                    if entity.stats.attack ~= nil then
-                        damage = damage + entity.stats.attack
+                    if entity.stats.damage ~= nil then
+                        damage = damage + entity.stats.damage
                     end
                 end
 

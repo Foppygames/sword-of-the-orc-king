@@ -47,9 +47,9 @@ function Wield.create(data)
                             entity.stats.strength = entity.stats.strength + self.item.stats.strength
                         end
 
-                        -- update stats: attack
-                        if entity.stats.attack ~= nil and self.item.stats.attack ~= nil then
-                            entity.stats.attack = entity.stats.attack + self.item.stats.attack
+                        -- update stats: damage
+                        if entity.stats.damage ~= nil and self.item.stats.damage ~= nil then
+                            entity.stats.damage = entity.stats.damage + self.item.stats.damage
                         end
                     end
 

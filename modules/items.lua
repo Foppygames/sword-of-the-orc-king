@@ -196,10 +196,10 @@ local function displayInspection()
 				table.insert(statsPrintTable," str")
 			end
 
-			-- attack
-			if inspectedItem.stats.attack ~= nil then
+			-- damage
+			if inspectedItem.stats.damage ~= nil then
 				local sign = ""
-				if inspectedItem.stats.attack > 0 then
+				if inspectedItem.stats.damage > 0 then
 					sign = "+"
 				end
 				if #statsPrintTable > 0 then
@@ -207,9 +207,9 @@ local function displayInspection()
 					table.insert(statsPrintTable,", ")
 				end
 				table.insert(statsPrintTable,TEXT_COLOR_ITEM)
-				table.insert(statsPrintTable,sign..inspectedItem.stats.attack)
+				table.insert(statsPrintTable,sign..inspectedItem.stats.damage)
 				table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
-				table.insert(statsPrintTable," att")
+				table.insert(statsPrintTable," dmg")
 			end
 		end
 		if #statsPrintTable > 0 then

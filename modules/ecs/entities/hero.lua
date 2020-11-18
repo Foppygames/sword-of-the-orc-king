@@ -70,7 +70,7 @@ function Hero.create(data)
 			health = 50,
 			healthMax = 50,
 			strength = 5,
-			attack = 1
+			damage = 1
 		},
 		vision = {}
     },data)
