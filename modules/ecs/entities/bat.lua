@@ -21,7 +21,9 @@ function Bat.create(data)
 		stats = {
 			health = 5,
 			healthMax = 5,
-			strength = 1
+			strength = 1,
+			damage = 1,
+			dexterity = 4
 		},
 		vision = {}
     },data)

@@ -10,6 +10,7 @@ grammar.STRUCT_E1_DIE = {{"e",1}, {"v",{"die","dies"}}}
 grammar.STRUCT_E1_DROP_E2 = {{"e",1}, {"v",{"drop","drops"}}, {"e",2}}
 grammar.STRUCT_E1_GET_E2 = {{"e",1}, {"v",{"get","gets"}}, {"e",2}}
 grammar.STRUCT_E1_LOSE_P2_HEALTH = {{"e",1},{"v",{"lose","loses"}},{"p",2},{"f","health"}}
+grammar.STRUCT_E1_MISS = {{"e",1}, {"v",{"miss","misses"}}}
 grammar.STRUCT_E1_TAKE_OFF_E2 = {{"e",1}, {"v",{"take off","takes off"}}, {"e",2}}
 grammar.STRUCT_E1_WIELD_E2 = {{"e",1}, {"v",{"wield","wields"}}, {"e",2}}
 

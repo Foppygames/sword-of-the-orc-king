@@ -66,6 +66,21 @@ local function displayDamage(line)
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
 
+local function displayDexterity(line)
+	local printTable = {
+		TEXT_COLOR_LABEL, "Dexterity: "
+	}
+	if entityManager.entityHas(entity,{"stats"}) and entity.stats.dexterity ~= nil then
+		table.insert(printTable,TEXT_COLOR_VALUE)
+		table.insert(printTable,entity.stats.dexterity)
+	else
+		table.insert(printTable,TEXT_COLOR_VALUE)
+		table.insert(printTable,"-")
+	end
+	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
+end
+
 function stats.draw()
 	layout.drawBackground(rect,BACKGROUND_COLOR)
 	layout.enableClipping(rect)
@@ -73,6 +88,7 @@ function stats.draw()
 	displayHealth(1)
 	displayStrength(2)
 	displayDamage(3)
+	displayDexterity(4)
 
 	layout.disableClipping()
 end

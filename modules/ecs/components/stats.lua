@@ -11,7 +11,8 @@ function Stats.create(entityDefaults,entityData)
         rest = false,
         healthIncrement = 0,
         strength = nil,
-        damage = nil
+        damage = nil,
+        dexterity = nil
     })
 
     self.setValues(entityDefaults,entityData)
