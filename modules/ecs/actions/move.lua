@@ -18,9 +18,9 @@ function Move.create(data)
         local newActionId = nil
         local newActionData = nil
 
-        if (entityManager.entityHas(entity,{"movement","position"})) then
+        if entityManager.entityHas(entity,{"movement","position"}) then
             -- target location is not entity location
-            if ((self.dX ~= 0) or (self.dY ~= 0)) then
+            if (self.dX ~= 0) or (self.dY ~= 0) then
 				-- check new location
 				local newX = entity.position.x + self.dX
 				local newY = entity.position.y + self.dY
@@ -31,22 +31,22 @@ function Move.create(data)
                 local noWall = world.locationIsPassable(newX,newY,entity.position.z)
                 local target = entityManager.getEntityAtLocationNotHaving(newX,newY,entity.position.z,{"item"})
 
-                if (noWall and (target == nil)) then
+                if noWall and (target == nil) then
                     entity.position.x = newX
 					entity.position.y = newY
                     success = true
                 end
 
-                if (not success) then
+                if not success then
                     -- skip turn if not controlled by player
-                    if (not entityManager.entityHas(entity,{"input"})) then
+                    if not entityManager.entityHas(entity,{"input"}) then
                         success = true
                     -- show message to player
                     else
-                        if (not noWall) then
+                        if not noWall then
                             log.addEntry("Your path is blocked by a wall.")
-                        elseif (target ~= nil) then
-                            if (entityManager.entityHas(entity,{"attack"})) then
+                        elseif target ~= nil then
+                            if entityManager.entityHas(entity,{"attack"}) then
                                 newActionId = "attack"
                                 newActionData = {
                                     x = newX,
@@ -65,6 +65,7 @@ function Move.create(data)
                 success = true
 			end
         end
+        
         return self.getPerformResult(success,newActionId,newActionData)
     end
 

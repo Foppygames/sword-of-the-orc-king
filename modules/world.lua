@@ -33,10 +33,12 @@ end
 -- turn stored entities into active entities
 function world.createEntities(level)
 	local level = (level or STARTING_LEVEL)
+
 	for y = 1, map.WORLD_HEIGHT do
 		for x = 1, map.WORLD_WIDTH do
 			local posIndex = (y - 1) * map.WORLD_WIDTH + x
 			local entities = state[level].layout[posIndex].entities
+
 			for i = 1, #entities do
 				entityManager.addEntity(entities[i].id,entities[i].data)
 			end
@@ -86,7 +88,9 @@ end
 
 function world.createNew(levels)	
 	local levels = (levels or LEVELS)
+
 	state = {}
+
 	for i = 1, levels do
 		world.addLevel()
 	end
@@ -94,6 +98,7 @@ end
 
 function world.addLevel()
 	local level = #state + 1
+
 	-- each level contains a layout, including stored entities [and a set of active entities]
 	table.insert(state,{
 		layout = map.createLayout(level)
@@ -109,26 +114,33 @@ function world.draw()
 	local viewportData = getViewportData()
 	
 	local tileY = viewportData.screenY1
+
 	for verTile = viewportData.firstTileY, viewportData.lastTileY do
 		local tileX = viewportData.screenX1
+
 		for horTile = viewportData.firstTileX, viewportData.lastTileX do
-			if ((horTile >= 1) and (verTile >= 1)) then
+			if (horTile >= 1) and (verTile >= 1) then
 				local visible = false
-				if (viewportVisibleLocations[viewportZ] ~= nil) then
-					if (viewportVisibleLocations[viewportZ][verTile] ~= nil) then
-						if (viewportVisibleLocations[viewportZ][verTile][horTile] ~= nil) then
+
+				if viewportVisibleLocations[viewportZ] ~= nil then
+					if viewportVisibleLocations[viewportZ][verTile] ~= nil then
+						if viewportVisibleLocations[viewportZ][verTile][horTile] ~= nil then
 							visible = true
 						end
 					end
 				end
+
 				local posIndex = (verTile - 1) * map.WORLD_WIDTH + horTile
 				local tile = state[viewportZ].layout[posIndex].tile
-				if (tile ~= nil) then
+
+				if tile ~= nil then
 					tiles.draw(tile,tileX,tileY,visible)
 				end
 			end
+
 			tileX = tileX + TILE_WIDTH
 		end
+
 		tileY = tileY + TILE_HEIGHT
 	end
 
@@ -138,46 +150,50 @@ function world.draw()
 end
 
 function world.locationExists(x,y,z)
-	if ((x < 1) or (x > map.WORLD_WIDTH)) then
+	if (x < 1) or (x > map.WORLD_WIDTH) then
 		return false
 	end
-	if ((y < 1) or (y > map.WORLD_HEIGHT)) then
+
+	if (y < 1) or (y > map.WORLD_HEIGHT) then
 		return false
 	end
+
 	return true
 end
 
 function world.locationIsPassable(x,y,z)
 	-- location is outside of world bounds
-	if (not world.locationExists(x,y,z)) then
+	if not world.locationExists(x,y,z) then
 		return false
 	end
 
 	local posIndex = (y - 1) * map.WORLD_WIDTH + x
 
 	-- location has wall
-	if (state[z].layout[posIndex].wall == 1) then
+	if state[z].layout[posIndex].wall == 1 then
 		return false
 	end
 
 	-- passable if floor present
-	return (state[z].layout[posIndex].floor == 1)
+	return state[z].layout[posIndex].floor == 1
 end
 
 -- stores and creates entities if level change dictates it
 local function processCameraEntityZ(cameraEntity)
-	if ((viewportZ ~= nil) and (viewportZ ~= cameraEntity.position.z)) then
+	if (viewportZ ~= nil) and (viewportZ ~= cameraEntity.position.z) then
 		world.storeEntities(viewportZ)
 	end
-	if (viewportZ ~= cameraEntity.position.z) then
+
+	if viewportZ ~= cameraEntity.position.z then
 		world.createEntities(cameraEntity.position.z)
 	end
+
 	return cameraEntity.position.z
 end
 
 -- updates viewport location and visible locations based on provided entity
 function world.updateViewport(cameraEntity)
-	if (cameraEntity ~= nil) then
+	if cameraEntity ~= nil then
 		viewportCenterTileX = cameraEntity.position.x
 		viewportCenterTileY = cameraEntity.position.y
 		viewportZ = processCameraEntityZ(cameraEntity)

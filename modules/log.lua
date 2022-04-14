@@ -25,32 +25,38 @@ local function scroll()
 	-- a more complex approach could involve retaining all entries but displaying a
 	-- selected range, modified by scrolling - also allowing player to scroll up/down
 	local maxLineCount = math.floor(rect.height / LINE_HEIGHT)
+
 	while #entries > maxLineCount do
 		table.remove(entries,1)
 	end
 end
 
 function log.addEntry(text,color)
-	if (color == nil) then
+	if color == nil then
 		color = log.TEXT_COLOR_DEFAULT
 	end
+
 	width, lines = love.graphics.getFont():getWrap(text,rect.width-PADDING_LEFT)
-	for i = 1, #lines do
+	
+    for i = 1, #lines do
 		table.insert(entries,{
 			text = lines[i],
 			color = color
 		})
 	end
+
 	scroll()
 end
 
 function log.draw()
 	layout.drawBackground(rect,BACKGROUND_COLOR)
 	layout.enableClipping(rect)
+
 	for i = 1, #entries do
 		love.graphics.setColor(entries[i].color)
 		love.graphics.print(entries[i].text,rect.x+PADDING_LEFT,rect.y+LINE_HEIGHT*(i-1))
 	end
+    
 	layout.disableClipping()
 end
 

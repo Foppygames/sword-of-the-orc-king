@@ -11,12 +11,12 @@ function Skip.create(data)
 
     function self.perform(entity)
         -- show message to player
-        if (entityManager.entityHas(entity,{"input"})) then
+        if entityManager.entityHas(entity,{"input"}) then
             log.addEntry("You rest for a moment.")
         end
 
         -- resting can modify stats
-        if (entityManager.entityHas(entity,{"stats"})) then
+        if entityManager.entityHas(entity,{"stats"}) then
             entity.stats.rest = true
         end
 

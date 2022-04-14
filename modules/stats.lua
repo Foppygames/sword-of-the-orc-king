@@ -25,13 +25,15 @@ local function displayHealth(line)
 	local printTable = {
 		TEXT_COLOR_LABEL, "Health: "
 	}
-	if entityManager.entityHas(entity,{"stats"}) and entity.stats.health ~= nil then
+
+	if entityManager.entityHas(entity,{"stats"}) and (entity.stats.health ~= nil) then
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,entity.stats.health.."/"..entity.stats.healthMax)
 	else
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")
 	end
+
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
@@ -40,13 +42,15 @@ local function displayStrength(line)
 	local printTable = {
 		TEXT_COLOR_LABEL, "Strength: "
 	}
-	if entityManager.entityHas(entity,{"stats"}) and entity.stats.strength ~= nil then
+
+	if entityManager.entityHas(entity,{"stats"}) and (entity.stats.strength ~= nil) then
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,entity.stats.strength)
 	else
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")
 	end
+
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
@@ -55,13 +59,15 @@ local function displayDamage(line)
 	local printTable = {
 		TEXT_COLOR_LABEL, "Damage: "
 	}
-	if entityManager.entityHas(entity,{"stats"}) and entity.stats.damage ~= nil then
+
+	if entityManager.entityHas(entity,{"stats"}) and (entity.stats.damage ~= nil) then
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,entity.stats.damage)
 	else
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")
 	end
+
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
@@ -70,13 +76,15 @@ local function displayDexterity(line)
 	local printTable = {
 		TEXT_COLOR_LABEL, "Dexterity: "
 	}
-	if entityManager.entityHas(entity,{"stats"}) and entity.stats.dexterity ~= nil then
+
+	if entityManager.entityHas(entity,{"stats"}) and (entity.stats.dexterity ~= nil) then
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,entity.stats.dexterity)
 	else
 		table.insert(printTable,TEXT_COLOR_VALUE)
 		table.insert(printTable,"-")
 	end
+    
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end

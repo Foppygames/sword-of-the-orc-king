@@ -24,14 +24,16 @@ function tiles.init()
 end
 
 function tiles.draw(id,x,y,visible)
-	if (items[id].image == nil) then
+	if items[id].image == nil then
 		items[id].image = love.graphics.newImage(items[id].path)
 	end
-	if (visible) then
+
+	if visible then
 		love.graphics.setColor(1,1,1)
 	else
 		love.graphics.setColor(0.3,0.3,0.3)
 	end
+    
 	love.graphics.draw(items[id].image,x,y)
 end
 

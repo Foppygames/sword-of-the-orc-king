@@ -16,18 +16,21 @@ function Takeoff.create(data)
 
     function self.perform(entity)
         local success = false
-        if (entityManager.entityHas(entity,{"equipment"})) then
-            if entityManager.entityHas(self.item,{"item"}) and (self.item.item.wieldable) then
+
+        if entityManager.entityHas(entity,{"equipment"}) then
+            if entityManager.entityHas(self.item,{"item"}) and self.item.item.wieldable then
                 -- look for slot containing item
                 local slotIndex = nil
+
                 for i = 1, #entity.equipment.items do
-                    if (entity.equipment.items[i] == self.item) then
+                    if entity.equipment.items[i] == self.item then
                         slotIndex = i
+
                         break
                     end
                 end
 
-                if (slotIndex ~= nil) then
+                if slotIndex ~= nil then
                     -- add to inventory
                     table.insert(entity.inventory.items,self.item)
 
@@ -47,19 +50,21 @@ function Takeoff.create(data)
                     end
 
                     log.addEntry(grammar.interpolate(grammar.STRUCT_E1_TAKE_OFF_E2,{entity,self.item}))
+
                     success = true
                 end
             
-                if (not success) then
+                if not success then
                     -- skip turn if not controlled by player
-                    if (not entityManager.entityHas(entity,{"input"})) then
+                    if not entityManager.entityHas(entity,{"input"}) then
                         success = true
                     else
                         --log.addEntry("[No free slots available]")
                     end
                 end
             end
-        end    
+        end
+        
         return self.getPerformResult(success)
     end
 

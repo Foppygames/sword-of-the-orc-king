@@ -59,7 +59,7 @@ end
 function switchToState(newState)
 	state = newState
 	
-	if (state == STATE_PLAY) then
+	if state == STATE_PLAY then
 		actionSystem.reset()
 		entityManager.reset()
 		input.resetAction()
@@ -75,17 +75,21 @@ function switchToState(newState)
 end
 
 function love.mousepressed(x,y,button,istouch,presses)
-	if (state == STATE_TITLE) then
-		if (button == 1) then
+	if state == STATE_TITLE then
+		if button == 1 then
 			switchToState(STATE_PLAY)
 			return
 		end
 	end
-	if (state == STATE_PLAY) then
+
+	if state == STATE_PLAY then
 		-- ...
+
+        return
 	end
-	if (state == STATE_GAME_OVER) then
-		if (button == 1) then
+
+	if state == STATE_GAME_OVER then
+		if button == 1 then
 			switchToState(STATE_TITLE)
 			return
 		end
@@ -95,7 +99,7 @@ end
 function love.draw()
 	aspect.apply()
 	
-	if (state == STATE_TITLE) then
+	if state == STATE_TITLE then
 		love.graphics.setColor(colors.get("WHITE"))
 		love.graphics.printf(GAME_NAME,0,30,aspect.getGameWidth(),"center")	
 
@@ -105,9 +109,9 @@ function love.draw()
 		love.graphics.setColor(colors.get("WHITE"))
 		love.graphics.printf("W = windowed / full screen",0,aspect.getGameHeight()-100,aspect.getGameWidth(),"center")
 		love.graphics.printf("Press space to start",0,aspect.getGameHeight()-50,aspect.getGameWidth(),"center")
-	end
-	
-	if (state == STATE_PLAY) then
+    end
+    
+    if state == STATE_PLAY then
 		love.graphics.clear(colors.get("LIGHT_BLUE"))
 
 		log.draw()
@@ -115,8 +119,8 @@ function love.draw()
 		stats.draw()
 		world.draw()
 	end
-	
-	if (state == STATE_GAME_OVER) then
+    
+    if state == STATE_GAME_OVER then
 		love.graphics.setColor(1,1,1)
 		love.graphics.print("GAME OVER",130,60)
 	end
@@ -125,12 +129,12 @@ function love.draw()
 end
 
 function love.update(dt)
-	if (state == STATE_PLAY) then
+	if state == STATE_PLAY then
 		local allUpdated = actionSystem.update(input.getAction())
 
 		input.resetAction()
 
-		if (allUpdated) then
+		if allUpdated then
 			statsSystem.update()
 			energySystem.update()
 		end
@@ -144,32 +148,38 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-	if (state == STATE_TITLE) then
-		if (key == "w") then
+	if state == STATE_TITLE then
+		if key == "w" then
 			aspect.toggleFullScreen()
-		end
-		if (key == "space") then
+        end
+        
+        if key == "space" then
 			-- load saved game state if available
 			-- ...
+
 			switchToState(STATE_PLAY)
-			return
+            return
 		end
-		if (key == "escape") then
+        
+        if key == "escape" then
 			love.event.quit()
 		end
-	end
-	if (state == STATE_PLAY) then
-		if (not input.registerKeyPressed(key)) then
-			if (key == "escape") then
+    end
+	
+    if state == STATE_PLAY then
+		if not input.registerKeyPressed(key) then
+			if key == "escape" then
 				-- save game state to continue play later
 				-- ...
+
 				switchToState(STATE_TITLE)
 				return
 			end
 		end
 	end
-	if (state == STATE_GAME_OVER) then
-		if (key == "space") then
+    
+    if state == STATE_GAME_OVER then
+		if key == "space" then
 			switchToState(STATE_TITLE)
 			return
 		end

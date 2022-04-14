@@ -8,12 +8,14 @@ function visionSystem.update()
 	-- Note: visible locations are registered for every matching entity; perhaps
 	-- for ai entities this is not always necessary and this can be simplified
 	local entities = entityManager.getEntitiesHaving({"vision","position"})
+
 	for i = 1, #entities do
 		entities[i].vision.visible = visionSystem.getVisibleLocations(entities[i])
 	end
 
 	-- return first entity having camera and position, typically used in displaying world
-	entities = entityManager.getEntitiesHaving({"camera","position"})	
+	entities = entityManager.getEntitiesHaving({"camera","position"})
+
 	return entities[1]
 end
 
@@ -22,9 +24,11 @@ end
 local function approxDistance(dX,dY)
     dX = math.abs(dX)
 	dY = math.abs(dY)
-	if (dX < dY) then
+
+	if dX < dY then
 		return dX + dY - bit.rshift(dX,1)
 	end
+
 	return dX + dY - bit.rshift(dY,1)
 end
 
@@ -42,13 +46,15 @@ function visionSystem.getVisibleLocations(entity)
 	-- ...
 
 	visible[z] = {}
+    
 	for y = entity.position.y - entity.vision.range, entity.position.y + entity.vision.range do
 		visible[z][y] = {}
+
 		for x = entity.position.x - entity.vision.range, entity.position.x + entity.vision.range do
 			-- location is within world boundaries
-			if (world.locationExists(x,y,z)) then
+			if world.locationExists(x,y,z) then
 				-- distance to location is within range (using < instead of <= for nicer circle)
-				if (distance(x-entity.position.x,y-entity.position.y) < entity.vision.range) then
+				if distance(x-entity.position.x,y-entity.position.y) < entity.vision.range then
 					visible[z][y][x] = 1
 				end
 			end

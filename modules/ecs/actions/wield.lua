@@ -16,27 +16,31 @@ function Wield.create(data)
 
     function self.perform(entity)
         local success = false
-        if (entityManager.entityHas(entity,{"equipment"})) then
-            if entityManager.entityHas(self.item,{"item"}) and (self.item.item.wieldable) then
+
+        if entityManager.entityHas(entity,{"equipment"}) then
+            if entityManager.entityHas(self.item,{"item"}) and self.item.item.wieldable then
                 -- look for first slot of correct type that is empty
                 local emptySlotIndex = nil
+
                 for i = 1, #entity.equipment.slots do
-                    if (entity.equipment.slots[i].type == self.item.item.slotType) then
-                        if (entity.equipment.items[i] == Equipment.NULL) then
+                    if entity.equipment.slots[i].type == self.item.item.slotType then
+                        if entity.equipment.items[i] == Equipment.NULL then
                             emptySlotIndex = i
+
                             break
                         end
                     end
                 end
 
-                if (emptySlotIndex ~= nil) then
+                if emptySlotIndex ~= nil then
                     -- add item to equipment
                     entity.equipment.items[emptySlotIndex] = self.item
 
                     -- remove item from inventory
                     for i = 1, #entity.inventory.items do
-                        if (entity.inventory.items[i] == self.item) then
+                        if entity.inventory.items[i] == self.item then
                             table.remove(entity.inventory.items,i)
+
                             break
                         end
                     end
@@ -54,22 +58,24 @@ function Wield.create(data)
                     end
 
                     log.addEntry(grammar.interpolate(grammar.STRUCT_E1_WIELD_E2,{entity,self.item}))
+
                     success = true
                 else
                     -- consider swapping with item currently in wield slot
                     -- ...
                 end
             
-                if (not success) then
+                if not success then
                     -- skip turn if not controlled by player
-                    if (not entityManager.entityHas(entity,{"input"})) then
+                    if not entityManager.entityHas(entity,{"input"}) then
                         success = true
                     else
                         log.addEntry("[No free slots available]")
                     end
                 end
             end
-        end    
+        end
+        
         return self.getPerformResult(success)
     end
 

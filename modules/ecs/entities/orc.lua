@@ -6,9 +6,9 @@ function Orc.create(data)
     return Entity.create({
         action = {},
 		ai = {},
-		appearance = {
-			imageId = "orc"
-		},
+        appearance = {
+            imageId = "orc"
+        },
 		attack = {},
 		energy = {
 			increment = 1

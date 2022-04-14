@@ -7,13 +7,14 @@ function Component.create(systemDefaults)
     local self = systemDefaults
     
     function self.setValues(entityDefaults,entityData)
-        if (entityDefaults ~= nil) then
+        if entityDefaults ~= nil then
             -- set default values defining entity type
 			for key,value in pairs(entityDefaults) do
 				self[key] = value 
 			end
         end
-        if (entityData ~= nil) then
+
+        if entityData ~= nil then
             -- set possibly modified values for entity instance
 			for key,value in pairs(entityData) do
 				self[key] = value 

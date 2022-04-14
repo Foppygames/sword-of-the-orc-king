@@ -60,17 +60,18 @@ local function displayEquipment()
 		TEXT_COLOR_KEY, "esc",
 		TEXT_COLOR_DEFAULT, " to exit)"
 	}
+
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
 	
 	if entityManager.entityHas(entity,{"equipment"}) then
-		if (#entity.equipment.items > 0) then
+		if #entity.equipment.items > 0 then
 			local selectedItem = nil
 
 			-- display items
 			for i = 1, #entity.equipment.items do
 				-- current item is selected
-				if (equipmentIndex == i) then
+				if equipmentIndex == i then
 					selectedItem = entity.equipment.items[i]
 					love.graphics.setColor(SELECTED_COLOR)
 					love.graphics.rectangle("fill",rect.x+PADDING_LEFT/2,rect.y+LINE_HEIGHT*i-1,rect.width-PADDING_LEFT,LINE_HEIGHT)
@@ -80,14 +81,17 @@ local function displayEquipment()
 				local equipmentPrintTable = {
 					TEXT_COLOR_DEFAULT, entity.equipment.slots[i].name..": "
 				}
-				if (entity.equipment.items[i] ~= Equipment.NULL) then
+
+				if entity.equipment.items[i] ~= Equipment.NULL then
 					local _, text = grammar.resolveEntity(entity.equipment.items[i],true)
+
 					table.insert(equipmentPrintTable,TEXT_COLOR_ITEM)
 					table.insert(equipmentPrintTable,text)
 				else
 					table.insert(equipmentPrintTable,TEXT_COLOR_DEFAULT)
 					table.insert(equipmentPrintTable,EQUIPMENT_EMPTY_SLOT_TEXT)
 				end	
+
 				love.graphics.setColor(colors.get("WHITE"))
 				love.graphics.print(equipmentPrintTable,rect.x+PADDING_LEFT,rect.y+LINE_HEIGHT*i-1)
 			end
@@ -95,25 +99,30 @@ local function displayEquipment()
 			-- display available actions for selected item
 			if selectedItem ~= nil then
 				local actions = {"drop","inspect"}
+
 				if entityManager.entityHas(selectedItem,{"item"}) then
 					table.insert(actions,"take off")
 				end
-				if (#actions > 0) then
+
+				if #actions > 0 then
 					-- create print table out of available actions
 					local actionsPrintTable = {
 						TEXT_COLOR_DEFAULT, "("
 					}
+
 					for i = 1, #actions do
-						if (i < #actions) then
+						if i < #actions then
 							actions[i] = actions[i]..", "
 						else
 							actions[i] = actions[i]..")"
 						end
+
 						table.insert(actionsPrintTable,TEXT_COLOR_KEY)
 						table.insert(actionsPrintTable,string.sub(actions[i],1,1))
 						table.insert(actionsPrintTable,TEXT_COLOR_DEFAULT)
 						table.insert(actionsPrintTable,string.sub(actions[i],2))
 					end
+
 					love.graphics.setColor(colors.get("WHITE"))
 					love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 				end
@@ -123,16 +132,17 @@ local function displayEquipment()
 end
 
 local function displayEquipmentCount()
-	if (equipmentCount == 0) then
+	if equipmentCount == 0 then
 		love.graphics.setColor(TEXT_COLOR_DEFAULT)
 		love.graphics.print(EQUIPMENT_COUNT_LABEL..EQUIPMENT_COUNT_TEXT_NONE,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*3)
 	else
 		local itemWord
-		if (equipmentCount ~= 1) then
+		if equipmentCount ~= 1 then
 			itemWord = "items"
 		else
 			itemWord = "item"
 		end
+
 		local equipmentCountPrintTable = {
 			TEXT_COLOR_DEFAULT, EQUIPMENT_COUNT_LABEL,
 			TEXT_COLOR_ITEM_COUNT, equipmentCount.." "..itemWord,
@@ -140,13 +150,14 @@ local function displayEquipmentCount()
 			TEXT_COLOR_KEY, "e",
 			TEXT_COLOR_DEFAULT, "quipment)"
 		}
+
 		love.graphics.setColor(colors.get("WHITE"))
 		love.graphics.print(equipmentCountPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*3)
 	end
 end
 
 local function displayGroundItem()
-	if (groundItemName == nil) then
+	if groundItemName == nil then
 		love.graphics.setColor(TEXT_COLOR_DEFAULT)
 		love.graphics.print(GROUND_ITEM_LABEL..GROUND_ITEM_TEXT_NONE,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 	else
@@ -157,6 +168,7 @@ local function displayGroundItem()
 			TEXT_COLOR_KEY, "g",
 			TEXT_COLOR_DEFAULT, "et)"
 		}
+
 		love.graphics.setColor(colors.get("WHITE"))
 		love.graphics.print(groundItemPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 	end
@@ -169,6 +181,7 @@ local function displayInspection()
 		TEXT_COLOR_KEY, "esc",
 		TEXT_COLOR_DEFAULT, " to exit)"
 	}
+
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
 		
@@ -177,19 +190,24 @@ local function displayInspection()
 	
 		-- display item name
 		local _, text = grammar.resolveEntity(inspectedItem,true)
+
 		love.graphics.setColor(TEXT_COLOR_ITEM)
 		love.graphics.print(text,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
+
 		line = line + 1
 
 		-- display item stats
 		local statsPrintTable = {}
+
 		if entityManager.entityHas(inspectedItem,{"stats"}) then
 			-- strength
 			if inspectedItem.stats.strength ~= nil then
 				local sign = ""
+
 				if inspectedItem.stats.strength > 0 then
 					sign = "+"
 				end
+
 				table.insert(statsPrintTable,TEXT_COLOR_ITEM)
 				table.insert(statsPrintTable,sign..inspectedItem.stats.strength)
 				table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
@@ -199,31 +217,39 @@ local function displayInspection()
 			-- damage
 			if inspectedItem.stats.damage ~= nil then
 				local sign = ""
+
 				if inspectedItem.stats.damage > 0 then
 					sign = "+"
 				end
+
 				if #statsPrintTable > 0 then
 					table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
 					table.insert(statsPrintTable,", ")
 				end
+
 				table.insert(statsPrintTable,TEXT_COLOR_ITEM)
 				table.insert(statsPrintTable,sign..inspectedItem.stats.damage)
 				table.insert(statsPrintTable,TEXT_COLOR_DEFAULT)
 				table.insert(statsPrintTable," dmg")
 			end
 		end
+
 		if #statsPrintTable > 0 then
 			love.graphics.setColor(colors.get("WHITE"))
 			love.graphics.print(statsPrintTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
+
 			line = line + 1
 		end
 
 		-- display description
 		if entityManager.entityHas(inspectedItem,{"description"}) then
 			width, lines = love.graphics.getFont():getWrap(inspectedItem.description.text,rect.width-PADDING_LEFT)
+
 			love.graphics.setColor(TEXT_COLOR_DEFAULT)
+
 			for i = 1, #lines do
 				love.graphics.print(lines[i],rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
+
 				line = line + 1
 			end
 		end
@@ -241,54 +267,65 @@ local function displayInventory()
 		TEXT_COLOR_KEY, "esc",
 		TEXT_COLOR_DEFAULT, " to exit)"
 	}
+
 	love.graphics.setColor(colors.get("WHITE"))
 	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
 	
 	if entityManager.entityHas(entity,{"inventory"}) then
-		if (#entity.inventory.items > 0) then
+		if #entity.inventory.items > 0 then
 			local selectedItem = nil
 
 			-- display items
 			love.graphics.setColor(TEXT_COLOR_ITEM)
+
 			for i = 1, #entity.inventory.items do
 				-- current item is selected
-				if (inventoryIndex == i) then
+				if inventoryIndex == i then
 					selectedItem = entity.inventory.items[i]
+
 					love.graphics.setColor(SELECTED_COLOR)
 					love.graphics.rectangle("fill",rect.x+PADDING_LEFT/2,rect.y+LINE_HEIGHT*i-1,rect.width-PADDING_LEFT,LINE_HEIGHT)
 					love.graphics.setColor(TEXT_COLOR_ITEM)
 				end
+
 				local _, text = grammar.resolveEntity(entity.inventory.items[i],true)
+
 				love.graphics.print(text,rect.x+PADDING_LEFT,rect.y+LINE_HEIGHT*i-1)
 			end
 
 			-- display available actions for selected item
-			if (selectedItem ~= nil) then
+			if selectedItem ~= nil then
 				local actions = {"drop","inspect"}
+
 				if entityManager.entityHas(selectedItem,{"item"}) then
-					if (selectedItem.item.wieldable) then
+					if selectedItem.item.wieldable then
 						table.insert(actions,"wield")
 					end
-					if (selectedItem.item.wearable) then
+
+					if selectedItem.item.wearable then
 						table.insert(actions,"wear")
 					end	
 				end
-				if (#actions > 0) then
+
+				if #actions > 0 then
 					-- create print table out of available actions
 					local actionsPrintTable = {
 						TEXT_COLOR_DEFAULT, "("
 					}
+
 					for i = 1, #actions do
-						if (i < #actions) then
+						if i < #actions then
 							actions[i] = actions[i]..", "
 						else
 							actions[i] = actions[i]..")"
 						end
+
 						table.insert(actionsPrintTable,TEXT_COLOR_KEY)
 						table.insert(actionsPrintTable,string.sub(actions[i],1,1))
 						table.insert(actionsPrintTable,TEXT_COLOR_DEFAULT)
 						table.insert(actionsPrintTable,string.sub(actions[i],2))
 					end
+
 					love.graphics.setColor(colors.get("WHITE"))
 					love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 				end
@@ -298,16 +335,18 @@ local function displayInventory()
 end
 
 local function displayInventoryCount()
-	if (inventoryCount == 0) then
+	if inventoryCount == 0 then
 		love.graphics.setColor(TEXT_COLOR_DEFAULT)
 		love.graphics.print(INVENTORY_COUNT_LABEL..INVENTORY_COUNT_TEXT_NONE,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*2)
 	else
 		local itemWord
-		if (inventoryCount ~= 1) then
+
+		if inventoryCount ~= 1 then
 			itemWord = "items"
 		else
 			itemWord = "item"
 		end
+
 		local inventoryCountPrintTable = {
 			TEXT_COLOR_DEFAULT, INVENTORY_COUNT_LABEL,
 			TEXT_COLOR_ITEM_COUNT, inventoryCount.." "..itemWord,
@@ -315,6 +354,7 @@ local function displayInventoryCount()
 			TEXT_COLOR_KEY, "i",
 			TEXT_COLOR_DEFAULT, "nventory)"
 		}
+
 		love.graphics.setColor(colors.get("WHITE"))
 		love.graphics.print(inventoryCountPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*2)
 	end
@@ -324,15 +364,15 @@ function items.draw()
 	layout.drawBackground(rect,BACKGROUND_COLOR)
 	layout.enableClipping(rect)
 
-	if (state == items.STATE_DEFAULT) then
+	if state == items.STATE_DEFAULT then
 		displayEquipmentCount()
 		displayGroundItem()
 		displayInventoryCount()
-	elseif (state == items.STATE_EQUIPMENT) then
+	elseif state == items.STATE_EQUIPMENT then
 		displayEquipment()
-	elseif (state == items.STATE_INSPECTION) then
+	elseif state == items.STATE_INSPECTION then
 		displayInspection()
-	elseif (state == items.STATE_INVENTORY) then
+	elseif state == items.STATE_INVENTORY then
 		displayInventory()
 	end
 	
@@ -357,7 +397,8 @@ function items.keyListenerEquipment(key)
 	local processed = false
 	local action = nil
 	local listener = items.keyListenerEquipment
-	if (key == "escape") then
+
+	if key == "escape" then
 		listener = items.switchToState(items.STATE_DEFAULT)
 		processed = true
 	elseif entityManager.entityHas(entity,{"equipment"}) then
@@ -367,30 +408,35 @@ function items.keyListenerEquipment(key)
 		elseif ((key == "down") or (key == "kp2")) and (equipmentIndex < #entity.equipment.items) then
 			equipmentIndex = equipmentIndex + 1
 			processed = true
-		elseif (key == "d") then
+		elseif key == "d" then
 			action = actionManager.createAction("drop",{
 				item = entity.equipment.items[equipmentIndex]
 			})
+
 			-- exit equipment if dropping single remaining item
 			if (equipmentCount == 1) then
 				listener = items.switchToState(items.STATE_DEFAULT)
 			end
+
 			processed = true
-		elseif (key == "i") then
+		elseif key == "i" then
 			inspectedItem = entity.equipment.items[equipmentIndex]
 			listener = items.switchToState(items.STATE_INSPECTION)
 			processed = true
-		elseif (key == "t") then
+		elseif key == "t" then
 			action = actionManager.createAction("takeoff",{
 				item = entity.equipment.items[equipmentIndex]
 			})
+
 			-- exit inventory if taking off single remaining item
-			if (equipmentCount == 1) then
+			if equipmentCount == 1 then
 				listener = items.switchToState(items.STATE_DEFAULT)
 			end
+
 			processed = true
 		end
 	end
+
 	return processed, action, listener
 end
 
@@ -399,10 +445,12 @@ function items.keyListenerInspection(key)
 	local processed = false
 	local action = nil
 	local listener = items.keyListenerInspection
-	if (key == "escape") then
+
+	if key == "escape" then
 		listener = items.switchToState(previousState)
 		processed = true
 	end
+
 	return processed, action, listener
 end
 
@@ -411,7 +459,8 @@ function items.keyListenerInventory(key)
 	local processed = false
 	local action = nil
 	local listener = items.keyListenerInventory
-	if (key == "escape") then
+
+	if key == "escape" then
 		listener = items.switchToState(items.STATE_DEFAULT)
 		processed = true
 	elseif entityManager.entityHas(entity,{"inventory"}) then
@@ -421,34 +470,40 @@ function items.keyListenerInventory(key)
 		elseif ((key == "down") or (key == "kp2")) and (inventoryIndex < #entity.inventory.items) then
 			inventoryIndex = inventoryIndex + 1
 			processed = true
-		elseif (key == "d") then
+		elseif key == "d" then
 			action = actionManager.createAction("drop",{
 				item = entity.inventory.items[inventoryIndex]
 			})
+
 			-- move pointer up if removing bottom item in list
-			if (inventoryIndex == #entity.inventory.items) then
+			if inventoryIndex == #entity.inventory.items then
 				inventoryIndex = inventoryIndex - 1
 			end
+
 			-- exit inventory if dropping single remaining item
-			if (#entity.inventory.items == 1) then
+			if #entity.inventory.items == 1 then
 				listener = items.switchToState(items.STATE_DEFAULT)
 			end
+
 			processed = true
-		elseif (key == "i") then
+		elseif key == "i" then
 			inspectedItem = entity.inventory.items[inventoryIndex]
 			listener = items.switchToState(items.STATE_INSPECTION)
 			processed = true
-		elseif (key == "w") then
+		elseif key == "w" then
 			action = actionManager.createAction("wield",{
 				item = entity.inventory.items[inventoryIndex]
 			})
+
 			-- exit inventory if wielding single remaining item
-			if (#entity.inventory.items == 1) then
+			if #entity.inventory.items == 1 then
 				listener = items.switchToState(items.STATE_DEFAULT)
 			end
+
 			processed = true
 		end
 	end
+
 	return processed, action, listener
 end
 
@@ -456,29 +511,38 @@ end
 function items.switchToState(newState)
 	previousState = state
 	state = newState
-	if (state == items.STATE_EQUIPMENT) then
+
+	if state == items.STATE_EQUIPMENT then
 		equipmentIndex = 1
+
 		return items.keyListenerEquipment
-	elseif (state == items.STATE_INSPECTION) then
+    end
+
+	if state == items.STATE_INSPECTION then
 		return items.keyListenerInspection
-	elseif (state == items.STATE_INVENTORY) then
+    end
+
+	if state == items.STATE_INVENTORY then
 		inventoryIndex = 1
+
 		return items.keyListenerInventory
-	else
-		return nil
-	end
+    end
+
+	return nil
 end
 
 function items.update(targetEntity)
 	entity = targetEntity
-	if (entity ~= nil) then
+
+	if entity ~= nil then
 		-- update ground item name
 		local groundItem = entityManager.getEntityAtLocationHaving(entity.position.x,entity.position.y,entity.position.z,{"item"})
-		if (groundItem == nil) then
+
+		if groundItem == nil then
 			groundItemName = nil
 		else
 			if entityManager.entityHas(groundItem,{"name"}) then
-				if (groundItem.name.specificName ~= nil) then
+				if groundItem.name.specificName ~= nil then
 					groundItemName = groundItem.name.specificName
 				else
 					groundItemName = groundItem.name.genericName
@@ -495,15 +559,16 @@ function items.update(targetEntity)
 			inventoryCount = 0
 		end
 
-		if (inventoryIndex > inventoryCount) then
+		if inventoryIndex > inventoryCount then
 			inventoryIndex = inventoryCount
 		end
 
 		-- update equipment count
 		equipmentCount = 0
+        
 		if entityManager.entityHas(entity,{"equipment"}) then
 			for i = 1, #entity.equipment.items do
-				if (entity.equipment.items[i] ~= Equipment.NULL) then
+				if entity.equipment.items[i] ~= Equipment.NULL then
 					equipmentCount = equipmentCount + 1
 				end
 			end

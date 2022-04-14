@@ -43,8 +43,10 @@ end
 -- returns location and dimensions of rooms and the entities in them
 local function createRooms()
 	local rooms = {}
+
 	for gridY = 1, ROOM_GRID_HEIGHT do
 		rooms[gridY] = {}
+
 		for gridX = 1, ROOM_GRID_WIDTH do
 			local width = math.random(MIN_ROOM_WIDTH,MAX_ROOM_WIDTH)
 			local height = math.random(MIN_ROOM_HEIGHT,MAX_ROOM_HEIGHT)
@@ -61,27 +63,27 @@ local function createRooms()
 
 			-- each room contains 0-3 bats
 			for i = 1, 3 do
-				if (math.random(3) == 1) then
+				if math.random(3) == 1 then
 					table.insert(rooms[gridY][gridX].entities,getEntityData("bat",x1,y1,width,height))
 				end
 			end
 
 			-- each room contains 0-2 orcs
 			for i = 1, 2 do
-				if (math.random(5) == 1) then
+				if math.random(5) == 1 then
 					table.insert(rooms[gridY][gridX].entities,getEntityData("orc",x1,y1,width,height))
 				end
 			end
 
 			-- upper left room contains two swords
-			if ((gridY == 1) and (gridX == 1)) then
+			if (gridY == 1) and (gridX == 1) then
 				table.insert(rooms[gridY][gridX].entities,getEntityData("sword",x1,y1,width,height))
 				table.insert(rooms[gridY][gridX].entities,getEntityData("sword",x1,y1,width,height))
 			end
 
 			-- upper left room contains hero
 			-- Note: later entity planned at same location will overwrite previous entity, therefore hero planned last
-			if ((gridY == 1) and (gridX == 1)) then
+			if (gridY == 1) and (gridX == 1) then
 				table.insert(rooms[gridY][gridX].entities,getEntityData("hero",x1,y1,width,height))
 			end
 		end
@@ -92,8 +94,10 @@ end
 -- returns definitions of corridors connecting all rooms
 local function createConnections(rooms)
 	local connections = {}
+
 	for gridY = 1, ROOM_GRID_HEIGHT do
 		connections[gridY] = {}
+
 		for gridX = 1, ROOM_GRID_WIDTH do
 			connections[gridY][gridX] = {}
 
@@ -108,19 +112,21 @@ local function createConnections(rooms)
 							x = nil,
 							y = nil
 						}
+
 						local dest = {
 							x = nil,
 							y = nil
 						}
+
 						local bend = nil
 
 						-- vertical
-						if (dir.dX == 0) then
+						if dir.dX == 0 then
 							source.x = math.random(rooms[gridY][gridX].x1, rooms[gridY][gridX].x1 + rooms[gridY][gridX].width - 1)
 							dest.x = math.random(rooms[targetGridY][targetGridX].x1, rooms[targetGridY][targetGridX].x1 + rooms[targetGridY][targetGridX].width - 1)
 
 							-- up
-							if (dir.dY == -1) then
+							if dir.dY == -1 then
 								source.y = rooms[gridY][gridX].y1 - 1
 								dest.y = rooms[targetGridY][targetGridX].y1 + rooms[targetGridY][targetGridX].height
 							-- down
@@ -130,7 +136,7 @@ local function createConnections(rooms)
 							end
 
 							-- bend needed
-							if (source.x ~= dest.x) then
+							if source.x ~= dest.x then
 								-- bend is understood to be defined as its vertical location along corridor
 								-- Note: always have at least 3 tiles of margin to avoid double layers of wall
 								bend = math.random(source.y + dir.dY * 3, dest.y - dir.dY * 3)
@@ -141,7 +147,7 @@ local function createConnections(rooms)
 							dest.y = math.random(rooms[targetGridY][targetGridX].y1, rooms[targetGridY][targetGridX].y1 + rooms[targetGridY][targetGridX].height - 1)
 
 							-- left
-							if (dir.dX == -1) then
+							if dir.dX == -1 then
 								source.x = rooms[gridY][gridX].x1 - 1
 								dest.x = rooms[targetGridY][targetGridX].x1 + rooms[targetGridY][targetGridX].width
 							-- right
@@ -151,7 +157,7 @@ local function createConnections(rooms)
 							end
 
 							-- bend needed
-							if (source.y ~= dest.y) then
+							if source.y ~= dest.y then
 								-- bend is understood to be defined as its horizontal location along corridor
 								-- Note: always have at least 3 tiles of margin to avoid double layers of wall
 								bend = math.random(source.x + dir.dX * 3, dest.x - dir.dX * 3)
@@ -169,15 +175,18 @@ local function createConnections(rooms)
 			end
 		end
 	end
+    
 	return connections
 end
 
 -- returns tile layout containing only empty values
 local function createEmptyLayout()
 	local layout = {}
+
 	for x = 1, map.WORLD_WIDTH do
 		for y = 1, map.WORLD_HEIGHT do
 			local posIndex = (y - 1) * map.WORLD_WIDTH + x
+
 			layout[posIndex] = {
 				wall = 0,
 				floor = 0,
@@ -186,6 +195,7 @@ local function createEmptyLayout()
 			}
 		end
 	end
+
 	return layout
 end
 
@@ -242,23 +252,24 @@ function map.createLayout(level)
 				local posIndex = (y - 1) * map.WORLD_WIDTH + x				
 				layout[posIndex].floor = 1
 				layout[posIndex].tile = "floorCorridor"
+
 				repeat
 					-- corridor is straight
-					if (connection.bend == nil) then
+					if connection.bend == nil then
 						x = x + dX
 						y = y + dY
 					-- corridor has bend
 					else
 						-- corridor is vertical
-						if (dX == 0) then
+						if dX == 0 then
 							-- currently in bend
-							if (y == connection.bend) then
+							if y == connection.bend then
 								-- end of bend reached
-								if (x == connection.dest.x) then
+								if x == connection.dest.x then
 									y = y + dY
 								-- end of bend not reached
 								else
-									if (x < connection.dest.x) then
+									if x < connection.dest.x then
 										x = x + 1
 									else
 										x = x - 1
@@ -272,13 +283,13 @@ function map.createLayout(level)
 						-- corridor is horizontal
 						else
 							-- currently in bend
-							if (x == connection.bend) then
+							if x == connection.bend then
 								-- end of bend reached
-								if (y == connection.dest.y) then
+								if y == connection.dest.y then
 									x = x + dX
 								-- end of bend not reached
 								else
-									if (y < connection.dest.y) then
+									if y < connection.dest.y then
 										y = y + 1
 									else
 										y = y - 1
@@ -304,24 +315,29 @@ function map.createLayout(level)
 	for y = 1, map.WORLD_HEIGHT do
 		for x = 1, map.WORLD_WIDTH do
 			local posIndex = (y - 1) * map.WORLD_WIDTH + x
+
 			-- location is empty
-			if ((layout[posIndex].wall == 0) and (layout[posIndex].floor == 0)) then
+			if (layout[posIndex].wall == 0) and (layout[posIndex].floor == 0) then
 				local foundFloor = false
+
 				for i = 1, #DIRECTIONS do
 					local checkX = x + DIRECTIONS[i].dX
 					local checkY = y + DIRECTIONS[i].dY
+
 					-- check location is within layout
-					if ((checkX >= 1) and (checkX <= map.WORLD_WIDTH)) then
-						if ((checkY >= 1) and (checkY <= map.WORLD_HEIGHT)) then
+					if (checkX >= 1) and (checkX <= map.WORLD_WIDTH) then
+						if (checkY >= 1) and (checkY <= map.WORLD_HEIGHT) then
 							-- check location contains floor
-							if (layout[(checkY - 1) * map.WORLD_WIDTH + checkX].floor == 1) then
+							if layout[(checkY - 1) * map.WORLD_WIDTH + checkX].floor == 1 then
 								foundFloor = true
+
 								break
 							end
 						end
 					end
 				end
-				if (foundFloor) then
+
+				if foundFloor then
 					layout[posIndex].wall = 1
 				end
 			end
@@ -332,6 +348,7 @@ function map.createLayout(level)
 	for y = 1, map.WORLD_HEIGHT do
 		for x = 1, map.WORLD_WIDTH do
 			local posIndex = (y - 1) * map.WORLD_WIDTH + x
+            
 			-- location is wall
 			if layout[posIndex].wall == 1 then
 				local checkX = x

@@ -57,19 +57,19 @@ function input.defaultListener(key)
 	local action = nil
 	local newListener = nil
 	
-	if (DIRECTIONS[key] ~= nil) then
+	if DIRECTIONS[key] ~= nil then
 		action = actionManager.createAction("move",DIRECTIONS[key])
 		processed = true
-	elseif (key == "e") then
+	elseif key == "e" then
 		newListener = items.switchToState(items.STATE_EQUIPMENT)
 		processed = true
-	elseif (key == "g") then
+	elseif key == "g" then
 		action = actionManager.createAction("get")
 		processed = true
-	elseif (key == "i") then
+	elseif key == "i" then
 		newListener = items.switchToState(items.STATE_INVENTORY)
 		processed = true
-	elseif (key == "space") then
+	elseif key == "space" then
 		action = actionManager.createAction("skip")
 		processed = true
 	end
@@ -92,14 +92,17 @@ end
 -- returns whether key was processed
 function input.registerKeyPressed(key)
 	local keyProcessed, newAction, newListener = listener(key)
-	if (newAction ~= nil) then
+
+	if newAction ~= nil then
 		action = newAction
 	end
-	if (newListener ~= nil) then
+
+	if newListener ~= nil then
 		listener = newListener
 	else
 		listener = input.defaultListener
 	end
+    
 	return keyProcessed
 end
 

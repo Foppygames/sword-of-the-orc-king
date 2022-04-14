@@ -24,9 +24,10 @@ function images.init()
 end
 
 function images.get(id)
-	if (items[id].image == nil) then
+	if items[id].image == nil then
 		items[id].image = love.graphics.newImage(items[id].path)
 	end
+    
 	return items[id].image
 end
 

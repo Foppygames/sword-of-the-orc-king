@@ -19,7 +19,7 @@ local gameX
 local gameY
 
 function aspect.init()
-	if (fullScreen) then
+	if fullScreen then
 		local _, _, flags = love.window.getMode()
 		local width, height = love.window.getDesktopDimensions(flags.display)
 		windowWidth = width
@@ -32,38 +32,42 @@ function aspect.init()
 	local gameAspect = GAME_WIDTH / GAME_HEIGHT
 	local windowAspect = windowWidth / windowHeight
 	
-	if (gameAspect > windowAspect) then
+	if gameAspect > windowAspect then
 		-- game is wider than window; scale to use full width, use horizontal letterboxing
 		scale = windowWidth / GAME_WIDTH
 		local scaledGameHeight = GAME_HEIGHT * scale
 		local barHeight = math.ceil((windowHeight - scaledGameHeight) / 2)
 		gameX = 0
 		gameY = barHeight
+
 		table.insert(bars,{
 			x = 0,
 			y = 0,
 			width = windowWidth,
 			height = barHeight
 		})
+
 		table.insert(bars,{
 			x = 0,
 			y = windowHeight - barHeight,
 			width = windowWidth,
 			height = barHeight
 		})
-	elseif (windowAspect > gameAspect) then
+	elseif windowAspect > gameAspect then
 		-- window is wider than game; scale to use full height, use vertical letterboxing
 		scale = windowHeight / GAME_HEIGHT
 		local scaledGameWidth = GAME_WIDTH * scale
 		local barWidth = math.ceil((windowWidth - scaledGameWidth) / 2)
 		gameX = barWidth
 		gameY = 0
+
 		table.insert(bars,{
 			x = 0,
 			y = 0,
 			width = barWidth,
 			height = windowHeight
 		})
+
 		table.insert(bars,{
 			x = windowWidth-barWidth,
 			y = 0,
@@ -90,9 +94,11 @@ function aspect.letterbox()
 	love.graphics.pop()
 	love.graphics.push()
 	love.graphics.setColor(BAR_COLOR[1],BAR_COLOR[2],BAR_COLOR[3])
+
 	for i = 1, #bars do
 		love.graphics.rectangle("fill",bars[i].x,bars[i].y,bars[i].width,bars[i].height)
 	end
+    
 	love.graphics.pop()
 end
 

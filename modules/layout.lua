@@ -21,6 +21,7 @@ function layout.init(gameWidth,gameHeight)
 		width = gameHeight - AREA_PADDING * 2,
 		height = gameHeight - AREA_PADDING * 2
 	}
+
 	-- column 2, row 1
 	rects[layout.DRAWING_AREA_STATS] = {
 		x = rects[layout.DRAWING_AREA_WORLD].width+AREA_PADDING*2,
@@ -28,6 +29,7 @@ function layout.init(gameWidth,gameHeight)
 		width = gameWidth - rects[layout.DRAWING_AREA_WORLD].width - AREA_PADDING * 3,
 		height = (gameHeight - AREA_PADDING * 3) * 0.2
 	}
+
 	-- column 2, row 2
 	rects[layout.DRAWING_AREA_ITEMS] = {
 		x = rects[layout.DRAWING_AREA_STATS].x,
@@ -35,6 +37,7 @@ function layout.init(gameWidth,gameHeight)
 		width = gameWidth - rects[layout.DRAWING_AREA_WORLD].width - AREA_PADDING * 3,
 		height = (gameHeight - AREA_PADDING * 3) * 0.6
 	}
+    
 	-- column 2, row 3
 	rects[layout.DRAWING_AREA_LOG] = {
 		x = rects[layout.DRAWING_AREA_STATS].x,

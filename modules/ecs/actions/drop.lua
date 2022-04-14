@@ -17,7 +17,8 @@ function Drop.create(data)
 
     function self.perform(entity)
         local success = false
-        if (entityManager.entityHas(entity,{"inventory","position"})) then
+
+        if entityManager.entityHas(entity,{"inventory","position"}) then
             -- intended drop location is entity location
             local x = entity.position.x
             local y = entity.position.y
@@ -31,7 +32,7 @@ function Drop.create(data)
                 emptyFloor = false
             end
 
-            if (emptyFloor) then
+            if emptyFloor then
                 -- todo: refactor entity definition so that entity component defaults can be 
                 -- retrieved separately and applied to component re-creation? (currently set to nil)
                 -- ...
@@ -45,10 +46,13 @@ function Drop.create(data)
 
                 -- remove from inventory...
                 local removed = false
+
                 for i = 1, #entity.inventory.items do
-                    if (entity.inventory.items[i] == self.item) then
+                    if entity.inventory.items[i] == self.item then
                         table.remove(entity.inventory.items,i)
+
                         removed = true
+
                         break
                     end
                 end
@@ -56,7 +60,7 @@ function Drop.create(data)
                 -- or remove from equipment
                 if not removed then
                     for i = 1, #entity.equipment.items do
-                        if (entity.equipment.items[i] == self.item) then
+                        if entity.equipment.items[i] == self.item then
                             entity.equipment.items[i] = Equipment.NULL
 
                             if entityManager.entityHas(self.item,{"stats"}) and entityManager.entityHas(entity,{"stats"}) then
@@ -77,19 +81,21 @@ function Drop.create(data)
                 end
             
                 log.addEntry(grammar.interpolate(grammar.STRUCT_E1_DROP_E2,{entity,self.item}))
+
                 success = true
             end
 
-            if (not success) then
+            if not success then
                 -- skip turn if not controlled by player
-                if (not entityManager.entityHas(entity,{"input"})) then
+                if not entityManager.entityHas(entity,{"input"}) then
                     success = true
                 -- show message to player
-                elseif (not emptyFloor) then
+                elseif not emptyFloor then
                     log.addEntry(grammar.interpolate(grammar.STRUCT_E1_CANNOT_DROP_E2_HERE,{entity,self.item}))
                 end
             end
-        end    
+        end
+        
         return self.getPerformResult(success)
     end
 

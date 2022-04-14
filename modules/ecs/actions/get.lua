@@ -13,9 +13,11 @@ function Get.create(data)
 
     function self.perform(entity)
         local success = false
-        if (entityManager.entityHas(entity,{"inventory","position"})) then
+
+        if entityManager.entityHas(entity,{"inventory","position"}) then
             local item = entityManager.getEntityAtLocationHaving(entity.position.x,entity.position.y,entity.position.z,{"item"})
-            if (item ~= nil) then
+
+            if item ~= nil then
                 -- remove item position component
                 item.position = nil
 
@@ -23,12 +25,13 @@ function Get.create(data)
                 table.insert(entity.inventory.items,item)
 
                 log.addEntry(grammar.interpolate(grammar.STRUCT_E1_GET_E2,{entity,item}))
+
                 success = true
             end
 
-            if (not success) then
+            if not success then
                 -- skip turn if not controlled by player
-                if (not entityManager.entityHas(entity,{"input"})) then
+                if not entityManager.entityHas(entity,{"input"}) then
                     success = true
                 -- show message to player
                 else
@@ -36,6 +39,7 @@ function Get.create(data)
                 end
             end
         end
+        
         return self.getPerformResult(success)
     end
 
