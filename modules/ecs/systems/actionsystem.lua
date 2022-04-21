@@ -6,12 +6,16 @@ local world = require("modules.world")
 
 local actionSystem = {}
 
+local DELAY_TIME = 0.2
+
 local queue = {}
 local backlog = {}
+local delay = 0
 
 function actionSystem.reset()
 	queue = {}
 	backlog = {}
+    delay = 0
 end
 
 -- returns true if all entities have been processed, false otherwise
@@ -28,10 +32,12 @@ local function removeLastFromQueue()
 
         return true
 	end
+
+    return false
 end
 
--- updates the next entity and returns true if all entities updated, false otherwise
-function actionSystem.update(inputAction)
+-- updates the next entity and returns whether 1) all finished and 2) performing delay
+function actionSystem.update(inputAction,dt)
 	-- set of entities needs to be fetched
 	if #queue == 0 then
 		queue = entityManager.getEntitiesHaving({"action","energy"})
@@ -40,19 +46,44 @@ function actionSystem.update(inputAction)
 
 	-- no entities found
 	if #queue == 0 then
-		return true
+		return true, false
 	end
 
-	local redraw = false
-	local allUpdated = false
-
-	while not(redraw or allUpdated) do
+    local redraw = false
+	local finished = false
+    
+	while not(redraw or finished) do
 		-- get last entity
 		local entity = queue[#queue]
 
 		-- energy available for action
 		if entity.energy.level >= energySystem.ENERGY_FOR_ACTION then
-			local action = nil
+			-- entity not yet marked for turn
+            if not entity.energy.turn then
+                -- mark entity for turn
+                entity.energy.turn = true
+
+                -- consider delay before action
+                if entityManager.entityHas(entity,{"appearance"}) then
+                    if entity.appearance.rendered then
+                        if not entityManager.entityHas(entity,{"input"}) then
+                            delay = DELAY_TIME
+                        end
+                    end
+                end
+            end
+            
+            -- update delay before action
+            if delay > 0 then
+                delay = delay - dt
+
+                if delay > 0 then
+                    return false, true
+                end
+            end
+
+            local action = nil
+
 			local result = {
 				success = false,
 				newAction = nil
@@ -79,11 +110,20 @@ function actionSystem.update(inputAction)
 
 			-- action performed with success
 			if result.success then
+                -- remove mark for turn
+                entity.energy.turn = false
+            
 				-- redraw if action changes visible world or interface in any way
-				-- ...
 				
-				--redraw = true
+                -- redraw if entity was renderd last time
+                if entityManager.entityHas(entity,{"appearance"}) then
+                    if entity.appearance.rendered then
+                        redraw = true
+                    end
+                end
 
+                -- ...
+				
 				entity.energy.level = entity.energy.level - energySystem.ENERGY_FOR_ACTION
 
 				if entity.energy.level >= energySystem.ENERGY_FOR_ACTION then
@@ -93,7 +133,7 @@ function actionSystem.update(inputAction)
 
 				-- remove entity from queue
 				if removeLastFromQueue() then
-					allUpdated = true
+					finished = true
 				end
 			-- no successful action
 			else
@@ -104,12 +144,12 @@ function actionSystem.update(inputAction)
 		else
 			-- remove entity from queue
 			if removeLastFromQueue() then
-				allUpdated = true
+				finished = true
 			end
 		end
 	end
 
-	return allUpdated
+	return finished, false
 end
 
 function actionSystem.getAiAction(entity)

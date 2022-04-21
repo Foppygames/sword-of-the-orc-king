@@ -6,7 +6,8 @@ local Appearance = {}
 
 function Appearance.create(entityDefaults,entityData)
     local self = Component.create({
-        imageId = nil
+        imageId = nil,
+        rendered = false
     })
 
     self.setValues(entityDefaults,entityData)

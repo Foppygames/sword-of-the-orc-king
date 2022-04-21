@@ -58,8 +58,8 @@ end
 
 function switchToState(newState)
 	state = newState
-	
-	if state == STATE_PLAY then
+
+    if state == STATE_PLAY then
 		actionSystem.reset()
 		entityManager.reset()
 		input.resetAction()
@@ -130,20 +130,24 @@ end
 
 function love.update(dt)
 	if state == STATE_PLAY then
-		local allUpdated = actionSystem.update(input.getAction())
+        local finished, delaying = actionSystem.update(input.getAction(),dt)
 
-		input.resetAction()
+        input.resetAction()
 
-		if allUpdated then
-			statsSystem.update()
-			energySystem.update()
-		end
+        if delaying then
+            return
+        end
 
-		local cameraEntity = visionSystem.update()
-		
-		items.update(cameraEntity)
-		stats.update(cameraEntity)
-		world.updateViewport(cameraEntity)
+        if finished then
+            statsSystem.update()
+            energySystem.update()
+        end
+
+        local cameraEntity = visionSystem.update()
+        
+        items.update(cameraEntity)
+        stats.update(cameraEntity)
+        world.updateViewport(cameraEntity)
 	end
 end
 

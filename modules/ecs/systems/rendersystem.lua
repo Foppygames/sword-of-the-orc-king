@@ -11,9 +11,12 @@ function renderSystem.update(viewPortData,visibleLocations)
 	local entities = entityManager.getEntitiesHaving({"appearance","position"})
 
 	for i = 1, #entities do
-		local tileX = entities[i].position.x
+        local tileX = entities[i].position.x
 		local tileY = entities[i].position.y
 		
+        -- reset entity rendered flag
+        entities[i].appearance.rendered = false
+
 		if renderSystem.withinViewPortTileRange(tileX,tileY,viewPortData.firstTileX,viewPortData.firstTileY,viewPortData.lastTileX,viewPortData.lastTileY) then
 			if renderSystem.onVisibleLocation(tileX,tileY,entities[i].position.z,visibleLocations) then
 				local x = viewPortData.screenX1 + (tileX - viewPortData.firstTileX) * viewPortData.tileWidth
@@ -22,6 +25,16 @@ function renderSystem.update(viewPortData,visibleLocations)
 
 				-- Note: assuming all images are of same size as tiles
 				love.graphics.draw(image,x,y)
+
+                -- set entity rendered flag
+                entities[i].appearance.rendered = true
+
+                if entityManager.entityHas(entities[i],{"energy"}) then
+                    if entities[i].energy.turn then
+                        -- draw turn indicator
+                        love.graphics.rectangle("line",x-1,y-1,viewPortData.tileWidth+1,viewPortData.tileHeight+1)
+                    end
+                end
 			end
 		end
 	end

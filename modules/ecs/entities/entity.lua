@@ -8,7 +8,7 @@ function Entity.create(defaults,data)
     local self = {}
     
     for componentId,entityDefaults in pairs(defaults) do
-		  self[componentId] = componentManager.createComponent(componentId,entityDefaults,data[componentId])
+		self[componentId] = componentManager.createComponent(componentId,entityDefaults,data[componentId])
     end
 
     return self
