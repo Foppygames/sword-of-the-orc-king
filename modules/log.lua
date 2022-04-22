@@ -6,10 +6,10 @@ local layout = require("modules.layout")
 
 local log = {}
 
-log.TEXT_COLOR_DEFAULT = colors.get("LIGHT_GREY")
-log.TEXT_COLOR_DANGER = colors.get("PINK")
+log.TEXT_COLOR_DEFAULT = colors.get("BLACK_SOULS_2")
+log.TEXT_COLOR_DANGER = colors.get("BLACK_SOULS_13")
 
-local BACKGROUND_COLOR = colors.get("BLACK")
+local BACKGROUND_COLOR = colors.get("BLACK_SOULS_15")
 local LINE_HEIGHT = 16
 local PADDING_LEFT = 4
 

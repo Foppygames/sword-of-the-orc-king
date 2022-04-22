@@ -81,7 +81,8 @@ function aspect.init()
 		gameY = 0
 	end
 	
-	love.window.setMode(WINDOW_WIDTH,WINDOW_HEIGHT,{fullscreen=fullScreen,fullscreentype="desktop"})
+    -- for now, not setting mode again, leaving it at default window dimensions set in conf.lua to avoid flickering at startup
+	--love.window.setMode(WINDOW_WIDTH,WINDOW_HEIGHT,{fullscreen=fullScreen,fullscreentype="desktop"})
 end
 
 function aspect.apply()

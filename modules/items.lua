@@ -14,12 +14,12 @@ items.STATE_INVENTORY = 1
 items.STATE_EQUIPMENT = 2
 items.STATE_INSPECTION = 3
 
-local BACKGROUND_COLOR = colors.get("BLUE")
-local TEXT_COLOR_DEFAULT = colors.get("LIGHT_BLUE")
-local TEXT_COLOR_KEY = colors.get("YELLOW")
-local TEXT_COLOR_ITEM = colors.get("WHITE")
-local TEXT_COLOR_ITEM_COUNT = colors.get("WHITE")
-local SELECTED_COLOR = colors.get("BLACK")
+local BACKGROUND_COLOR = colors.get("BLACK_SOULS_5")
+local TEXT_COLOR_DEFAULT = colors.get("BLACK_SOULS_15")
+local TEXT_COLOR_KEY = colors.get("BLACK_SOULS_10")
+local TEXT_COLOR_ITEM = colors.get("BLACK_SOULS_1")
+local TEXT_COLOR_ITEM_COUNT = colors.get("BLACK_SOULS_1")
+local SELECTED_COLOR = colors.get("BLACK_SOULS_7")
 
 local LINE_HEIGHT = 16
 local PADDING_LEFT = 4
@@ -61,7 +61,7 @@ local function displayEquipment()
 		TEXT_COLOR_DEFAULT, " to exit)"
 	}
 
-	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.setColor(1,1,1)
 	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
 	
 	if entityManager.entityHas(entity,{"equipment"}) then
@@ -92,7 +92,7 @@ local function displayEquipment()
 					table.insert(equipmentPrintTable,EQUIPMENT_EMPTY_SLOT_TEXT)
 				end	
 
-				love.graphics.setColor(colors.get("WHITE"))
+				love.graphics.setColor(1,1,1)
 				love.graphics.print(equipmentPrintTable,rect.x+PADDING_LEFT,rect.y+LINE_HEIGHT*i-1)
 			end
 
@@ -123,7 +123,7 @@ local function displayEquipment()
 						table.insert(actionsPrintTable,string.sub(actions[i],2))
 					end
 
-					love.graphics.setColor(colors.get("WHITE"))
+					love.graphics.setColor(1,1,1)
 					love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 				end
 			end
@@ -151,7 +151,7 @@ local function displayEquipmentCount()
 			TEXT_COLOR_DEFAULT, "quipment)"
 		}
 
-		love.graphics.setColor(colors.get("WHITE"))
+		love.graphics.setColor(1,1,1)
 		love.graphics.print(equipmentCountPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*3)
 	end
 end
@@ -169,7 +169,7 @@ local function displayGroundItem()
 			TEXT_COLOR_DEFAULT, "et)"
 		}
 
-		love.graphics.setColor(colors.get("WHITE"))
+		love.graphics.setColor(1,1,1)
 		love.graphics.print(groundItemPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 	end
 end
@@ -182,7 +182,7 @@ local function displayInspection()
 		TEXT_COLOR_DEFAULT, " to exit)"
 	}
 
-	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.setColor(1,1,1)
 	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
 		
 	if inspectedItem ~= nil then
@@ -235,7 +235,7 @@ local function displayInspection()
 		end
 
 		if #statsPrintTable > 0 then
-			love.graphics.setColor(colors.get("WHITE"))
+			love.graphics.setColor(1,1,1)
 			love.graphics.print(statsPrintTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 
 			line = line + 1
@@ -268,7 +268,7 @@ local function displayInventory()
 		TEXT_COLOR_DEFAULT, " to exit)"
 	}
 
-	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.setColor(1,1,1)
 	love.graphics.print(headerPrintTable,rect.x+PADDING_LEFT,rect.y)
 	
 	if entityManager.entityHas(entity,{"inventory"}) then
@@ -326,7 +326,7 @@ local function displayInventory()
 						table.insert(actionsPrintTable,string.sub(actions[i],2))
 					end
 
-					love.graphics.setColor(colors.get("WHITE"))
+					love.graphics.setColor(1,1,1)
 					love.graphics.print(actionsPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT)
 				end
 			end
@@ -355,7 +355,7 @@ local function displayInventoryCount()
 			TEXT_COLOR_DEFAULT, "nventory)"
 		}
 
-		love.graphics.setColor(colors.get("WHITE"))
+		love.graphics.setColor(1,1,1)
 		love.graphics.print(inventoryCountPrintTable,rect.x+PADDING_LEFT,rect.y+rect.height-LINE_HEIGHT*2)
 	end
 end

@@ -7,9 +7,9 @@ local layout = require("modules.layout")
 
 local stats = {}
 
-local BACKGROUND_COLOR = colors.get("DARK_GREY")
-local TEXT_COLOR_LABEL = colors.get("LIGHT_GREY")
-local TEXT_COLOR_VALUE = colors.get("WHITE")
+local BACKGROUND_COLOR = colors.get("BLACK_SOULS_15")
+local TEXT_COLOR_LABEL = colors.get("BLACK_SOULS_3")
+local TEXT_COLOR_VALUE = colors.get("BLACK_SOULS_2")
 
 local LINE_HEIGHT = 16
 local PADDING_LEFT = 4
@@ -34,7 +34,7 @@ local function displayHealth(line)
 		table.insert(printTable,"-")
 	end
 
-	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.setColor(1,1,1)
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
 
@@ -51,7 +51,7 @@ local function displayStrength(line)
 		table.insert(printTable,"-")
 	end
 
-	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.setColor(1,1,1)
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
 
@@ -68,7 +68,7 @@ local function displayDamage(line)
 		table.insert(printTable,"-")
 	end
 
-	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.setColor(1,1,1)
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
 
@@ -85,7 +85,7 @@ local function displayDexterity(line)
 		table.insert(printTable,"-")
 	end
     
-	love.graphics.setColor(colors.get("WHITE"))
+	love.graphics.setColor(1,1,1)
 	love.graphics.print(printTable,rect.x+PADDING_LEFT,rect.y+(line-1)*LINE_HEIGHT)
 end
 

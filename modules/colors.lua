@@ -2,23 +2,24 @@
 
 local colors = {}
 
+-- palette: https://lospec.com/palette-list/ty-black-souls-16
 local palette = {
-	BLACK = {0,0,0},
-	WHITE = {255,255,255},
-	RED = {137,64,54},
-	CYAN = {122,191,199},
-	PURPLE = {138,70,174},
-	GREEN = {104,169,65},
-	BLUE = {62,49,162},
-	YELLOW = {208,220,113},
-	ORANGE = {144,95,37},
-	BROWN = {92,71,0},
-	PINK = {187,119,109},
-	DARK_GREY = {85,85,85},
-	GREY = {128,128,128},
-	LIGHT_GREEN = {172,234,136},
-	LIGHT_BLUE = {124,112,218},
-	LIGHT_GREY = {171,171,171}
+    BLACK_SOULS_1  = {223,205,183},
+    BLACK_SOULS_2  = {197,164,123},
+    BLACK_SOULS_3  = {154,125, 74},
+    BLACK_SOULS_4  = {152,159, 63},
+    BLACK_SOULS_5  = {99, 101, 74},
+    BLACK_SOULS_6  = {41,  64, 52},
+    BLACK_SOULS_7  = {129,165,152},
+    BLACK_SOULS_8  = {69, 107,117},
+    BLACK_SOULS_9  = {49,  48, 69},
+    BLACK_SOULS_10 = {197,129, 50},
+    BLACK_SOULS_11 = {133, 75, 47},
+    BLACK_SOULS_12 = {80,  35, 23},
+    BLACK_SOULS_13 = {159, 87, 69},
+    BLACK_SOULS_14 = {96,  65, 69},
+    BLACK_SOULS_15 = {53,  46, 50},
+    BLACK_SOULS_16 = {37,  29, 34}
 }
 
 function colors.init()

@@ -9,7 +9,7 @@ layout.DRAWING_AREA_STATS = 2
 layout.DRAWING_AREA_ITEMS = 3
 layout.DRAWING_AREA_LOG = 4
 
-local AREA_PADDING = 4
+local AREA_PADDING = 0 --4
 
 local rects = {}
 
@@ -60,7 +60,7 @@ function layout.disableClipping()
 end
 
 function layout.drawBackground(rect,color)
-	love.graphics.setColor(color)
+    love.graphics.setColor(color)
 	love.graphics.rectangle("fill",rect.x,rect.y,rect.width,rect.height)
 end
 

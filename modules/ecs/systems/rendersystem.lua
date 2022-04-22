@@ -1,3 +1,4 @@
+local colors = require("modules.colors")
 local entityManager = require("modules.ecs.managers.entitymanager")
 local images = require("modules.images")
 local layout = require("modules.layout")
@@ -32,7 +33,10 @@ function renderSystem.update(viewPortData,visibleLocations)
                 if entityManager.entityHas(entities[i],{"energy"}) then
                     if entities[i].energy.turn then
                         -- draw turn indicator
+                        love.graphics.push()
+	                    love.graphics.setColor(colors.get("BLACK_SOULS_2"))
                         love.graphics.rectangle("line",x-1,y-1,viewPortData.tileWidth+1,viewPortData.tileHeight+1)
+                        love.graphics.pop()
                     end
                 end
 			end

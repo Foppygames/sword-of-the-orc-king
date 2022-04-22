@@ -9,7 +9,7 @@ local tiles = require("modules.tiles")
 
 local world = {}
 
-local BACKGROUND_COLOR = colors.get("BLACK")
+local BACKGROUND_COLOR = colors.get("BLACK_SOULS_16")
 local LEVELS = 3
 local STARTING_LEVEL = 1
 local TILE_WIDTH = 16

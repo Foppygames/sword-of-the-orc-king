@@ -33,7 +33,7 @@ local STORY_WIDTH_FRACTION = 0.7
 local state
 
 function love.load()
-	math.randomseed(os.time())
+    math.randomseed(os.time())
 	
 	aspect.init()
 	colors.init()
@@ -50,8 +50,8 @@ function love.load()
 	love.graphics.setLineStyle("rough")
 	love.graphics.setFont(love.graphics.newFont("Retroville_NC.ttf",10))
 	love.graphics.getFont():setLineHeight(1.4)
-
-	love.mouse.setVisible(false)
+    
+    love.mouse.setVisible(false)
 
 	switchToState(STATE_TITLE)
 end
@@ -97,22 +97,24 @@ function love.mousepressed(x,y,button,istouch,presses)
 end
 
 function love.draw()
-	aspect.apply()
+    aspect.apply()
 	
 	if state == STATE_TITLE then
-		love.graphics.setColor(colors.get("WHITE"))
+        love.graphics.clear(colors.get("BLACK_SOULS_15"))
+
+		love.graphics.setColor(colors.get("BLACK_SOULS_1"))
 		love.graphics.printf(GAME_NAME,0,30,aspect.getGameWidth(),"center")	
 
-		love.graphics.setColor(colors.get("DARK_GREY"))
+		love.graphics.setColor(colors.get("BLACK_SOULS_2"))
 		love.graphics.printf(STORY,aspect.getGameWidth()*(1-STORY_WIDTH_FRACTION)/2,100,aspect.getGameWidth()*STORY_WIDTH_FRACTION)
 
-		love.graphics.setColor(colors.get("WHITE"))
+		love.graphics.setColor(colors.get("BLACK_SOULS_1"))
 		love.graphics.printf("W = windowed / full screen",0,aspect.getGameHeight()-100,aspect.getGameWidth(),"center")
 		love.graphics.printf("Press space to start",0,aspect.getGameHeight()-50,aspect.getGameWidth(),"center")
     end
     
     if state == STATE_PLAY then
-		love.graphics.clear(colors.get("LIGHT_BLUE"))
+		love.graphics.clear(colors.get("BLACK_SOULS_5"))
 
 		log.draw()
 		items.draw()
@@ -121,7 +123,9 @@ function love.draw()
 	end
     
     if state == STATE_GAME_OVER then
-		love.graphics.setColor(1,1,1)
+        love.graphics.clear(colors.get("BLACK_SOULS_15"))
+
+		love.graphics.setColor(colors.get("BLACK_SOULS_1"))
 		love.graphics.print("GAME OVER",130,60)
 	end
 	
